@@ -1,0 +1,37 @@
+---
+title: Links in relation with me
+author: Yuji Yamamoto
+tags: SNS, GTD, git, Haskell, Ruby, vim, Anime, Manga
+...
+---
+
+# 割と頻繁に使うウェブサービス
+- [Google+](https://plus.google.com/u/0/108459635886859360319/posts)
+- [Twitter: @igrep](https://twitter.com/igrep)
+- [Facebook: igrep](https://www.facebook.com/igrep)
+- [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
+- [Github: igrep](https://github.com/igrep)
+- [Forkwell](https://forkwell.com/u/igrep)
+
+# 作ってるもの
+- [ひとりハッカソンでのToDo管理アプリ](http://hitori-hackathon.herokuapp.com/)
+- その他は[Github](https://github.com/igrep)で！
+
+# すごく好きなもの
+## コンピュータ関連
+- [Haskell](http://www.haskell.org/haskellwiki/Haskell)
+- [Ruby](http://www.ruby-lang.org/)
+- [Xubuntu](http://xubuntu.org/)
+- [Ubuntu](http://www.ubuntu.com/)
+- [Hakyll](http://jaspervdj.be/hakyll/)
+- [アジャイルサムライ](http://ssl.ohmsha.co.jp/cgi-bin/menu.cgi?ISBN=978-4-274-06856-0)
+- [Sony Tablet S](http://www.sony.jp/tablet/products/S1/)
+
+## アニメ・漫画関連
+- [ひだまりスケッチ](http://www.tbs.co.jp/anime/hidamari/)
+- [聖☆おにいさん](http://morningmanga.com/lineup/25)
+- [プリキュア](http://www.toei-anim.co.jp/tv/precure/)
+- [日常](http://www.shinonome-lab.com/)
+
+# 昔のブログ
+- [発展途上猿人](http://blog.livedoor.jp/igrep/)
