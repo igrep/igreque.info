@@ -2,12 +2,17 @@
 title: ToDo for this website
 author: Yuji Yamamoto
 tags: HTML5, Hakyll, GTD
+...
 ---
 
 本当は制作中のToDo管理ソフトに置くのが理想ですが依然貧弱なのでこちらに。。。
 
+1. ひとりハッカソンで制作中のTodo管理ソフトへのリンクを変える
 1. もっとStylesheetを格好良く。
 2. HTML5に。やっぱりtanakhさんと同じようにHTML5 Boilerplateを使うのが簡単？
 3. 各ページに変更履歴を示すためのリンクを張りたい。
    Githubのファイルごとの履歴を示す機能を使えばできるはず。
 4. フッタに著作権情報やらHakyllやらの情報を書く。
+5. dateをunknownにならないようにする。
+   日時がファイル名に含まれていない場合は更新日時でやればいいはず。
+6. 英語も充実させる。
