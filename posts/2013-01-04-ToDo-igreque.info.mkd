@@ -7,6 +7,7 @@ tags: HTML5, Hakyll, GTD
 
 本当は制作中のToDo管理ソフトに置くのが理想ですが依然貧弱なのでこちらに。。。
 
+1. ひとりハッカソンについて説明
 1. ひとりハッカソンで制作中のTodo管理ソフトへのリンクを変える
 1. もっとStylesheetを格好良く。
 2. HTML5に。やっぱりtanakhさんと同じようにHTML5 Boilerplateを使うのが簡単？
