@@ -38,7 +38,7 @@ main = hakyll $ do
     -- Index
     match "index.html" $ route idRoute
     create "index.html" $ constA mempty
-        >>> arr (setField "title" "Home")
+        >>> arr (setField "title" "Index")
         >>> requireA "tags" (setFieldA "tagcloud" (renderTagCloud'))
         >>> requireAllA "posts/*" (id *** arr (take 3 . reverse . chronological) >>> addPostList)
         >>> applyTemplateCompiler "templates/index.html"
