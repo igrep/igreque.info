@@ -1,0 +1,15 @@
+---
+title: Featured Posts
+author: Yuji Yamamoto
+tags: ひとりハッカソン
+...
+---
+
+# ひとりハッカソン
+- [「ひとりハッカソン」について]( /posts/2013-01-05-hitori-hackathon.html )
+
+# 旧ブログから
+すんません工事中です... vim(\_ \_)mer
+
+# 外部リンク
+- [External Links in relation to me]( ./posts/links.html )
