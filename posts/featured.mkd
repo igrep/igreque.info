@@ -11,5 +11,5 @@ tags: ひとりハッカソン
 # 旧ブログから
 すんません工事中です... vim(\_ \_)mer
 
-# 外部リンク
-- [External Links in relation to me]( ./posts/links.html )
+# 外部リンク - 私と関係あるもの
+- [External Links in relation to me]( /posts/links.html )
