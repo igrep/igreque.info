@@ -1,17 +1,17 @@
 ---
-title: Links in relation with me
+title: External Links in relation to me
 author: Yuji Yamamoto
 tags: SNS, GTD, git, Haskell, Ruby, vim, Anime, Manga
 ...
 ---
 
 # 割と頻繁に使うウェブサービス
-- [Google+](https://plus.google.com/u/0/108459635886859360319/posts)
+- [Google+: Yuji Yamamoto](https://plus.google.com/u/0/108459635886859360319/posts)
 - [Twitter: @igrep](https://twitter.com/igrep)
 - [Facebook: igrep](https://www.facebook.com/igrep)
 - [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
 - [Github: igrep](https://github.com/igrep)
-- [Forkwell](https://forkwell.com/u/igrep)
+- [Forkwell: igrep](https://forkwell.com/u/igrep)
 
 # 作ってるもの
 - [ひとりハッカソンでのToDo管理アプリ](http://hitori-hackathon.herokuapp.com/)
