@@ -33,5 +33,9 @@ tags: SNS, GTD, git, Haskell, Ruby, vim, Anime, Manga
 - [プリキュア](http://www.toei-anim.co.jp/tv/precure/)
 - [日常](http://www.shinonome-lab.com/)
 
+# 経歴
+- 現職：ひみつ。
+- いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/chuo-u/letters_subject11/index_j.html)
+
 # 昔のブログ
 - [発展途上猿人](http://blog.livedoor.jp/igrep/)
