@@ -23,3 +23,8 @@ div #menu {
   border-bottom: 4px solid black;
   clear: both;
 }
+
+#divide_ad {
+  margin-top: 5em;
+  margin-bottom: 2em;
+}
