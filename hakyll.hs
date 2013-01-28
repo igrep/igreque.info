@@ -1,101 +1,125 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Prelude hiding (id)
-import Control.Arrow ((>>>), (***), arr)
-import Control.Category (id)
-import Data.Monoid (mempty, mconcat)
+import Data.Monoid ((<>))
+import Control.Applicative ((<$>))
 
 import Hakyll
 
 main :: IO ()
 main = hakyll $ do
-    -- Compress CSS
-    match "css/*" $ do
-        route   idRoute
-        compile compressCssCompiler
+  cssRules         -- Compress CSS
+  postRules        -- Render posts
+  postsListRules   -- Render posts list
+  indexRules       -- Index
+  taggedPostsRules -- display posts tagged as a praticular tag
+  atomRules        -- render an Atom feed
 
-    -- Render posts
-    match "posts/*" $ do
-        route   $ setExtension ".html"
-        compile $ pageCompiler
-            >>> arr (renderDateField "date" "%B %e, %Y" "Date unknown")
-            >>> renderTagsField "prettytags" (fromCapture "tags/*")
-            >>> applyTemplateCompiler "templates/post.html"
-            >>> arr (copyBodyToField "description")
-            >>> applyTemplateCompiler "templates/default.html"
-            >>> relativizeUrlsCompiler
+cssRules :: Rules ()
+cssRules =
+  match "css/*" $ do
+    route   idRoute
+    compile compressCssCompiler
 
-    -- Render posts list
-    match "posts.html" $ route idRoute
-    create "posts.html" $ constA mempty
-        >>> arr (setField "title" "All Posts")
-        >>> requireAllA "posts/*" addPostList
-        >>> applyTemplateCompiler "templates/posts.html"
-        >>> applyTemplateCompiler "templates/default.html"
-        >>> relativizeUrlsCompiler
+postRules :: Rules ()
+postRules =
+  match "posts/*" $ do
+    route   $ setExtension ".html"
+    compile $ do
+      tags <- getMyTags
+      let loadWithTags = loadTemplateIn (taggedCtx tags)
+      pandocCompiler
+        >>= loadWithTags "templates/post.html"
+        >>= loadWithTags "templates/default.html"
+        >>= relativizeUrls
 
-    -- Index
-    match "index.html" $ route idRoute
-    create "index.html" $ constA mempty
-        >>> arr (setField "title" "Index")
-        >>> requireA "tags" (setFieldA "tagcloud" (renderTagCloud'))
-        >>> requireAllA "posts/*" (id *** arr (take 3 . reverse . chronological) >>> addPostList)
-        >>> applyTemplateCompiler "templates/index.html"
-        >>> applyTemplateCompiler "templates/default.html"
-        >>> relativizeUrlsCompiler
-
-    -- Tags
-    create "tags" $
-        requireAll "posts/*" (\_ ps -> readTags ps :: Tags String)
-
-    -- Add a tag list compiler for every tag
-    match "tags/*" $ route $ setExtension ".html"
-    metaCompile $ require_ "tags"
-        >>> arr tagsMap
-        >>> arr (map (\(t, p) -> (tagIdentifier t, makeTagList t p)))
-
-    -- Render RSS feed
-    match "rss.xml" $ route idRoute
-    create "rss.xml" $
-        requireAll_ "posts/*"
-            >>> renderRss feedConfiguration
-
-    -- Read templates
-    match "templates/*" $ compile templateCompiler
+postsListRules :: Rules ()
+postsListRules = do
+  create ["posts.html"] $ do
+    route idRoute
+    compile $ do
+      posts <- recentFirst <$> loadAll "posts/*"
+      itemTpl <- loadBody "templates/postitem.html"
+      list <- applyTemplateList itemTpl postCtx posts
+      makeItem list
+        >>= loadWithAllPosts "templates/posts.html"
+        >>= loadWithAllPosts "templates/default.html"
+        >>= relativizeUrls
   where
-    renderTagCloud' :: Compiler (Tags String) String
-    renderTagCloud' = renderTagCloud tagIdentifier 100 120
+    loadWithAllPosts = loadTemplateIn allPostsCtx
+    allPostsCtx = constField "title" "All posts" <> postCtx
 
-    tagIdentifier :: String -> Identifier (Page String)
-    tagIdentifier = fromCapture "tags/*"
+indexRules :: Rules ()
+indexRules = do
+  create ["index.html"] $ do
+    route idRoute
+    compile $ do
+      posts <- recentFirst <$> loadAll "posts/*"
+      itemTpl <- loadBody "templates/postitem.html"
+      list <- applyTemplateList itemTpl postCtx posts
+      tags <- getMyTags
+      makeItem list
+        >>= loadAndApplyTemplate "templates/index.html" (indexCtx tags list)
+        >>= loadAndApplyTemplate "templates/default.html" (indexCtx tags list)
+        >>= relativizeUrls
+      where
+        indexCtx t l =
+          constField "posts" l
+          <> field "tagcloud" (\_ -> renderTagCloud 90 120 t)
+          <> defaultContext
 
--- | Auxiliary compiler: generate a post list from a list of given posts, and
--- add it to the current page under @$posts@
---
-addPostList :: Compiler (Page String, [Page String]) (Page String)
-addPostList = setFieldA "posts" $
-    arr (reverse . chronological)
-        >>> require "templates/postitem.html" (\p t -> map (applyTemplate t) p)
-        >>> arr mconcat
-        >>> arr pageBody
+taggedPostsRules :: Rules ()
+taggedPostsRules = do
+  route idRoute
+  tags <- getMyTags
+  tagsRules tags $ \tag pattern -> do
+    let title = "Posts tagged " ++ tag
+    compile $ do
+      list <- postList tags pattern recentFirst
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/posts.html"
+            ( constField "title" title
+              <> constField "body" list
+              <> defaultContext )
+        >>= loadAndApplyTemplate "templates/default.html"
+            ( constField "title" title
+              <> defaultContext )
+        >>= relativizeUrls
 
-makeTagList :: String
-            -> [Page String]
-            -> Compiler () (Page String)
-makeTagList tag posts =
-    constA (mempty, posts)
-        >>> addPostList
-        >>> arr (setField "title" ("Posts tagged &#8216;" ++ tag ++ "&#8217;"))
-        >>> applyTemplateCompiler "templates/posts.html"
-        >>> applyTemplateCompiler "templates/default.html"
-        >>> relativizeUrlsCompiler
+atomRules :: Rules ()
+atomRules =
+  create ["atom.xml"] $ do
+    route idRoute
+    compile $ do
+      posts <- take 10 . recentFirst <$> loadAll "posts/*"
+      renderAtom feedConfig feedCtx posts
+  where
+    feedCtx = bodyField "description" <> postCtx
+    feedConfig = FeedConfiguration
+      { feedTitle       = "igreque :: Info -> RSS"
+      , feedDescription = "RSS feed of Igreque.info, generated by Hakyll."
+      , feedAuthorName  = "Yuji Yamamoto"
+      , feedAuthorEmail = "whosekiteneverfly@gmail.com"
+      , feedRoot        = "http://igreque.info"
+      }
 
-feedConfiguration :: FeedConfiguration
-feedConfiguration = FeedConfiguration
-    { feedTitle       = "igreque :: Info -> RSS"
-    , feedDescription = "RSS feed of Igreque.info, generated by Hakyll."
-    , feedAuthorName  = "Yuji Yamamoto"
-    , feedAuthorEmail = "whosekiteneverfly@gmail.com"
-    , feedRoot        = "http://igreque.info"
-    }
+getMyTags :: MonadMetadata m => m Tags
+getMyTags = buildTags "posts/*" (fromCapture "tags/*.html")
+
+taggedCtx :: Tags -> Context String
+taggedCtx tags = tagsField "prettytags" tags <> postCtx
+
+loadTemplateIn :: Context a -> Identifier -> Item a -> Compiler (Item String)
+loadTemplateIn = flip loadAndApplyTemplate
+
+postCtx :: Context String
+postCtx = dateField "date" "%B %e, %Y" <> defaultContext
+
+-- any better concrete name?
+postList ::
+  Tags -> Pattern -> ([Item String] -> [Item String])
+    -> Compiler String
+postList tags pattern preprocessor = do
+    postItemTpl <- loadBody "templates/postitem.html"
+    posts <- preprocessor <$> loadAll pattern
+    applyTemplateList postItemTpl (taggedCtx tags) posts
