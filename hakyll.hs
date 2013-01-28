@@ -8,12 +8,13 @@ import Hakyll
 
 main :: IO ()
 main = hakyll $ do
-  cssRules         -- Compress CSS
-  postRules        -- Render posts
-  postsListRules   -- Render posts list
-  indexRules       -- Index
-  taggedPostsRules -- display posts tagged as a praticular tag
-  atomRules        -- render an Atom feed
+  tags <- getMyTags
+  cssRules              -- Compressed CSS
+  postRules        tags -- Render posts
+  postsListRules        -- Render posts list
+  indexRules       tags -- Index
+  taggedPostsRules tags -- Display posts tagged as a praticular tag
+  atomRules             -- Atom feed
 
 cssRules :: Rules ()
 cssRules =
@@ -21,12 +22,11 @@ cssRules =
     route   idRoute
     compile compressCssCompiler
 
-postRules :: Rules ()
-postRules =
+postRules :: Tags -> Rules ()
+postRules tags =
   match "posts/*" $ do
     route   $ setExtension ".html"
     compile $ do
-      tags <- getMyTags
       let loadWithTags = loadTemplateIn (taggedCtx tags)
       pandocCompiler
         >>= loadWithTags "templates/post.html"
@@ -49,15 +49,14 @@ postsListRules = do
     loadWithAllPosts = loadTemplateIn allPostsCtx
     allPostsCtx = constField "title" "All posts" <> postCtx
 
-indexRules :: Rules ()
-indexRules = do
+indexRules :: Tags -> Rules ()
+indexRules tags = do
   create ["index.html"] $ do
     route idRoute
     compile $ do
       posts <- recentFirst <$> loadAll "posts/*"
       itemTpl <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTpl postCtx posts
-      tags <- getMyTags
       makeItem list
         >>= loadAndApplyTemplate "templates/index.html" (indexCtx tags list)
         >>= loadAndApplyTemplate "templates/default.html" (indexCtx tags list)
@@ -68,10 +67,9 @@ indexRules = do
           <> field "tagcloud" (\_ -> renderTagCloud 90 120 t)
           <> defaultContext
 
-taggedPostsRules :: Rules ()
-taggedPostsRules = do
+taggedPostsRules :: Tags -> Rules ()
+taggedPostsRules tags = do
   route idRoute
-  tags <- getMyTags
   tagsRules tags $ \tag pattern -> do
     let title = "Posts tagged " ++ tag
     compile $ do
