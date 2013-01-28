@@ -9,12 +9,16 @@ import Hakyll
 main :: IO ()
 main = hakyll $ do
   tags <- getMyTags
+  templateRules         -- Template
   cssRules              -- Compressed CSS
-  postRules        tags -- Render posts
+  postRules tags        -- Render posts
   postsListRules        -- Render posts list
-  indexRules       tags -- Index
+  indexRules tags       -- Index
   taggedPostsRules tags -- Display posts tagged as a praticular tag
   atomRules             -- Atom feed
+
+templateRules :: Rules ()
+templateRules = match "templates/*" $ compile templateCompiler
 
 cssRules :: Rules ()
 cssRules =
@@ -30,6 +34,7 @@ postRules tags =
       let loadWithTags = loadTemplateIn (taggedCtx tags)
       pandocCompiler
         >>= loadWithTags "templates/post.html"
+        >>= saveSnapshot "content"
         >>= loadWithTags "templates/default.html"
         >>= relativizeUrls
 
@@ -89,7 +94,7 @@ atomRules =
   create ["atom.xml"] $ do
     route idRoute
     compile $ do
-      posts <- take 10 . recentFirst <$> loadAll "posts/*"
+      posts <- take 10 . recentFirst <$> loadAllSnapshots "posts/*" "content"
       renderAtom feedConfig feedCtx posts
   where
     feedCtx = bodyField "description" <> postCtx
