@@ -4,18 +4,27 @@ module Main where
 import Data.Monoid ((<>))
 import Control.Applicative ((<$>))
 
+import Debug.Trace
 import Hakyll
+
+-- general function for debugging
+inspect :: Show a => String -> a -> a
+inspect msg x = trace ( msg ++ ": " ++ show x ) x
+--
+
+inspectTags :: Show a => a -> a
+inspectTags = inspect "tags"
 
 main :: IO ()
 main = hakyll $ do
-  tags <- getMyTags
-  templateRules         -- Template
+  tags <- buildTags "posts/*" (fromCapture "tags/*.html")
   cssRules              -- Compressed CSS
   postRules tags        -- Render posts
   postsListRules        -- Render posts list
   indexRules tags       -- Index
   taggedPostsRules tags -- Display posts tagged as a praticular tag
   atomRules             -- Atom feed
+  templateRules         -- Template
 
 templateRules :: Rules ()
 templateRules = match "templates/*" $ compile templateCompiler
@@ -105,9 +114,6 @@ atomRules =
       , feedAuthorEmail = "whosekiteneverfly@gmail.com"
       , feedRoot        = "http://igreque.info"
       }
-
-getMyTags :: MonadMetadata m => m Tags
-getMyTags = buildTags "posts/*" (fromCapture "tags/*.html")
 
 taggedCtx :: Tags -> Context String
 taggedCtx tags = tagsField "prettytags" tags <> postCtx
