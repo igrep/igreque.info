@@ -72,13 +72,12 @@ indexRules tags = do
       itemTpl <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTpl postCtx posts
       makeItem list
-        >>= loadAndApplyTemplate "templates/index.html" (indexCtx tags list)
-        >>= loadAndApplyTemplate "templates/default.html" (indexCtx tags list)
+        >>= loadAndApplyTemplate "templates/index.html" (indexCtx tags)
+        >>= loadAndApplyTemplate "templates/default.html" defaultContext
         >>= relativizeUrls
       where
-        indexCtx t l =
-          constField "posts" l
-          <> field "tagcloud" (\_ -> renderTagCloud 90 120 t)
+        indexCtx t =
+          field "tagcloud" (\_ -> renderTagCloud 90 120 t)
           <> defaultContext
 
 taggedPostsRules :: Tags -> Rules ()
