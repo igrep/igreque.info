@@ -57,6 +57,6 @@ else
 
   update_date = change_date_part[ Time.now.strftime DATE_FORMAT ]
   ARGV.map( &update_date ).zip( ARGV ) do|dest, src|
-    system( *%W/git mv --dry-run --verbose #{src} #{dest}/ )
+    system( *%W/git mv --verbose #{src} #{dest}/ )
   end
 end
