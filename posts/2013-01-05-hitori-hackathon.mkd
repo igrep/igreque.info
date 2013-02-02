@@ -1,7 +1,7 @@
 ---
 title: 「ひとりハッカソン」について
 author: Yuji Yamamoto
-tags: ひとりハッカソン, アジャイル開発
+tags: hackathon, Agile-Development
 ...
 ---
 
