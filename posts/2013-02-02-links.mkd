@@ -34,7 +34,8 @@ tags: SNS, GTD, git, Haskell, Ruby, vim, Anime, Manga
 - [日常](http://www.shinonome-lab.com/)
 
 # 経歴
-- 現職：ひみつ。
+- 現職：[Sansan株式会社](http://www.sansan.com/)にてバイト中。
+- 前職：ひみつ。
 - いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/chuo-u/letters_subject11/index_j.html)
 
 # 昔のブログ
