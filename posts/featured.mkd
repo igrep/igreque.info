@@ -2,6 +2,7 @@
 title: Featured Posts
 author: Yuji Yamamoto
 tags: ひとりハッカソン
+date: January 31, 2013
 ...
 ---
 
