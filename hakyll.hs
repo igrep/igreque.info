@@ -82,8 +82,8 @@ indexRules tags = do
 
 taggedPostsRules :: Tags -> Rules ()
 taggedPostsRules tags = do
-  route idRoute
   tagsRules tags $ \tag pattern -> do
+    route idRoute
     let title = "Posts tagged " ++ tag
     compile $ do
       list <- postList tags pattern recentFirst
