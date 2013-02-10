@@ -1,7 +1,7 @@
 ---
 title: 第8回 ひとりハッカソン 何を作るか
 author: Yuji Yamamoto
-tags: hackathon, Agile Development
+tags: hackathon, Agile Development, ひとりハッカソン
 ...
 ---
 
