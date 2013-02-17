@@ -28,3 +28,8 @@ div #menu {
   margin-top: 5em;
   margin-bottom: 2em;
 }
+
+pre {
+  font-size: 10pt;
+  margin: 1em;
+}
