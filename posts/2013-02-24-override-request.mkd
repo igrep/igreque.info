@@ -1,0 +1,57 @@
+---
+title: Railsで謎のSystemStackError stack level too deepが出たとき。
+author: Yuji Yamamoto
+tags: Rails, Ruby
+...
+---
+
+ひとりハッカソン、とは最早呼べませんがRailsをネタに記事を一つ。  
+最近仕事で2、3日に一つはRailsに関して新たな発見をするので...。
+
+ある日、動作確認するのも忘れて夢中であれこれ書いてはコミットし、
+書いてはコミットしを繰り替えしていたらこんなエラーが。
+
+```
+SystemStackError in HogeController#request
+
+stack level too deep
+```
+
+（「Hoge」の部分はあなたがめっちゃ「request」という
+アクションを実装したくなるようなリソースで脳内変換してください。 e.g. [Ransom](http://ejje.weblio.jp/content/%E8%BA%AB%E4%BB%A3%E9%87%91)）
+
+え、ナニコレどこにstack level too deepになるような要素アルの...?
+再帰呼び出ししてる箇所なんてこのControllerはもちろんこのブランチに書いたコードに一個もないよ...  
+
+うわーどうなってるんだー！と思って[ググってみても](https://www.google.com/search?sourceid=chrome&ie=UTF-8&q=rails%20stack%20level%20too%20deep)、
+原因はケースによってバラバラだそうで、自分のケースに当てはまっていそうなのはなかなか見つかりません。  
+仕方なくコミットを1つずつさかのぼって原因を確かめるハメとなってしまいました。  
+逐一テストしていれば、最悪動作確認していればこんな目に合わずに済んだのにね...。
+
+で、答えは何てことはない、実はエラーメッセージに書いてありました。  
+すでに気づいていらっしゃる方も多いでしょう。  
+RailsのControllerにおける予約語である、**requestメソッドを上書きしていた**からです！  
+このエラー、厄介なのはスタックトレースを見ても、
+
+```
+actionpack (3.2.12) lib/action_dispatch/middleware/reloader.rb:70
+```
+
+としか出ないのに加え、
+同じControllerの他のアクションでも同じエラーが出るので、
+原因が分からなかった当初は余計に意味不明に感じられたのです。  
+まぁ、原因が分かってしまえばそりゃそーだよね、と言うような現象ではありますが。
+
+折角なんで再現するためのコードをgistに上げました。以下のとおりです。
+
+<script src="https://gist.github.com/igrep/5023699.js"></script>
+
+で、再現コードを書いているうちに、例のrequestメソッドが何もrenderしない場合、
+`undefined method \`content\_mime\_type' for nil:NilClass` というエラーに変わることが判明したのでそれも追記。
+
+<script src="https://gist.github.com/igrep/5023809.js"></script>
+
+どちらもRailsの内部動作がちょっと垣間見れた気になれて面白いですねー。  
+やっぱ今後もRailsとは長いお付き合いになると思われるので時間を作ってちゃんとソース読みたいですね。
+
+以上。来週、再来週も用事があるのでひとりハッカソンやるかといえば微妙です！
