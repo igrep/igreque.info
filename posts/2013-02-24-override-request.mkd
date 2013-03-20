@@ -47,7 +47,7 @@ actionpack (3.2.12) lib/action_dispatch/middleware/reloader.rb:70
 <script src="https://gist.github.com/igrep/5023699.js"></script>
 
 で、再現コードを書いているうちに、例のrequestメソッドが何もrenderしない場合、
-`undefined method \`content\_mime\_type' for nil:NilClass` というエラーに変わることが判明したのでそれも追記。
+`undefined method` ` `content_mime_type' for nil:NilClass` というエラーに変わることが判明したのでそれも追記。
 
 <script src="https://gist.github.com/igrep/5023809.js"></script>
 
