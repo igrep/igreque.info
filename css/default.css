@@ -39,6 +39,10 @@ body {
   clear: both;
 }
 
+#divide_footer {
+  margin-top: 3em;
+}
+
 #divide_ad {
   margin-top: 5em;
   margin-bottom: 2em;
