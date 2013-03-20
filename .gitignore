@@ -3,3 +3,4 @@
 *.hi
 *.o
 hakyll
+/fonts/
