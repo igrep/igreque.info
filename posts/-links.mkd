@@ -2,6 +2,7 @@
 title: External Links in relation to me
 author: Yuji Yamamoto
 tags: SNS, GTD, git, Haskell, Ruby, vim, Anime, Manga
+date: March 20, 2013
 ...
 ---
 
