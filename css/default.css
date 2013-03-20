@@ -14,7 +14,7 @@ body {
   margin: 0px auto 0px auto;
 }
 
-div#navigation a {
+#navigation a {
   color: white;
   text-decoration: none;
   background-color: black;
@@ -26,11 +26,11 @@ div#navigation a {
   margin: 0px 10px 0px 10px;
 }
 
-div #title {
+#title {
   float: left;
 }
 
-div #menu {
+#menu {
   float: right;
 }
 
