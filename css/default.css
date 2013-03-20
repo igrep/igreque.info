@@ -70,3 +70,12 @@ pre, code {
 pre {
   margin: 1em;
 }
+
+ol,ul {
+  padding-left: 1em;
+  padding-bottom: 0.5em;
+}
+
+li {
+  margin-top: 0.2em;
+}
