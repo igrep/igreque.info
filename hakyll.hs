@@ -19,6 +19,7 @@ main :: IO ()
 main = hakyll $ do
   tags <- buildTags "posts/*" (fromCapture "tags/*.html")
   cssRules              -- Compressed CSS
+  fontRules             -- Fonts
   postRules tags        -- Render posts
   postsListRules        -- Render posts list
   indexRules tags       -- Index
@@ -34,6 +35,12 @@ cssRules =
   match "css/*" $ do
     route   idRoute
     compile compressCssCompiler
+
+fontRules :: Rules ()
+fontRules =
+  match "fonts/*" $ do
+    route   idRoute
+    compile copyFileCompiler
 
 postRules :: Tags -> Rules ()
 postRules tags =

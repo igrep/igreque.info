@@ -1,4 +1,15 @@
+@font-face {
+  font-family: 'VL PGothic';
+  src: url(/fonts/VL-PGothic-Regular.woff) format("woff");
+}
+
+@font-face {
+  font-family: 'VL Gothic';
+  src: url(/fonts/VL-Gothic-Regular.woff) format("woff");
+}
+
 body {
+  font-family: 'VL PGothic', sans-serif;
   width: 600px;
   margin: 0px auto 0px auto;
 }
@@ -29,7 +40,11 @@ div #menu {
   margin-bottom: 2em;
 }
 
-pre {
+pre, code {
+  font-family: 'VL Gothic', monospace;
   font-size: 10pt;
+}
+
+pre {
   margin: 1em;
 }
