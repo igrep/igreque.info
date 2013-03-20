@@ -12,6 +12,20 @@ body {
   font-family: 'メイリオ', 'VL PGothic', sans-serif;
   width: 600px;
   margin: 0px auto 0px auto;
+  background-color: #f8f8f8;
+}
+
+a:link {
+  color: #c11;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #666;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 #navigation a {
