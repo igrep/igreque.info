@@ -84,9 +84,20 @@ li {
   margin-top: 0.2em;
 }
 
-// For vim's TOhtml
-.Comment { color: #8080ff; }
-.Statement { color: #ffff00; }
-.PreProc { color: #ff40ff; }
-.Constant { color: #ff6060; }
-.Identifier { color: #00ffff; }
+.Comment {
+  color: #8080f0;
+}
+.Statement {
+  color: #999922;
+  font-weight: bold;
+}
+.PreProc {
+  color: #aa40aa;
+  font-weight: bold;
+}
+.Constant {
+  color: #dd2020;
+}
+.Identifier {
+  color: #008888;
+}
