@@ -1,0 +1,207 @@
+---
+title: Neo4jで遊びながらここ最近のドキドキ！プリキュアを振り返ってみよう #cure_advent
+author: Yuji Yamamoto
+tags: Anime, Precure, Neo4j, GraphDB
+...
+---
+
+この記事は「[プリキュア Advent Calendar 2013](http://www.adventar.org/calendars/147)」22日目の記事です。
+書いている時点ですでに日付を超えてしまいました...。あしからず。
+
+21日目の記事は [\@speedmod](https://twitter.com/speedmod) さんの
+「[プリカラ部♪と部長のこと #cure_advent](http://blog.goo.ne.jp/speedmod/e/f8408101bba0f7676562d2bc0caa23be)」でした。
+
+そういやうちの近くにもプリキュアソングがムービー付きで歌えるカラオケありましたねー。
+
+# 今回やってみたこと
+
+みなさんに感化され、私もエンジニアらしいことをしたいなぁ、と思い、
+最近気になっている[Neo4j](http://www.neo4j.org)を使って、
+ドキドキ！プリキュアの最近のお話を振り返ってみました。
+
+性質上、 **ネタバレを含んでいます** ので、まだ最近のお話をご覧になっていない方はご注意ください。
+また、私自信Neo4jを使い始めたばかりなので、使用方法など間違った点もあるかもしれません。
+その時はそっとご指摘してください。
+
+# Neo4jって何？
+
+GraphDBという、データベースマネジメントシステムの一種です。
+みなさんおなじみのMySQLやPostgreSQLなどと言ったRDBとは異なり、
+データを「属性（プロパティ）」を持った「点（ノード）」や「辺（リレーション）」として表現します。
+
+まぁ、詳しい説明は[公式サイト](http://www.neo4j.org)か、
+日本語の情報であれば『[グラフデータベース「Neo4j」の 導入の導入](http://www.slideshare.net/who_you_me/neo4j-24294061)』などをご覧ください。
+
+今回は[Neo4jのチュートリアル](http://docs.neo4j.org/chunked/milestone/tutorials.html)をお手本に、
+最近のドキドキ！プリキュアの話をNeo4jで表現してみました。
+
+自分も試してみたい！という方には[前述のチュートリアル](http://docs.neo4j.org/chunked/milestone/tutorials.html)がオススメです。
+Neo4jをインストールしなくても試せます[^1]。
+ですし、それに本筋と離れてしまうので、Neo4jのインストール方法については今回は割愛させていただきます。
+
+[^1]: ただし、残念ながら日本語を入力すると文字化けしてしまうので、この記事に書いたクエリをそのまま入力しても残念なことになってしまいます...orz
+
+# とりあえず、今日のお話を振り返ってみましょう。
+
+まずは今日のお話を表すノードを作ります。
+みなさんがRDBをSQLで操作するように、Neo4jでは、Cypherという専用の言語を使って操作します。
+Cypherで新しいノードを作る際は、以下のようにCREATE節を使用します。
+SQLと同じように、末尾にセミコロン（;）をつけるのを忘れないでくださいね。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">CREATE</span> (<span class="Identifier">e</span>:<span class="Identifier">Episode</span> { <span class="Identifier">title</span>: <span class="Constant">'宿命の対決！エースVSレジーナ'</span>, <span class="Identifier">air_date</span>: <span class="Constant">'2013-12-22'</span> });
+</pre>
+
+作成したノードを確認する際は、MATCH節を使用します。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span> (<span class="Identifier">episode</span>:<span class="Identifier">Episode</span> { <span class="Identifier">air_date</span>: <span class="Constant">'2013-12-22'</span> })
+<span class="PreProc">RETURN</span> <span class="Identifier">episode</span>;
+</pre>
+
+```
++--------------------------------------------------------+
+| episode                                                |
++--------------------------------------------------------+
+| Node[1]{title:"宿命の対決！エースVSレジーナ",air_date:"2013-12-22"} |
++--------------------------------------------------------+
+1 row
+```
+
+ちゃんとノードが作られてますね。
+
+もうちょっとGraphDBらしくするために、今回の中心人物と今日のお話を `FEATURED` というリレーション（関係）でつなげます[^2]。
+
+[^2]: 誰が中心人物なのか、は私の主観による。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span> (<span class="Identifier">episode</span>:<span class="Identifier">Episode</span>)
+<span class="PreProc">WHERE</span> <span class="Identifier">episode</span>.<span class="Identifier">title</span> = <span class="Constant">'宿命の対決！エースVSレジーナ'</span>
+<span class="PreProc">CREATE</span> (<span class="Identifier">precure</span>:<span class="Identifier">Precure</span> { <span class="Identifier">precure_name</span>: <span class="Constant">'キュアエース'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">episode</span>)-[:<span class="Identifier">FEATURED</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">precure</span>);
+</pre>
+
+キュアエースのプロパティが `precure_name` だけというのもなんだか寂しいので、
+[sue445さんのrubicure](http://sue445.hatenablog.com/entry/2013/12/16/000011)から
+[情報](https://github.com/sue445/rubicure/blob/7d3b6319123cd2679e0dec5656b5ca1357eda84e/config/girls.yml#L410-L419)を
+ちょっと拝借しましょう。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span> (<span class="Identifier">ace</span>:<span class="Identifier">Precure</span> { <span class="Identifier">precure_name</span>: <span class="Constant">'キュアエース'</span> })
+<span class="PreProc">SET</span> <span class="Identifier">ace</span>.<span class="Identifier">human_name</span> = <span class="Constant">'円亜久里'</span>
+<span class="Comment">// 複数行の文字列を入れるのにもっと見やすい方法はないかしら・・・</span>
+<span class="PreProc">SET</span> <span class="Identifier">ace</span>.<span class="Identifier">transformation_line</span> =
+  <span class="Constant">'プリキュアドレスアップ！\n(キュピラッパー！)\n愛の切り札！ キュアエース！\n響け愛の鼓動！ドキドキプリキュア！\n美しさは正義の証し、ウインク一つで、\nあなたのハートを射抜いて差し上げますわ'</span>;
+</pre>
+
+そういえば、今回の主役というべき人物は他にもいました。そう、レジーナです。
+彼女を本当に悪役(villain)と呼ぶべきかは議論の余地がありそうですが、
+ひとまず `Villain` というラベルを付けましょう。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span> (<span class="Identifier">episode</span>:<span class="Identifier">Episode</span>)
+<span class="PreProc">WHERE</span> <span class="Identifier">episode</span>.<span class="Identifier">title</span> = <span class="Constant">'宿命の対決！エースVSレジーナ'</span>
+<span class="PreProc">CREATE</span> (<span class="Identifier">villain</span>:<span class="Identifier">Villain</span> { <span class="Identifier">name</span>: <span class="Constant">'レジーナ'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">episode</span>)-[:<span class="Identifier">FEATURED</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">villain</span>);
+</pre>
+
+おっと、ラベルについて説明しておりませんでした。
+「ラベル」とは、どうやらノードの種類を表すものだそうで、Neo4j 2.0から本格的にサポートするようになったんだとか [^3]。
+「ラベル」という名前から察せられるように、
+「〇〇というラベルを持つノードは××というプロパティを備えていないといけない」みたいな、
+ノードに対して制約を課すものではないみたいです。
+
+[^3]: Ian Robinson, Jim Webber, and Emil Eifrem 「Graph Databases」 p.43, O’Reilly Media, Inc. より。
+
+さて、Neo4j自体の話は一旦置いといて、作ったグラフをもっと大きくしましょう。
+今週のドキドキ！プリキュアでは、キュアエースとレジーナが決闘するのでした。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span>  (<span class="Identifier">episode</span>:<span class="Identifier">Episode</span> { <span class="Identifier">title</span>: <span class="Constant">'宿命の対決！エースVSレジーナ'</span> }),
+       (<span class="Identifier">ace</span>:<span class="Identifier">Precure</span> { <span class="Identifier">precure_name</span>: <span class="Constant">'キュアエース'</span> }),
+       (<span class="Identifier">regina</span>:<span class="Identifier">Villain</span> { <span class="Identifier">name</span>: <span class="Constant">'レジーナ'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">battle</span>:<span class="Identifier">Battle</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">ace</span>)-[<span class="Identifier">:FOUGHT_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">battle</span>)<span class="Statement">&lt;-</span>[<span class="Identifier">:FOUGHT_IN</span>]-(<span class="Identifier">regina</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">battle</span>)-[<span class="Identifier">:OCCURRED_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">episode</span>);
+</pre>
+
+「今週のお話で起きた」ということを表現するため、
+今週の `episode` と、 `battle` の間に `OCCURRED_IN` というリレーションを加えております。
+これにより、二人があと何話戦ってもそれぞれの内容をきちんと区別することができます [^4]。
+
+[^4]: もちろん、マナちゃんにすればそんなことは起きてほしくないのでしょうけど。
+
+# レジーナちゃんといえば先週のアレですよね！
+
+そうそう、レジーナちゃんと言えば、先週こんなことがありました。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span>  (<span class="Identifier">regina</span>:<span class="Identifier">Villain</span>  { <span class="Identifier">name</span>: <span class="Constant">'レジーナ'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">episode</span>:<span class="Identifier">Episode</span> { <span class="Identifier">title</span>: <span class="Constant">'ジコチューの罠！マナのいないクリスマス！'</span>, <span class="Identifier">air_date</span>: <span class="Constant">'2013-12-15'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">heart</span>:<span class="Identifier">Precure</span>   { <span class="Identifier">precure_name</span>: <span class="Constant">'キュアハート'</span>,       <span class="Identifier">human_name</span>: <span class="Constant">'相田マナ'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">diamond</span>:<span class="Identifier">Precure</span> { <span class="Identifier">precure_name</span>: <span class="Constant">'キュアダイアモンド'</span>, <span class="Identifier">human_name</span>: <span class="Constant">'菱川六花'</span> })
+
+<span class="PreProc">CREATE</span> (<span class="Identifier">kokuhaku</span>:<span class="Identifier">Kokuhaku</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">kokuhaku</span>)-[:<span class="Identifier">FOR</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">heart</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">diamond</span>)-[<span class="Identifier">:FORCE_TO</span> { <span class="Identifier">line</span>: <span class="Constant">'すきなのよ！いいかげん 正直にみとめなさい！'</span>}]<span class="Statement">-&gt;</span>(<span class="Identifier">kokuhaku</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">regina</span>)-[:<span class="Identifier">TOLD</span> { <span class="Identifier">line</span>: <span class="Constant">'うるさいわね！そうよ すきよ！\nあたしだってマナがすき！悪い!?'</span>}]<span class="Statement">-&gt;</span>(<span class="Identifier">kokuhaku</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">kokuhaku</span>)-[<span class="Identifier">:OCCURRED_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">episode</span>);
+</pre>
+
+キャー、恥ずかしい///
+
+と、とにかく、新しく追加したお話と他のノードとの関係を明確にしておきましょう。
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span>  (<span class="Identifier">e45</span>:<span class="Identifier">Episode</span>   { <span class="Identifier">air_date</span>: <span class="Constant">'2013-12-22'</span> }),
+       (<span class="Identifier">e46</span>:<span class="Identifier">Episode</span>   { <span class="Identifier">air_date</span>: <span class="Constant">'2013-12-15'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">e46</span>)-[<span class="Identifier">:NEXT_OF</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">e45</span>);
+
+<span class="PreProc">MATCH</span>  (<span class="Identifier">e45</span>:<span class="Identifier">Episode</span>   { <span class="Identifier">air_date</span>:   <span class="Constant">'2013-12-15'</span> }),
+       (<span class="Identifier">mana</span>:<span class="Identifier">Precure</span>  { <span class="Identifier">human_name</span>: <span class="Constant">'相田マナ'</span> }),
+       (<span class="Identifier">rikka</span>:<span class="Identifier">Precure</span> { <span class="Identifier">human_name</span>: <span class="Constant">'菱川六花'</span> })
+<span class="PreProc">CREATE</span> (<span class="Identifier">e45</span>)-[:<span class="Identifier">FEATURED</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">mana</span>)
+<span class="PreProc">CREATE</span> (<span class="Identifier">e45</span>)-[:<span class="Identifier">FEATURED</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">rikka</span>);
+</pre>
+
+放送日(`air_date`)が2013年12月22日のお話を2013年12月15日の次の(`NEXT_OF`)お話、
+とすることで、検索の際、前後のお話をたどりやすくしました。
+こうすることで、
+例えば「あれ、レジーナちゃんがマナちゃんと出会ってから何話後に告白したんだっけ？」
+みたいな質問に簡単に答えられるようになるかもしれません。
+するとしたらこんな感じのクエリでしょうか？
+
+<pre class='vimCodeElement'>
+<span class="PreProc">MATCH</span> (<span class="Identifier">regina</span>:<span class="Identifier">Villain</span> { <span class="Identifier">name</span>: <span class="Constant">'レジーナ'</span> }),
+      (<span class="Identifier">mana</span>:<span class="Identifier">Precure</span>  { <span class="Identifier">human_name</span>: <span class="Constant">'相田マナ'</span> }),
+<span class="Comment">      // 「--&gt;」と書くことで、リレーションの部分を省略できるそうです！</span>
+      (<span class="Identifier">regina</span>)-<span class="Statement">-&gt;</span>(<span class="Identifier">kokuhaku</span>:<span class="Identifier">Kokuhaku</span>)-<span class="Statement">-&gt;</span>(<span class="Identifier">mana</span>),
+      (<span class="Identifier">kokuhaku</span>)-[<span class="Identifier">:OCCURRED_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">kokuhaku_episode</span>:<span class="Identifier">Episode</span>),
+
+      <span class="Identifier">episode_interval</span> =
+        (<span class="Identifier">kokuhaku_episode</span>) <span class="Statement">&lt;-</span>
+        [<span class="Identifier">:NEXT_OF</span>*<span class="Identifier">1</span>..] -<span class="Comment"> // kokuhaku_episode からいくつか前の</span>
+        (<span class="Identifier">deai_episode</span>:<span class="Identifier">Episode</span>),<span class="Comment"> // もう、英語を考えるのが疲れました...</span>
+
+      (<span class="Identifier">deai</span>:<span class="Identifier">Deai</span>)-[<span class="Identifier">:OCCURRED_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">deai_episode</span>),
+      (<span class="Identifier">regina</span>)-<span class="Statement">-&gt;</span>(<span class="Identifier">deai</span>)-<span class="Statement">-&gt;</span>(<span class="Identifier">mana</span>)
+<span class="PreProc">RETURN</span> <span class="PreProc">LENGTH</span>(<span class="Identifier">episode_interval</span>);
+</pre>
+
+# 君も、自分だけのプリキュアワールドを表現してみよう！
+
+さて、ここまで取り留めもなく、およそ気まぐれにグラフを作ってみました。
+「ここ最近のドキドキ！プリキュアを振り返る」には明らかに不十分な情報量ですが、
+このように、Neo4jでは気ままに考えながら、
+それこそホワイトボードに図を書くようなノリで、
+様々なデータや、それらの関係を簡単に表現することができます。
+RDBのように、予めがっちりスキーマを考える必要もなく、
+まさに「作りながら考える」のに向いていると言えるでしょう。
+
+この先今回作ったグラフをもとに、
+「俺と〇〇たんとの愛の遍歴（〇〇にはあなたの嫁の名前が入ります！）」
+なんてアレなテーマで記録したり、
+「新しい武器の登場タイミングと各おもちゃの売上との関係」
+みたいなお固いテーマを調べたりもできます（大分飛躍がありますが...）。
+
+みなさんも、Neo4jを使って素敵なプリキュアDBを作ってみてはいかがでしょうか？
