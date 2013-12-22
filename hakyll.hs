@@ -59,7 +59,7 @@ postsListRules = do
   create ["posts.html"] $ do
     route idRoute
     compile $ do
-      posts <- recentFirst <$> loadAll "posts/*"
+      posts <- recentFirst =<< loadAll "posts/*"
       itemTpl <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTpl postCtx posts
       makeItem list
@@ -75,7 +75,7 @@ indexRules tags = do
   create ["index.html"] $ do
     route idRoute
     compile $ do
-      posts <- recentFirst <$> loadAll "posts/*"
+      posts <- recentFirst =<< loadAll "posts/*"
       itemTpl <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTpl postCtx posts
       makeItem list
@@ -109,7 +109,7 @@ atomRules =
   create ["atom.xml"] $ do
     route idRoute
     compile $ do
-      posts <- take 10 . recentFirst <$> loadAllSnapshots "posts/*" "content"
+      posts <- take 10 <$> (recentFirst =<< loadAllSnapshots "posts/*" "content")
       renderAtom feedConfig feedCtx posts
   where
     feedCtx = bodyField "description" <> postCtx
@@ -132,9 +132,9 @@ postCtx = dateField "date" "%B %e, %Y" <> defaultContext
 
 -- any better concrete name?
 postList ::
-  Tags -> Pattern -> ([Item String] -> [Item String])
+  Tags -> Pattern -> ([Item String] -> Compiler [Item String])
     -> Compiler String
 postList tags pattern preprocessor = do
     postItemTpl <- loadBody "templates/postitem.html"
-    posts <- preprocessor <$> loadAll pattern
+    posts <- preprocessor =<< loadAll pattern
     applyTemplateList postItemTpl (taggedCtx tags) posts
