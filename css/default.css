@@ -69,6 +69,10 @@ pre, code {
 
 pre {
   margin: 1em;
+  white-space: pre-wrap;
+  color: #000000;
+  background-color: #ffffff;
+  overflow: auto;
 }
 
 ol,ul {
@@ -79,3 +83,10 @@ ol,ul {
 li {
   margin-top: 0.2em;
 }
+
+// For vim's TOhtml
+.Comment { color: #8080ff; }
+.Statement { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Constant { color: #ff6060; }
+.Identifier { color: #00ffff; }
