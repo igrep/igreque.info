@@ -178,9 +178,10 @@ SQLと同じように、末尾にセミコロン（;）をつけるのを忘れ�
       (<span class="Identifier">regina</span>)-<span class="Statement">-&gt;</span>(<span class="Identifier">kokuhaku</span>:<span class="Identifier">Kokuhaku</span>)-<span class="Statement">-&gt;</span>(<span class="Identifier">mana</span>),
       (<span class="Identifier">kokuhaku</span>)-[<span class="Identifier">:OCCURRED_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">kokuhaku_episode</span>:<span class="Identifier">Episode</span>),
 
+      <span class="Comment">// kokuhaku_episode からいくつか間に「NEXT_OF」を挟んだノードを選ぶ</span>
       <span class="Identifier">episode_interval</span> =
         (<span class="Identifier">kokuhaku_episode</span>) <span class="Statement">&lt;-</span>
-        [<span class="Identifier">:NEXT_OF</span>*<span class="Identifier">1</span>..] -<span class="Comment"> // kokuhaku_episode からいくつか前の</span>
+          [<span class="Identifier">:NEXT_OF</span>*<span class="Identifier">1</span>..] -
         (<span class="Identifier">deai_episode</span>:<span class="Identifier">Episode</span>),<span class="Comment"> // もう、英語を考えるのが疲れました...</span>
 
       (<span class="Identifier">deai</span>:<span class="Identifier">Deai</span>)-[<span class="Identifier">:OCCURRED_IN</span>]<span class="Statement">-&gt;</span>(<span class="Identifier">deai_episode</span>),
