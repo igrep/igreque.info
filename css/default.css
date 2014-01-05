@@ -101,10 +101,10 @@ li {
   margin-top: 0.2em;
 }
 
-.Comment {
+.Comment, .co {
   color: #8080f0;
 }
-.Statement {
+.Statement, .kw, .fu {
   color: #999922;
   font-weight: bold;
 }
@@ -112,9 +112,9 @@ li {
   color: #aa40aa;
   font-weight: bold;
 }
-.Constant {
+.Constant, .st, .ch {
   color: #dd2020;
 }
-.Identifier {
+.Identifier, .dt {
   color: #008888;
 }
