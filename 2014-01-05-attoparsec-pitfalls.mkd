@@ -1,0 +1,199 @@
+---
+title: Attoparsecを使っていてハマったところをいくつか
+author: Yuji Yamamoto
+tags: Haskell, Attoparsec
+...
+---
+
+# Haskellでちょっとしたコマンドを作りました
+
+自分専用のスクリプトとして、と考えていたのですが、
+作っているうちにいろいろ技術的なことを共有したくなったので、
+[Githubで公開](https://github.com/igrep/vm-backup-snapshot)しました。 \
+（とはいえ、あくまで自分用なのでhackageには上げません）
+
+中身は単純で、`cabal build vm-backup-snapshot`してから実行すると、
+VirtualBox上で[^future]作成した「Ubuntu」という名前のVMから、
+一番古いスナップショットを削除したり、
+名前に現在時刻を付けたスナップショットを作成したりできます。 \
+（書いていて今更気づきましたが、いくら自分用とはいえ、
+VMの名前ぐらいハードコードしないほうが良さそうですね...） \
+詳しくは
+[main.hs](https://github.com/igrep/vm-backup-snapshot/blob/master/main.hs)
+をご覧ください。
+
+[^future]: そのうち、Hyper-Vなど、他の仮想化ソフトに対応するかもしれません。
+
+で、このスクリプト、仕組みは至って単純で、実態は
+[`VBoxManage snapshot`コマンド](http://vboxmania.net/content/vboxmanage-snapshot%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89)の
+ラッパーです。
+`VBoxManage snapshot`のサブコマンドのうち、`list`コマンドの出力を処理して、
+最も古いスナップショットの名前とUUIDを取得しています。
+その際、[Attoparsec](http://hackage.haskell.org/package/attoparsec)という
+ライブラリを使って、文字列を処理しました。
+Attoparsecは同じ目的で知られるParsecよりも高速なので、
+この手の小規模な文字列解析には、ベター正規表現として用いるのにピッタリです。
+そのように説明している記事が、私の知る範囲でほとんど見当たらないのが非常に残念です。
+なので今回は、そうした目的でAttoparsecを用いた今回、ハマった箇所を共有したいと思います。
+
+# その1. パースが成功しているはずなのに、`Partial _` が返ってきてしまう
+
+例えば、`many1`を使った次のようなケースです。
+なお、ここから先のコード例は、
+`Data.Attoparsec.Text`を`import`し、ghciなどのREPLで実行していることを前提としています。
+
+``` {.haskell}
+parse (many1 $ char 'a') "aaa" -- => Partial _
+```
+
+`char 'a'` のように、極めて単純で間違えようのないパーサーであっても、
+何故か`Done`（パース成功）にはならず、`Partial _`が返ってきてしまうことがあります。
+
+ここでうっかり`maybeResult`などと組み合わせようものなら、
+`Nothing`が返ってきて、余計に訳の分からないことになりかねません。
+
+``` {.haskell}
+maybeResult $ parse (many1 $ char 'a') "aaa" -- => Nothing !?
+```
+
+この現象を回避する最も簡単な方法は、`parseOnly`という関数を使うことです。
+こちらは`parse`とは異なり、`Either`でパース結果を返します。
+
+``` {.haskell}
+parseOnly (many1 $ char 'a') "aaa" -- => Right "aaa"
+```
+
+ただしこれでは、`parse`関数が返す`Result`型とは異なり、
+パースの際消費した文字列の、残りの文字列[^regexp]を取得することができません。
+
+[^regexp]: 要するに正規表現で言うところの、
+「マッチした部分文字列より後ろの部分文字列」みたいなものと思ってください。
+
+これは、前述の`Result`型の値コンストラクタの一つである、`Done`から取得することができます。
+
+``` {.haskell}
+let (Done residualText parseResult) = parse (char 'a') "abc"
+residualText -- => "bc"
+parseResult -- => 'a'
+```
+
+さて、
+「パースが成功しているはずなのに`Partial _`が返ってきてしまう、
+でもパースしたあとの残りの文字列を取得したい！」
+みたいなケースがあった場合、どのように対処するのが良いでしょうか。
+それは
+[Attoparsecのドキュメント](http://hackage.haskell.org/package/attoparsec-0.10.4.0/docs/Data-Attoparsec-Text.html#g:2)
+にも書いてありました。 \
+値コンストラクタ`Partial _`に含まれている、関数をパターンマッチングで取得し、
+空文字列に対してそれを適用すればよいのです。
+
+``` {.haskell}
+let (Partial f) = parse (many1 $ char 'a') "aaa" -- => Partial _
+f "" -- => Done "" "aaa"
+```
+
+あるいは、取得した結果（`Result`）に対して、`feed`関数を使うという方法もあるようです。 \
+っていうかよく考えたら多分こっちのほうが推奨する使い方ですよね...。
+
+``` {.haskell}
+let result = parse (many1 $ char 'a') "aaa" -- => Partial _
+feed result "" -- => Done "" "aaa"
+```
+
+また、`many1`などに特有の仕様であり、実践的な方法ではありませんが、
+`many1`などに与えたパーサーに、絶対にマッチしないであろう文字列を与えることによっても、
+`Partial _`を回避することができます。
+
+``` {.haskell}
+parse (many1 $ char 'a') "aaab" -- => Done "b" "aaa"
+
+-- もちろん先ほどのresultに対してfeedするのでもOK。
+feed result "b" -- => Done "b" "aaa"
+```
+
+ちゃんと`Done`が取得出来ましたね。
+
+どうしてこのような仕様なのでしょう。こちらも
+[Attoparsecのドキュメント](http://hackage.haskell.org/package/attoparsec-0.10.4.0/docs/Data-Attoparsec-Text.html#g:1)
+のドキュメントによると、
+Attoparsecは、例えば文字列がネットワークを介して他のコンピュータから送られるような、
+文字列が必ずしも完全な状態で送られてくるとは限らないケースも想定して作られているそうで、
+そうした場合に、「まだパースが失敗したわけじゃない！もっと文字列よこせ！」
+という状態を表現するために、`Partial _`が存在するそうです。 \
+つまり、`many1`（とか、`many'`といった類似のコンビネーター）は、
+明示的に空文字列を`feed`するか、
+与えられたパーサーがマッチしなくなるまで「マッチした」と言わない、
+という仕様になっているようです。
+ある意味正規表現のアスタリスク `*` を超える強欲っぷりに、一ユーザーとして驚かされます。
+だって、正規表現のアスタリスクは文字列の終端までマッチすると、
+さすがに「マッチした」ということにしますし。 \
+何はともあれ、ちょっとした文字列処理でAttoparsecを使うときは、
+`Partial _`が出てもヘコまないよう起きをつけ下さい。
+私はよくヘコミました。
+
+# その2. `takeTill` *`parser`* *`predicate`* は、*`predicate`* が`True`を返した文字は消費しない
+
+もうひとつは、文字通りで、単に私が仕様を勘違いしていた、というだけの話なのですが、
+次のようなケースがありました。
+
+``` {.haskell}
+-- 「key=value」のような文字列から、("key", "value")というタプルを作る。
+-- ghci上で入力できるようにしようとすると結構辛い (^^;
+:{
+let keyValue = do {
+  key <- takeTill (== '=');
+  value <- takeText;
+  return (key, value);
+}
+:}
+parseOnly keyValue "key=value" -- => Right ("key","=value")
+```
+
+おやまぁ、パース結果の`(key, value)`の`value`に、
+余計な文字が入ってしまったじゃありませんか。
+
+原因は単純で、私がなんとなく
+「第一引数として指定した関数が`True`を返す文字（つまり、この場合 "="）
+なんて興味がないから、適当に無視してくれるだろう」
+などと都合よく考えたためです。
+必ずしも興味がないとは限らないのに、我ながら身勝手な発想をしたものです。
+
+これはすぐに気づいて、次のように対応しました。
+
+```{.haskell}
+:{
+let keyValue = do {
+  key <- takeTill (== '=');
+  Data.Attoparsec.Text.take 1;
+  value <- takeText;
+  return (key, value);
+}
+:}
+parseOnly keyValue "key=value" -- => Right ("key","value")
+```
+
+やったことは至って単純です。
+`takeTill` が、最後に第一引数の`(== '=')`が`True`を返したとき消費しなかった
+文字`'='`を、Attoparsecの`take`で消費し、その結果を無視した、ただそれだけです。
+なんとなく無駄な気もしなくはないですが、
+私がドキュメントを読んだ限りこれが一番簡単かつ確実な方法のようでした。
+
+ちなみに、GHCで警告を有効にした状態で上記のコードをコンパイルすると、
+「アクションの結果（この場合`take`でパースした結果）が変数に束縛されてないよ！」
+と怒られるので、
+素直に「`_ <- take ...`」として無名の変数に束縛するか、
+`-fno-warn-unused-do-bind`というオプションを指定して、警告を部分的にオフにしましょう。
+
+# 最後に
+
+他にも共有したいことはありますが、相変わらずの遅筆により、今回はここまでとしておきます。
+一応、コメントを詳し目に書いておきましたので、
+[main.hs](https://github.com/igrep/vm-backup-snapshot/blob/master/main.hs)
+か
+[VM/Snapshot.hs](https://github.com/igrep/vm-backup-snapshot/blob/master/VM/Snapshot.hs)
+辺りを
+参考にしていただけるか、至らない点をご指摘していただけると幸いです。
+
+また、今回の話と直接関係ないですがこの手の外部コマンドを使うプログラムには
+[Shelly](https://hackage.haskell.org/package/shelly)というもっと便利そうなライブラリもあるそうです。
+今度試しましょう。
