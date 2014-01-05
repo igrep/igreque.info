@@ -40,8 +40,16 @@ a:hover {
   margin: 0px 10px 0px 10px;
 }
 
-#title {
+#site_title {
   float: left;
+}
+
+h1#article_title {
+  font-size: 170%;
+}
+
+h1 {
+  font-size: 120%;
 }
 
 #menu {
