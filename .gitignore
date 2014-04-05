@@ -4,3 +4,4 @@
 *.o
 hakyll
 /fonts/
+*cabal.sandbox.config
