@@ -1,0 +1,22 @@
+---
+title: Neo4jについて調べたことまとめ
+author: 山本悠滋
+tags: Neo4j
+...
+---
+
+トランザクションの仕様について
+
+速さの秘密について
+
+遅さの秘密について
+
+index-free adjacency
+
+拡張性について
+    Capacity
+    Sharding
+
+柔軟性について
+
+cypherのわかりやすさ
