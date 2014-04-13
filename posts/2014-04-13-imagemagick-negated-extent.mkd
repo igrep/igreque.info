@@ -1,0 +1,147 @@
+---
+title: ImageMagickの仕様がしれっと反転していた件
+author: Yuji Yamamoto
+tags: Ruby, ImageMagick, RMagick, Subversion
+...
+---
+
+最近ちょっと仕事で、[ImageMagick](http://www.imagemagick.org/)のRuby向けバインディング、
+[RMagick](http://rmagick.rubyforge.org/)を触ることになり、
+[Ruby Freaks Lounge 第26回　RMagickを用いた画像処理（1）リサイズ](http://gihyo.jp/dev/serial/01/ruby/0026?page=2)
+という記事に書いてあった「リサイズ後足りない部分を継ぎ足す」
+というセクションに書いてあった方法を試してみたのですが、情報がもう古いようで、
+ImageMagickのバージョンによってはうまく行かないことがありましたので、
+原因と対策を共有したいと思います。
+
+# やりたいこと：画像を決まったサイズの枠に収めるよう、アスペクト比を維持したままリサイズしつつ、余った部分を透明にする
+
+最初は、下記のように、前述の記事に書いてあったコードをほとんどコピペして、私の開発環境で試しました。
+
+``` {.ruby}
+# Magick::Imageオブジェクトを指定したサイズの枠内に収める
+def frame_image_within image, width, height
+  image.change_geometry Magick::Geometry.new(width, height) do|cols, rows, img|
+    # アスペクト比を維持したままサイズを変える
+    img.resize_to_fit! cols, rows
+
+    # 背景色を透明にする
+    img.background_color = "transparent"
+
+    # 小さくした分を背景色で埋めるため、元の画像が背景に対して中央に来るよう、広げる
+    x = (width - cols) / 2
+    y = (height - rows) / 2
+    img.extent width, height, x, y
+  end
+end
+```
+
+普通に期待した通り変換されたので、ほっと一安心してPull Requestを送り、
+無事マージしてもらっていざステージング環境でテストだ...という段階で、
+非常におかしなことが起きていることに気づいてしまいました。
+
+画像を透明な背景に対して中央に置くようにしたつもりが、
+逆に妙に左（または上）にずれてしまい、元の画像が大幅にはみ出てしまいました[^1]。
+
+[^1]: 面倒なのでサンプル画像は置きません。あしからず。
+
+最初は、ステージングサーバーと自分の開発環境のImageMagickのバージョンが結構離れてる（ステージングのほうが新しい）から、
+どこかのバージョンでエンバグしてしまったんだろう、と思い、
+慣れないSubversionをでリポジトリを漁り、いろいろなバージョンで試してみたのですが、
+最新の安定版でも依然として問題が直りません。
+
+こりゃーもしかしてバグレポかなー、くそー、忙しいのに面倒くさいなー、
+なんて思いつつ、再現コードをより小さくするために
+ごちゃごちゃいじっていた際、「もしかして？」と思って、
+``` {.ruby}
+img.extent width, height, x, y
+```
+と書いていたのを、`x` と `y` の正負を反転させ、
+``` {.ruby}
+img.extent width, height, -x, -y
+```
+と、書き換えたところ、あっさり開発環境でうまく動いていた時のように、
+元の画像が背景に対して中央に寄せられたのです！
+
+何じゃこの不思議ビヘイビアは...と思いつつ、
+[RMagickの `extent` メソッド](https://github.com/rmagick/rmagick/blob/689271fbb439dbf735f120811ac3b2dc79ba95a2/ext/RMagick/rmimage.c#L5878-L5946)から、
+それが呼んでいる [`ExtentImage` 関数](http://www.imagemagick.org/api/MagickCore/transform_8c_source.html#l01173)を追いかけてみると、
+[`CompositeImage` という関数に画像の座標を渡すところ](http://www.imagemagick.org/api/MagickCore/transform_8c_source.html#l01202)で、
+`geometry->x` と `geometry->y` にマイナスをかけているじゃありませんか！
+
+もしかしてこれが関係してるんじゃ、と思って
+[ImageMagickのChangeLog](https://subversion.imagemagick.org/subversion/ImageMagick/branches/ImageMagick-6.8.9/ChangeLog)を
+探ってみると、バッチリそれに該当しそうなことが書かれていました。
+```
+2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
+  * Don't negate the geometry offset for the -extent option.
+```
+どうやら、ImageMagickのフロントエンドである、 `convert` コマンドにおいて
+`-extent` というオプションが、座標情報をそれこそ正負を逆に解釈していた、というバグがあったようです。
+
+更に裏を取るために、これまた `svn co` 以外はろくに使ったこともなかったsubversionについてググりつつ、
+該当の magick/transform.c のログやdiffを見たところ、下記のrevisionが見つかりました[^date]。
+
+[^date]: 日付がChangeLogに書いてある日と異なるのは、おそらく時差のせいじゃないかと思われます。
+つまり、どうやらChangeLogに書いてある日付はどこか別のタイムゾーンでの日付で、
+私がこのコマンドを実行した時 `svn` は `{2010-09-14}:{2010-09-15}` という指定を、日本時間として解釈した、と思われます。
+
+```{.bash}
+$ svn log -r {2010-09-14}:{2010-09-15} --diff magick/transform.c
+```
+```{.diff}
+r2585 | cristy | 2010-09-14 05:01:36 +0900 (火, 14  9月 2010) | 1 line
+Index: magick/transform.c
+===================================================================
+--- magick/transform.c  (リビジョン 2584)
++++ magick/transform.c  (リビジョン 2585)
+@@ -845,8 +845,8 @@
+   if (extent_image->background_color.opacity != OpaqueOpacity)
+     extent_image->matte=MagickTrue;
+   (void) SetImageBackgroundColor(extent_image);
+-  (void) CompositeImage(extent_image,image->compose,image,geometry->x,
+-    geometry->y);
++  (void) CompositeImage(extent_image,image->compose,image,-geometry->x,
++    -geometry->y);
+   return(extent_image);
+ }
+```
+
+コミットコメントがなく、ちょっとわかりづらいですが、
+確かに `geometry->x` と `geometry->y` が `-geometry->x` と `-geometry->y` に変わっていますね！
+どうやら、本当に **この6.6.4-2というバージョンから、ImageMagickの `ExtentImage` という関数は、
+座標情報の正と負を逆に解釈する** ようになってしまったようです。
+結果、RMagickも含め、 `ExtentImage` に依存したあらゆるプログラム・ライブラリが影響を受け、
+逆の振る舞いをするようになり、私の残業時間を伸ばし、こうしてブログネタにしてしまうこととなってしまったのです。
+
+本来なら、こういう場合はRMagickかImageMagickのどちらかにパッチなりバグレポートなりを送ったほうが良いのかもしれません。
+しかしながら、この変更がなされてからすでに4年近くが経過し、
+私が先日書いたコードも含め、
+この `ExtentImage` 関数の直感に反する振る舞いに戸惑いつつも従ったコードがすでにたくさんあるかもしれないことを思うと、うかつに手は出せません。
+もちろん、私の力不足ゆえの言い訳でもあるのですが...。
+それが証拠に、後で気づいたのですが、
+[RMagickのドキュメント](http://studio.imagemagick.org/RMagick/doc/image2.html#extent)にはすでに、
+"The upper-left corner of the new image is positioned at -x, -y." と、負の数で指定するのがこの関数の仕様であるかのように書かれています。
+ソフトウェアの振る舞いを維持するって難しいなぁと思いつつ、
+最後に、今回の目的であった「画像を決まったサイズの枠に収めるよう、アスペクト比を維持したままリサイズしつつ、余った部分を透明にする」
+という問題の、私が調べた現時点での改訂版をここにおいておきましょう。
+
+```{.ruby}
+# Magick::Imageオブジェクトを指定したサイズの枠内に収める。破壊的変更は **しない** ので注意。
+def frame_image_within image, width, height
+  # アスペクト比を維持したままサイズを変える
+  image.resize_to_fit! width, height
+
+  image.background_color = "transparent"
+
+  # 小さくした分を背景色で埋めるため、広げる
+  ## 前景（元の画像）を中央に寄せるため、あらかじめoffsetを計算する
+  x = (width - image.columns) / 2
+  y = (height - image.rows) / 2
+  ## ImageMagick の 2010-09-13 6.6.4-2 以降、extentメソッドのxとyは、
+  ## 正と負が逆に解釈されるようになってしまったため、負の数に変換している。
+  ## 詳しくはImageMagickのChangeLogを参照
+  image.extent(width, height, -x, -y)
+end
+```
+
+どうやら、最初のコードにあった `change_geometry` メソッドは使わなくてもよかったようです。
