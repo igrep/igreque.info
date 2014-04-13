@@ -115,6 +115,9 @@ li {
 .Constant, .st, .ch {
   color: #dd2020;
 }
+.ot {
+  color: #2020dd;
+}
 .Identifier, .dt {
   color: #008888;
 }
