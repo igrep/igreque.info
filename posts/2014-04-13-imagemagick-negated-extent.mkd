@@ -145,3 +145,7 @@ end
 ```
 
 どうやら、最初のコードにあった `change_geometry` メソッドは使わなくてもよかったようです。
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?t=poe02-22&o=9&p=8&l=as1&asins=4873114144&ref=qf_sp_asin_til&fc1=000000&IS2=1&lt1=_blank&m=amazon&lc1=0000FF&bc1=000000&bg1=FFFFFF&f=ifr" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?t=poe02-22&o=9&p=8&l=as1&asins=1904811868&ref=qf_sp_asin_til&fc1=000000&IS2=1&lt1=_blank&m=amazon&lc1=0000FF&bc1=000000&bg1=FFFFFF&f=ifr" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
