@@ -19,7 +19,7 @@ source-repository head
 executable hakyll
   buildable: True
   ghc-options: -Wall
-  main-is: hakyll.hs
+  main-is: main.hs
 
   build-depends:
       base >= 4.0
