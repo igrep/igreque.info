@@ -5,3 +5,4 @@
 hakyll
 /fonts/
 *cabal.sandbox.config
+/slides/*.html
