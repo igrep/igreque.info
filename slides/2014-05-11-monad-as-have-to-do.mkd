@@ -4,7 +4,7 @@
 
 # はじめまして！
 
-- 山本悠滋 25歳♂
+- 山本悠滋([@igrep](https://twitter.com/igrep)) 25歳♂
 - Sansanという会社でRailsを触ってます。
 - [Haskellの勉強会](http://connpass.com/series/754/)をツキイチでやってます！
 
