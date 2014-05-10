@@ -5,7 +5,7 @@
 # はじめまして！
 
 - [山本悠滋](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) 25歳♂
-- Sansanという会社でRailsを触ってます。
+- [Sansan](http://www.sansan.com/)という会社でRailsを触ってます。
 - [Haskellの勉強会](http://connpass.com/series/754/)をツキイチでやってます！
 
 # 今日話すこと・話さないこと
