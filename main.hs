@@ -19,13 +19,23 @@ main :: IO ()
 main = hakyll $ do
   tags <- buildTags "posts/*" (fromCapture "tags/*.html")
   cssRules              -- Compressed CSS
-  fontRules             -- Fonts
+  idRules "fonts/*"     -- Fonts
   postRules tags        -- Render posts
   postsListRules        -- Render posts list
   indexRules tags       -- Index
   taggedPostsRules tags -- Display posts tagged as a praticular tag
   atomRules             -- Atom feed
   templateRules         -- Template
+  -- For slides written in HTML
+  idRules "slides/*.html"
+  idRules "slides/styles/*.css"
+  idRules "slides/scripts/*.js"
+
+idRules :: Pattern -> Rules ()
+idRules pat =
+  match pat $ do
+    route idRoute
+    compile copyFileCompiler
 
 templateRules :: Rules ()
 templateRules = match "templates/*" $ compile templateCompiler
@@ -35,12 +45,6 @@ cssRules =
   match "css/*" $ do
     route   idRoute
     compile compressCssCompiler
-
-fontRules :: Rules ()
-fontRules =
-  match "fonts/*" $ do
-    route   idRoute
-    compile copyFileCompiler
 
 postRules :: Tags -> Rules ()
 postRules tags =
