@@ -1,0 +1,34 @@
+---
+title: 「やらなければならないこと」としてのHaskellのMonad というタイトルで発表しました。
+author: Yuji Yamamoto
+tags: Haskell
+...
+---
+
+[関数型LT大会](http://connpass.com/event/5795/)にて、発表させて頂きました。
+
+- [「やらなければならないこと」としてのHaskellのMonad](/slides/2014-05-11-monad-as-have-to-do.html)
+
+上記の通りこのサイトにもアップロードしましたが、
+やっぱりSlideshareにもアップロードしました。
+slidyを使うと印刷するだけでPDFにできるから便利ですね！
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/34534060" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+うわぁ小さくて見づれー。本番ではブラウザで拡大率調整してたしなぁ。
+早くslidyのcss整えないと。
+
+関数型LT大会、面白かったですね。
+個人的な主な収穫を上げるならば、
+
+- [LLVMのバイトコードをHaskellで書くためのpackage](https://speakerdeck.com/sys1yagi/haskelldellvm-frontend)があることとか、
+- [PureScriptというAltJSがアツそうだ](http://slides.pab-tech.net/flt-purescript/#1)ということとか、
+- [Operational Monadの実用例](https://gist.github.com/tokiwoousaka/b62961fe256950c11464)とか、
+- F#がWindowsアプリにも使えるようになってたりしていろいろ使えるところが広がっていることとか、
+
+あとは断片的ですが、[Endomorphism](https://speakerdeck.com/taiki45/haskell-detukuru-vm-san-riyuku-endomorphism)
+だったりもろもろの型理論のお話でしょうか（やっぱり断片的なんでほとんどできなかったけどorz）。
+
+私自信のLTも、それなりによい評判が聞けてよかったです。
+このネタは他の言語にも応用できそうなんで、
+HaskellのMonadをアピールするために使っていきたいですねー。
