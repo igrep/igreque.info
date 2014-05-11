@@ -32,3 +32,14 @@ slidyを使うと印刷するだけでPDFにできるから便利ですね！
 私自信のLTも、それなりによい評判が聞けてよかったです。
 このネタは他の言語にも応用できそうなんで、
 HaskellのMonadをアピールするために使っていきたいですねー。
+
+以下、その他のスライドです。順番はバラバラです。あと、私がtwitterを明後日見つかったもののみ挙げています。
+
+- [GHCJS](http://pasberth.github.io/slide/kansu-lt/)
+- [Start! ATS programming](http://www.slideshare.net/master_q/20140511-start-ats)
+- [(define)を使わずに再起関数を書く](http://www.slideshare.net/blackenedgold/functional-lt)
+- [HaskellのType Families](http://cdepillabout.github.io/haskell-type-families-presentation/index.html#/)
+- [Unboxed objects and polymorphic typing](http://www.slideshare.net/nomaddo/unboxing)
+
+俺のも載せろよ！とか、タイトルtypoしてるぞ！などという方がいらっしゃいましたら随時追加します。
+みなさん、熱のこもった ~~LT~~ プレゼンをありがとうございました！
