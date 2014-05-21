@@ -96,6 +96,22 @@ Neo4jのグラフを表すグラフです[^no-property]。
 詳細は前述の「[Graph　Databases](http://graphdatabases.com/)」をご覧ください。
 電子版が無料でダウンロードできます。
 
+```dot
+digraph neo4j-graph-graph {
+  graph [label = "Neo4jのグラフのグラフ"]
+  NodeA --> Rel1 [label = "nextRel"];
+  NodeA <-- Rel1 [label = "firstNode"];
+  NodeB --> Rel1 [label = "nextRel"];
+  NodeB <-- Rel1 [label = "secondNode"];
+  Rel1 --> RelA2 [label = "firstNextRel"];
+  Rel1 --> RelB2 [label = "secondNextRel"];
+  RelA2 --> Rel1 [label = "firstPrevRel"];
+  RelB2 --> Rel1 [label = "secondPrevRel"];
+  NodeA <-- RelA2 [label = "firstNode or secondNode"];
+  NodeB <-- RelB2 [label = "firstNode or secondNode"];
+}
+```
+
 # 遅さの秘密について
 
 # 拡張性について
