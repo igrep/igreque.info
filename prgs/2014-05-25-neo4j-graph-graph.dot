@@ -1,0 +1,13 @@
+digraph neo4j_graph_graph {
+  graph [label = "Neo4jのグラフのグラフ"]
+  NodeA -> Rel1 [label = "nextRel"];
+  Rel1 -> NodeA [label = "firstNode"];
+  NodeB -> Rel1 [label = "nextRel"];
+  Rel1 -> NodeB [label = "secondNode"];
+  Rel1 -> RelA2 [label = "firstNextRel"];
+  Rel1 -> RelB2 [label = "secondNextRel"];
+  RelA2 -> Rel1 [label = "firstPrevRel"];
+  RelB2 -> Rel1 [label = "secondPrevRel"];
+  RelA2 -> NodeA [label = "firstNode or secondNode"];
+  RelB2 -> NodeB [label = "firstNode or secondNode"];
+}
