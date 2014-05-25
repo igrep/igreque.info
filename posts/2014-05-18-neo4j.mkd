@@ -17,7 +17,10 @@ Neo4jについて、Eightでも使えないかな、なんて考えつつ調べ�
 この分野では最も有名なものとして知られている模様です。 \
 ひとまず、このへんの用語のお話は、参考にした下記のサイトや電子書籍にお任せします。
 
-foo
+- [「GraphDB徹底入門」〜構造や仕組み理解から使いどころ・種々のGraphDBの比較まで幅広く〜](http://www.slideshare.net/doryokujin/graphdbgraphdb)
+- [GraphDBについて - Kompira開発者ブログ](http://hatsan.hatenablog.com/entry/2012/12/28/124345)
+- [Graph Databases](http://graphdatabases.com/)
+- [2.1. What is a Graph Database? -  - The Neo4j Manual v2.0.3](http://docs.neo4j.org/chunked/stable/what-is-a-graphdb.html)
 
 # 速さの秘密について
 
@@ -40,7 +43,7 @@ digraph namecard1 {
 
 具体的にどう速いのかというと、
 上記のような問い合わせにおいて、「Aさんと名刺交換した人」を求めるのに、
-RDBですと「**テーブル全体のレコード数**の対数（log(n)）foo」に対して比例した時間がかかる[^btree]
+RDBですと「**テーブル全体のレコード数**の対数（log(n)）」に対して比例した時間がかかる[^btree]
 のに対して、
 Neo4j（あるいは似たデータ構造を持つGraphDB）だと、
 「**Aさんと直接名刺交換した人の数**」に比例した時間のみがかかります。
