@@ -70,7 +70,7 @@ RDBの場合はつながりの数だけインデックスを1から辿らなく�
 
 「index-free adjacency」とは何でしょうか。
 当記事の主な情報源となった、
-そのものずばり「[Graph　Databases](http://graphdatabases.com/)」によれば、
+そのものずばり「[Graph　Databases](http://graphdatabases.com/)」のp.145によれば、
 「index-free adjacency」な特性を持つNeo4jでは、
 各ノード・リレーションは、固定長のレコードとして保存され、
 レコードの中に、直接隣接しているノード、またはリレーションへの、
