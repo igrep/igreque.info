@@ -96,7 +96,7 @@ Neo4jのグラフを表すグラフです[^no-property]。
 
 [^no-property]: ここでは、
 ノードやリレーションのプロパティを表すレコードについては割愛させていただきます。
-詳細は前述の「[Graph　Databases](http://graphdatabases.com/)」をご覧ください。
+詳細は前述の「[Graph　Databases](http://graphdatabases.com/)」のp.144をご覧ください。
 電子版が無料でダウンロードできます。
 
 ```dot
