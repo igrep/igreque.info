@@ -62,7 +62,7 @@ RDBの場合はつながりの数だけインデックスを1から辿らなく�
 
 「index-free adjacency」とは何でしょうか。
 当記事の主な情報源となった、
-そのものずばり「[Graph　Databases](http://graphdatabases.com/)」のp.145によれば、
+そのものずばり「[Graph Databases](http://graphdatabases.com/)」のp.145によれば、
 「index-free adjacency」な特性を持つNeo4jでは、
 各ノード・リレーションは、固定長のレコードとして保存され、
 レコードの中に、直接隣接しているノード、またはリレーションへの、
@@ -88,7 +88,7 @@ Neo4jのグラフを表すグラフです[^no-property]。
 
 [^no-property]: ここでは、
 ノードやリレーションのプロパティを表すレコードについては割愛させていただきます。
-詳細は前述の「[Graph　Databases](http://graphdatabases.com/)」のp.144をご覧ください。
+詳細は前述の「[Graph Databases](http://graphdatabases.com/)」のp.144をご覧ください。
 電子版が無料でダウンロードできます。
 
 ```dot
@@ -245,7 +245,7 @@ Neo4j HA、すなわちレプリケーションを使用した場合のトラン
   それが成功してやっと、自分自身に書き込みます。
   これらの処理がクライアントに制御を返すまで行われるため、
   通常スレーブへの書き込み要求は、マスターへの書き込み要求に比べ、はるかに遅く処理されます。
-  そのため「[Graph　Databases](http://graphdatabases.com/)」のp.79によれば、
+  そのため「[Graph Databases](http://graphdatabases.com/)」のp.79によれば、
   現在この方法は推奨されておらず、唯一使う時があるとすれば、
   前述のキャッシュのシャーディングを行っている場合に、
   クライアントが自分のトランザクションで書き込んだデータを、
