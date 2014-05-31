@@ -1,7 +1,7 @@
 ---
 title: External Links in relation to me
 author: Yuji Yamamoto
-tags: SNS, GTD, git, Haskell, Ruby, vim, Anime, Manga
+tags: SNS, GTD, Git, Haskell, Ruby, vim, Anime, Manga
 date: March 20, 2013
 ...
 ---
@@ -15,7 +15,6 @@ date: March 20, 2013
 - [Forkwell: igrep](https://forkwell.com/u/igrep)
 
 # 作ってるもの
-- [ひとりハッカソンでのToDo管理アプリ](http://hitori-hackathon.herokuapp.com/)
 - その他は[Github](https://github.com/igrep)で！
 
 # すごく好きなもの
@@ -35,7 +34,7 @@ date: March 20, 2013
 - [日常](http://www.shinonome-lab.com/)
 
 # 経歴
-- 現職：[Sansan株式会社](http://www.sansan.com/)にてバイト中。
+- 現職：[Sansan株式会社](http://www.sansan.com/)にて契約社員中。
 - 前職：ひみつ。
 - いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/chuo-u/letters_subject11/index_j.html)
 
