@@ -91,31 +91,16 @@ Neo4jのグラフを表すグラフです[^no-property]。
 詳細は前述の「[Graph Databases](http://graphdatabases.com/)」のp.144をご覧ください。
 電子版が無料でダウンロードできます。
 
-```dot
-digraph neo4j-graph-graph {
-  graph [label = "Neo4jのグラフのグラフ"]
-  NodeA --> Rel1 [label = "nextRel"];
-  NodeA <-- Rel1 [label = "firstNode"];
-  NodeB --> Rel1 [label = "nextRel"];
-  NodeB <-- Rel1 [label = "secondNode"];
-  Rel1 --> RelA2 [label = "firstNextRel"];
-  Rel1 --> RelB2 [label = "secondNextRel"];
-  RelA2 --> Rel1 [label = "firstPrevRel"];
-  RelB2 --> Rel1 [label = "secondPrevRel"];
-  NodeA <-- RelA2 [label = "firstNode or secondNode"];
-  NodeB <-- RelB2 [label = "firstNode or secondNode"];
-}
-```
+![Neo4jのグラフのグラフ](/imgs/2014-05-25-neo4j-graph-graph.svg)\
 
-上記のグラフでは、例えば`NodeA -- nextRel --> Rel1`と書かれている場合、
-「`NodeA`が`Rel1`の、
-物理的なアドレスを『`nextRel`（次のリレーション）』として持っている（参照している）」
-という関係を表しております。
+上記のグラフでは、例えば`Rel1`の`firstNodeId`と`NodeA`の`nextRelId`との間にある矢印は、
+`NodeA`と`Rel1`の相互参照関係を表します。
 
 ご覧の通り、1個のノードレコード(`NodeA, NodeB`)は、
 自分が持っている最初のリレーションレコード(`Rel1`)へのアドレスしか持っていません。
 そしてノードが持つその他のリレーションへのアドレスは、
-「最初のリレーション」が`firstNextRel`、または`secondNextRel`として参照しているのです。
+「最初のリレーション」が持つ、
+`firstNextRelId`、または`secondNextRelId`というプロパティで参照しているのです。
 これらは名前から察せられる通り、
 それぞれリレーションにつながる「片方のノードが持つ次のリレーション」と、
 「もう片方のノードが持つ次のリレーション」を表します。
