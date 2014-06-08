@@ -1,0 +1,35 @@
+digraph neo4j_graph_graph {
+  graph [label = "Neo4jのグラフのグラフ", rankdir = LR]
+
+  Rel1 [
+    shape = record,
+    label = "{Rel1| {<firstNode> firstNodeId|<secondNode> secondNodeId|<firstPrevRel> firstPrevRelId|<firstNextRel> firstNextRelId|<secondPrevRel> secondPrevRelId|<secondNextRel> secondNextRelId|...}}"
+  ];
+
+  NodeA [ shape = record,
+    label = "NodeA|{<nextRel> nextRelId|...}"
+  ];
+  NodeB [
+    shape = record,
+    label = "NodeB|{<nextRel> nextRelId|...}"
+  ];
+
+  N1 [label = "null", style = dashed, fixedsize = true, width = 0.5, height = 0.3];
+  N2 [label = "null", style = dashed, fixedsize = true, width = 0.5, height = 0.3];
+
+  RelA2 [
+    shape = record,
+    label = "RelA2| {<firstPrevRel> firstPrevRelId|...}"
+  ];
+  RelB2 [
+    shape = record,
+    label = "RelB2| {<secondPrevRel> secondPrevRelId|...}"
+  ];
+
+  Rel1:firstNode -> NodeA:nextRel [dir = both];
+  Rel1:secondNode -> NodeB:nextRel [dir = both];
+  Rel1:firstPrevRel -> N1 [style = dashed];
+  Rel1:firstNextRel -> RelA2:firstPrevRel [dir = both];
+  Rel1:secondPrevRel -> N2 [style = dashed];
+  Rel1:secondNextRel -> RelB2:secondPrevRel [dir = both];
+}

@@ -101,6 +101,10 @@ li {
   margin-top: 0.2em;
 }
 
+p.caption {
+  text-align: center;
+}
+
 .Comment, .co {
   color: #8080f0;
 }
