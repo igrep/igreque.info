@@ -31,7 +31,9 @@ Neo4jの人気の理由をまず一つ挙げるならば、
 みたいな問い合わせに回答するときに、
 RDBをはるかに凌ぐようなパフォーマンスを出すことができます。
 
-![名刺交換の記録を表すグラフ](/imgs/2014-05-25-namecard-graph.svg)\
+![名刺交換の記録を表すグラフ](/imgs/2014-06-08-namecard-graph.svg)\
+
+SVGの画像ですので、閲覧できない場合は[こちらのPNG版](/imgs/2014-06-08-namecard-graph.png)をご覧ください。
 
 具体的にどう速いのかというと、
 上記のような問い合わせにおいて、「Aさんと名刺交換した人」を求めるのに、
@@ -96,7 +98,9 @@ Neo4jのグラフを表すグラフです[^no-property]。
 詳細は前述の「[Graph Databases](http://graphdatabases.com/)」のp.144をご覧ください。
 電子版が無料でダウンロードできます。
 
-![Neo4jのグラフのグラフ](/imgs/2014-05-25-neo4j-graph-graph.svg)\
+![Neo4jのグラフのグラフ](/imgs/2014-06-08-neo4j-graph-graph.svg)\
+
+SVGの画像ですので、閲覧できない場合は[こちらのPNG版](/imgs/2014-06-08-neo4j-graph-graph.png)をご覧ください。
 
 上記のグラフでは、例えば`Rel1`の`firstNodeId`と`NodeA`の`nextRelId`との間にある矢印は、
 `NodeA`と`Rel1`の相互参照関係を表します。
