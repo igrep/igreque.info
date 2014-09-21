@@ -1,0 +1,62 @@
+---
+title: RubyHiroba 2014 感想 + 発表しました。
+author: Yuji Yamamoto
+tags: Ruby, Test Double
+...
+---
+
+# 発表しました。
+
+[RubyHiroba 2014のLTthon](http://rubyhiroba.org/2014/ltthon.html)に参加+発表しました。
+
+以下が私の発表です。
+
+[Crispy in a Nutshell](http://the.igreque.info/slides/2014-09-21-crispy-in-a-nutshell.html)
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/39335678" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
+
+[crispy](http://rubygems.org/gems/crispy)という手前味噌なgemについて簡単に発表しました。  \
+前倒し気味に終わってしまったため、もうちょっと内容を詰め込んだり構成を良く出来たかもしれません。  \
+次回の反省。
+
+それと、Crispyを使うとどうなるか、というのを紹介するために、
+[架空のPull Request](https://github.com/igrep/crispy/pull/12)を作ってアクセスしてもらうことでリポジトリを見てもらう、
+という妙な作戦を昨晩思いついてやってみましたが果たしてどこまでうまく行ったやら [^pr-diff]。 \
+LTじゃなくてもうちょっと時間がとれた時にもう一度試したいですねー。
+
+[^pr-diff]: また、この方法だとGitHubのdiffをそのまま表示できるのでスライドづくりが楽ちんだった、というのもあります。
+
+あ、Crispy自体についてはいずれこのブログでも触れます。
+
+# いろいろ聞きました。
+
+以下、tweetを見直しつつ忘れないうちに感想を。
+
+## 印象に残った and 有益に感じたLT
+
+一番は[\@joker1007さん](https://twitter.com/joker1007)の「[Take Away Sprockets](https://speakerdeck.com/joker1007/throw-away-sprockets)」でした。
+
+<script async class="speakerdeck-embed" data-id="74c36c90238701328db212917f3c7eff" data-ratio="1.29456384323641" src="//speakerdeck.com/assets/embed.js"></script>
+
+まぁ、印象に残っていたのは事前にYokohama.rbで内容を伺っていたからですがw \
+いずれにせよ、JavaScriptはじめフロントエンドのコードが膨らみ、JavaScript側の責務が大きくなる昨今、
+いい感じにサーバーとクライアントを粗結合にしてJavaScript側が独立して動きやすくできるようにするバランスづくりは必要ですね...。 \
+
+こちらの「F[ront-end package managers](http://www.slideshare.net/frontainer/front-end-package-managers)」というスライドも合わせて読みたいですねー。
+
+それから、[\@kwappa](https://twitter.com/kwappa)さんの「[前職に出戻るジョブホッパーだけど何か質問ある？](://speakerdeck.com/kwappa/do-you-have-any-questions-to-jobhopper)」もなかなか興味深いものでした。
+
+<script async class="speakerdeck-embed" data-id="3a8c93f02391013292341ac2af761010" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+もっと自由に出入りできてもいいよね。きっと。べっ、別に今出たいとかそういう他意はないですよ！
+
+## 印象に残った細かいこと
+
+- ~~Excel~~ LibreOffice.org Calcでスライドを作る強者がいた...。やっぱり表計算は彼らのEmacsなんだね...。
+- ember.jsのマスコットかわいい。
+- Idobataもemberなんだ！
+- 前から気になってたけどRabbitいいなぁ。気が向いたらpandoc + slidyから乗り換えてみようかしら。
+- IRubyもちょっと気になる。Yokohama.rbのレシピブックのセッションに果たして使えるか？
+- [YamamotoとYujiが別々の時間に別々の発表をすることになっていた。](https://twitter.com/igrep/status/513503381214597120)
+
+![](/imgs/2014-09-21-Yuji-Yamamoto-RubyHiroba.jpg)
