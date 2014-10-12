@@ -34,7 +34,7 @@ LTじゃなくてもうちょっと時間がとれた時にもう一度試した
 
 ## 印象に残った and 有益に感じたLT
 
-一番は[\@joker1007さん](https://twitter.com/joker1007)の「[Take Away Sprockets](https://speakerdeck.com/joker1007/throw-away-sprockets)」でした。
+一番は[\@joker1007さん](https://twitter.com/joker1007)の「[Throw Away Sprockets](https://speakerdeck.com/joker1007/throw-away-sprockets)」でした。
 
 <script async class="speakerdeck-embed" data-id="74c36c90238701328db212917f3c7eff" data-ratio="1.29456384323641" src="//speakerdeck.com/assets/embed.js"></script>
 
