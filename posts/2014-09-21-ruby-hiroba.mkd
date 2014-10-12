@@ -42,7 +42,7 @@ LTじゃなくてもうちょっと時間がとれた時にもう一度試した
 いずれにせよ、JavaScriptはじめフロントエンドのコードが膨らみ、JavaScript側の責務が大きくなる昨今、
 いい感じにサーバーとクライアントを粗結合にしてJavaScript側が独立して動きやすくできるようにするバランスづくりは必要ですね...。 \
 
-こちらの「F[ront-end package managers](http://www.slideshare.net/frontainer/front-end-package-managers)」というスライドも合わせて読みたいですねー。
+こちらの「[Front-end package managers](http://www.slideshare.net/frontainer/front-end-package-managers)」というスライドも合わせて読みたいですねー。
 
 それから、[\@kwappa](https://twitter.com/kwappa)さんの「[前職に出戻るジョブホッパーだけど何か質問ある？](://speakerdeck.com/kwappa/do-you-have-any-questions-to-jobhopper)」もなかなか興味深いものでした。
 
