@@ -80,7 +80,7 @@ GitHub for Windows
 
 フルキーボード
 
-- Windows 8.1だと設定を変えれば標準で！
+- Windows 8だと設定を変えれば標準で！
 - <img src="/imgs/2014-11-08-windows-full-keyboard.png" alt="Windows 8標準のフルキーボード" width="683" height="190" />
 
 # コツ1: 道具にこだわれ
