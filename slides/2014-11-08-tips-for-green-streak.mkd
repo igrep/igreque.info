@@ -109,6 +109,12 @@ GitHub for Windows
 
 # コツ2: コミットを小分けに
 
+ある日のcrispyのコミットログ
+
+- [![ある日の私のコミットログ](/imgs/2014-11-08-crispy-compare-class-spy-crop.png)](/imgs/2014-11-08-crispy-compare-class-spy.png)
+
+# コツ2: コミットを小分けに
+
 1日1コミットに抑えるために。
 
 - `git add -p`とか
