@@ -19,7 +19,7 @@
 
 - 打倒RSpecという目標のもと、[CrispyというTest Doubleのためのgem](https://github.com/igrep/crispy)を作っています。
 - つい先日v0.2.0をリリースしました！
-    - RSpecの`expect_any_instance_of`相当のことができるようになりました！
+    - RSpecの`expect_any_instance_of`や`stub_const`相当のことができるようになりました！
 
 # 今日話すこと
 
