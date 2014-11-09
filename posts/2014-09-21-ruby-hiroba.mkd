@@ -11,7 +11,7 @@ tags: Ruby, Test Double
 
 以下が私の発表です。
 
-[Crispy in a Nutshell](http://the.igreque.info/slides/2014-09-21-crispy-in-a-nutshell.html)
+[Crispy in a Nutshell](/slides/2014-09-21-crispy-in-a-nutshell.html)
 
 <iframe src="//www.slideshare.net/slideshow/embed_code/39335678" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
 
