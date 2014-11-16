@@ -52,6 +52,10 @@ h1 {
   font-size: 120%;
 }
 
+p,ol,ul {
+  line-height: 1.5em;
+}
+
 #menu {
   float: right;
 }
