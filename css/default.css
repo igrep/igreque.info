@@ -1,7 +1,4 @@
-@font-face {
-  font-family: 'VL PGothic';
-  src: url(/fonts/VL-PGothic-Regular.woff) format("woff");
-}
+/* global */
 
 @font-face {
   font-family: 'VL Gothic';
@@ -13,6 +10,10 @@ body {
   width: 700px;
   margin: 0px auto 0px auto;
   background-color: #f8f8f8;
+}
+
+p,ol,ul,footer {
+  line-height: 1.5em;
 }
 
 a:link {
@@ -28,7 +29,9 @@ a:hover {
   text-decoration: underline;
 }
 
-#navigation a {
+/* navigation bar and header */
+
+nav a.item {
   color: white;
   text-decoration: none;
   background-color: black;
@@ -40,30 +43,20 @@ a:hover {
   margin: 0px 10px 0px 10px;
 }
 
-#site_title {
+nav .top {
   float: left;
 }
 
-h1#article_title {
-  font-size: 170%;
-}
-
-h1 {
-  font-size: 120%;
-}
-
-p,ol,ul {
-  line-height: 1.5em;
-}
-
-#menu {
+nav .menu {
   float: right;
 }
 
-#bar {
+nav #bar {
   border-bottom: 4px solid black;
   clear: both;
 }
+
+/* footer */
 
 #divide_footer {
   margin-top: 3em;
@@ -73,6 +66,37 @@ p,ol,ul {
   margin-top: 5em;
   margin-bottom: 2em;
 }
+
+/* article header */
+
+article h1.title {
+  font-size: 170%;
+}
+
+article .history {
+  text-align: right;
+}
+
+/* article body */
+
+h1 {
+  font-size: 120%;
+}
+
+ol,ul {
+  padding-left: 1em;
+  padding-bottom: 0.5em;
+}
+
+li {
+  margin-top: 0.2em;
+}
+
+p.caption {
+  text-align: center;
+}
+
+/* source code */
 
 pre, code {
   font-family: 'VL Gothic', monospace;
@@ -94,19 +118,6 @@ pre {
   -webkit-border-bottom-left-radius : 5px;
   -webkit-border-bottom-right-radius: 5px;
   padding                           : 8px;
-}
-
-ol,ul {
-  padding-left: 1em;
-  padding-bottom: 0.5em;
-}
-
-li {
-  margin-top: 0.2em;
-}
-
-p.caption {
-  text-align: center;
 }
 
 .Comment, .co {
