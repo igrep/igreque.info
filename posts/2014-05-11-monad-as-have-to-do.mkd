@@ -33,7 +33,7 @@ slidyを使うと印刷するだけでPDFにできるから便利ですね！
 このネタは他の言語にも応用できそうなんで、
 HaskellのMonadをアピールするために使っていきたいですねー。
 
-以下、その他のスライドです。順番はバラバラです。あと、私がtwitterを明後日見つかったもののみ挙げています。
+以下、その他のスライドです。順番はバラバラです。あと、私がtwitterを漁って見つかったもののみ挙げています。
 
 - [GHCJS](http://pasberth.github.io/slide/kansu-lt/)
 - [Start! ATS programming](http://www.slideshare.net/master_q/20140511-start-ats)
