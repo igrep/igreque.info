@@ -1,0 +1,103 @@
+---
+title: crispyというTest Doubleのためのgemを作ってます #SWTestAdvent
+author: Yuji Yamamoto
+tags: Ruby, Test Double
+...
+---
+
+この記事は、[ソフトウェアテストあどべんとかれんだー2014](http://connpass.com/event/9500/)と、
+[Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)の12月5日の記事を兼ねています。 \
+前日の記事はそれぞれ以下のものでした。
+
+- [ソフトウェアテストあどべんとかれんだー2014](http://connpass.com/event/9500/)がsue445さんの「[hoge](#)」で、
+- [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)がtbpgrさんの「[hoge](#)」でした。
+
+RubyのAdvent CalendarとテストのAdvent Calendarということで、
+今日は私が半年ぐらい前からちまちま作っている、[crispy](https://github.com/igrep/crispy)というTest Doubleのためのgemを紹介させてください。
+
+# crispyって？
+
+「[Test Double](https://www.google.co.jp/?gfe_rd=cr&ei=w456VPj9B-yumQXk1oHACg&gws_rd=ssl#q=test+double)」がそもそも何なのかはちょっと今回は割愛させていただきます。
+[Wikipedia](http://ja.wikipedia.org/wiki/%E3%83%86%E3%82%B9%E3%83%88%E3%83%80%E3%83%96%E3%83%AB)なりよそで検索するなりしてください。 \
+一言で言うとstubとかmockとかtest spyとかの総称です。
+RSpecをお使いの方であれば知らず知らずのうちに
+
+```ruby
+allow(hoge).to receive(:foo).and_return(:bar)
+```
+
+とか
+
+```ruby
+expect(hoge).to receive(:foo)
+```
+
+とか、あるいは古いsyntaxなら
+
+```ruby
+hoge.stub(:foo).and_return(:bar)
+
+hoge.should_receive(:foo)
+```
+
+という機能を使ったことがある、なんて方もいらっしゃるかもしれません。
+これはRSpecデフォルトのTest Doubleライブラリ、「[rspec-mocks](https://github.com/rspec/rspec-mocks)」です。
+
+Crispyはこのrspec-mocksを始め、[rr](https://github.com/rr/rr)、[flexmock](https://github.com/jimweirich/flexmock)など、
+Ruby界に並み居る競合Test Doubleライブラリの置き換えになるものを目指して作られています。 \
+今のバージョンは0.2.0ですが、主要な機能は十分に使えるものとなっていますので、
+よろしければ[README](https://github.com/igrep/crispy/blob/master/README.md)を読んでお試しください。
+
+# 何が違うの？
+
+Test Doubleライブラリの多くには、「test spy」という機能があります。 \
+例えばcrispyだとこんな感じ。
+
+```ruby
+# 対象のメソッドsubject_methodが、渡したFileオブジェクトをcloseするか？
+file = File.open "hoge"
+spy_into file
+subject_method file
+
+# subject_methodが実際にfileのcloseメソッドを使用していれば、trueが返る。
+spy(file).received? :close
+```
+
+上記のようにspyされたオブジェクトは、自分自身が呼び出したメソッド（と、その引数）をすべて記憶することで、
+テストしたいメソッドによって正しく使用されているかチェックすることができるようになります。
+
+crispyは、名前が「spy」で終わっていることから表されるように、
+この「test spy」をfeatureしたTest Doubleライブラリです。
+他のあらゆるTest Doubleとも異なるtest spy機能を持っています。
+
+何が異なるのかと言うと、それはRubyの**あらゆる**オブジェクトに対してspyできる点です。 \
+例えばrspec-mocksで先ほどの例を再現すると、
+そのものずばり`spy`メソッドによって作られるspyする専用のオブジェクトを使わなければなりません[^actually-double]。
+
+[^actually-double]:
+詳しい人にバカにされない人のために補足しますと、実際にはrspec-mocksの`spy`は`double`とほぼ同等のものを返します。
+rspec-mocksでは`double`がspyの機能を備えているためです。
+
+```ruby
+# 対象のメソッドsubject_methodが、渡したFileオブジェクトをcloseするか？
+file = spy 'fileっぽい何か'
+subject_method file
+
+# subject_methodが実際にfileのcloseメソッドを使用していれば、テストが通る。
+expect(file).to have_received :close
+```
+
+それに対してcrispyは、すでにある任意のオブジェクトに対してspyできます。
+なので先ほどの例で実際に`file`の`close`メソッドを呼んだり、他のメソッドを呼んだりすることができません[^double]。
+
+[^double]:
+もちろん、場合によってはrspec-mocksのspyのような振る舞いのほうがいいこともあるでしょう。
+その場合はrspec-mocksと同じようにcrispyの`double`メソッドを使いましょう。
+rspec-mocksの`double`と同じように、spyの機能も使えます。
+いや、私が実装し忘れてなければ使えるはずです。(;^\_^)
+
+# で、何がいいの？
+
+# 仕組み
+
+# これから
