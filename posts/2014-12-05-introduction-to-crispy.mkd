@@ -54,7 +54,7 @@ Test Doubleライブラリの多くには、「test spy」という機能があ�
 例えばcrispyだとこんな感じ。
 
 ```ruby
-# 対象のメソッドsubject_methodが、渡したFileオブジェクトをcloseするか？
+# 対象のメソッドsubject_methodが、渡したfileをcloseするか？
 file = File.open "hoge"
 spy_into file
 subject_method file
@@ -79,7 +79,7 @@ crispyは、名前が「spy」で終わっていることから表されるよ�
 rspec-mocksでは`double`がspyの機能を備えているためです。
 
 ```ruby
-# 対象のメソッドsubject_methodが、渡したFileオブジェクトをcloseするか？
+# 対象のメソッドsubject_methodが、渡したfileをcloseするか？
 file = spy 'fileっぽい何か'
 subject_method file
 
@@ -97,6 +97,36 @@ rspec-mocksの`double`と同じように、spyの機能も使えます。
 いや、私が実装し忘れてなければ使えるはずです。(;^\_^)
 
 # で、何がいいの？
+
+さて、あらゆるオブジェクトに対してspyできると、一体何が嬉しいのでしょう？ \
+それは、hogeです。
+
+例えば、先ほどの例で「`file`の`close`メソッドを呼んだり、他のメソッドを呼んだり」しつつ、
+「対象のメソッド`subject_method`が、渡した`file`を`close`するか？」調べるには、
+mockを使って次のように書かないといけません[^more-frequent]。
+
+[^more-frequent]:
+私の経験上、実際そのようなケースの方が多いように思います。
+呼んでいるかどうか調べたいメソッド以外のメソッドも使えた方が、
+変更に強いテストが出来るでしょうし、そのメソッドはstubするのではなくそのまま使うほうが、
+戻り値の型などをテストする側で意識する必要がなく、楽なので。
+
+```ruby
+file = File.open "hoge"
+
+expect(file).to receive(:close)
+subject_method file
+# この辺の時点でfileのcloseメソッドが呼ばれていれば、テストが通る。
+```
+
+先ほどの例とは打って変わって、
+「対象のメソッド`subject_method`が、渡した`file`を`close`するか？」
+と問う処理（RSpec用語で言うところの「expectation」）が、対象のメソッド`subject_method`の**前**にあります。 \
+RSpecに限らず、自動テストをある程度書いたことがある方なら、これがかなり異例であることはよくご存知でしょう。 \
+crispyはまさにこれをなくすために、あらゆるオブジェクトに対してspyできるようにしたのです。
+
+というのも、例えばここまで何度も出した例が、
+とある大きなspecの一部である場合を想像してみてください。
 
 # 仕組み
 
