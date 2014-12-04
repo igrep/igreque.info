@@ -1,5 +1,5 @@
 ---
-title: crispyというTest Doubleのためのgemを作ってます #SWTestAdvent
+title: より「普通に」書くためのTest Doubleライブラリ「crispy」 #SWTestAdvent
 author: Yuji Yamamoto
 tags: Ruby, Test Double
 ...
@@ -99,7 +99,7 @@ rspec-mocksの`double`と同じように、spyの機能も使えます。
 # で、何がいいの？
 
 さて、あらゆるオブジェクトに対してspyできると、一体何が嬉しいのでしょう？ \
-それは、hogeです。
+それは、テストをより普通な順序で書くことができる、という点です。
 
 例えば、先ほどの例で「`file`の`close`メソッドを呼んだり、他のメソッドを呼んだり」しつつ、
 「対象のメソッド`subject_method`が、渡した`file`を`close`するか？」調べるには、
