@@ -128,6 +128,50 @@ crispyはまさにこれをなくすために、あらゆるオブジェクト�
 というのも、例えばここまで何度も出した例が、
 とある大きなspecの一部である場合を想像してみてください。
 
+```ruby
+describe 'subject_method' do
+  before do
+    @file = File.open "hoge"
+
+    @result = subject_method file
+  end
+
+  it 'なにか望ましい値を返す' do
+    expect(@result).to eq 'なにか望ましい値'
+  end
+
+  it '渡したファイルになにか書き込む' do
+    @file.rewind # 書き込んだ値を調べるため、fileの読み込み位置を最初の位置に戻す
+    expect(@file.read).to eq 'なにか書き込まれた値'
+  end
+
+  it '何か他にも状態を変える' do
+    expect(nanika).to be_nantoka
+  end
+
+  # ... その他もろもろ。
+  # ここまで before ブロックで呼んだ subject_method が起こす影響を
+  # subject_method の **後に** 書くことでテストしていたのに、
+
+  it '渡したファイルのcloseメソッドを呼ぶ' do
+    # ここだけsubject_methodが起こす影響を **先に** 書かないといけない！
+    expect(@file).to receive(:close)
+    subject_method @file
+  end
+
+end
+```
+
+なんだかもにょりませんか？ \
+通例、私達はテストを通して対象のメソッドの振る舞いを記述する際、
+「hogehogeのメソッドを呼ぶとfugafugaな値を返す」と言った具合に、
+対象のメソッドの**戻り値**についての期待を書いたり、
+「hogehogeのメソッドを呼ぶとbarbarをblahblahな状態に変える」と言った具合に、
+対象のメソッドが**何かに及ぼす影響（副作用）**について書いたりするはずです。 \
+これらは原理的に対象のメソッドを呼んだ**後**にしか調べることができないため、
+対象のメソッドを、それに対する期待より前に書くことが、私達にとってより自然で「普通な」はずです。 \
+そしてこれを常に実現するには、設定した任意のオブジェクトに対してspyする仕組み --- つまりcrispyが、なくてはならないのです。
+
 # 仕組み
 
 # これから
