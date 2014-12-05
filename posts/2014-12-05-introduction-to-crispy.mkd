@@ -43,7 +43,7 @@ hoge.should_receive(:foo)
 という機能を使ったことがある、なんて方もいらっしゃるかもしれません。
 これはRSpecデフォルトのTest Doubleライブラリ、「[rspec-mocks](https://github.com/rspec/rspec-mocks)」です。
 
-Crispyはこのrspec-mocksを始め、[rr](https://github.com/rr/rr)、[flexmock](https://github.com/jimweirich/flexmock)など、
+crispyはこのrspec-mocksを始め、[rr](https://github.com/rr/rr)、[flexmock](https://github.com/jimweirich/flexmock)など、
 Ruby界に並み居る競合Test Doubleライブラリの置き換えになるものを目指して作られています。 \
 今のバージョンは0.2.0ですが、主要な機能は十分に使えるものとなっていますので、
 よろしければ[README](https://github.com/igrep/crispy/blob/master/README.md)を読んでお試しください。
