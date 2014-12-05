@@ -9,8 +9,8 @@ tags: Ruby, Test Double
 [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)の12月5日の記事を兼ねています。 \
 前日の記事はそれぞれ以下のものでした。
 
-- [ソフトウェアテストあどべんとかれんだー2014](http://connpass.com/event/9500/)がsue445さんの「[hoge](#)」で、
-- [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)がtbpgrさんの「[hoge](#)」でした。
+- [ソフトウェアテストあどべんとかれんだー2014](http://connpass.com/event/9500/)が[sue445](https://github.com/sue445/)さんの「[Paraductでお手軽マトリクステスト #SWTestAdvent](http://sue445.hatenablog.com/entry/2014/12/04/002041)」で、
+- [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)が[tbpgr](https://github.com/tbpgr)さんの「[条件分岐とループベースのロジックからコレクションパイプラインを利用したロジックへ #ruby](http://qiita.com/tbpgr/items/190859b5080914896db8)」でした。
 
 RubyのAdvent CalendarとテストのAdvent Calendarということで、
 今日は私が半年ぐらい前からちまちま作っている、[crispy](https://github.com/igrep/crispy)というTest Doubleのためのgemを紹介させてください。
