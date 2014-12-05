@@ -175,6 +175,61 @@ end
 対象のメソッドを、それに対する期待より前に書くことが、私達にとってより自然で「普通な」はずです。 \
 そしてこれを常に実現するには、設定した任意のオブジェクトに対してspyする仕組み --- つまりcrispyが、なくてはならないのです。
 
+## その2 普通のRubyでmessage expectation
+
+crispyの目覚ましい特徴は、もう一つあります。 \
+それは、spyしたオブジェクトが呼び出したメソッドと引数の記録を、`received_messages`というメソッドで自由にアクセスできるようにしたことです。 \
+これはすなわち、Rubyの「普通の」Arrayを扱うような感覚で、より複雑な条件のmessage expectation、言い換えればオブジェクトが呼び出したメソッドの記録のテスト、ができるということです。
+
+例を示すために、もう一度fileをcloseする件に帰りましょう。 \
+今度はcloseしたfileを二度と使ってほしくない、という要件から、
+`file`が呼んだ**最後の**メソッドが`close`であるかどうか調べたいとします。 \
+そのような場合、crispyでは次のように書くことができます。
+
+```ruby
+# 対象のメソッドsubject_methodが、渡したfileを**最後に**closeするか？
+file = File.open "hoge"
+spy_into file
+
+# received_messagesというArrayに、fileが呼び出したすべてのメソッドが記録されているので、
+# その最後の記録を見れば、fileが呼んだ最後のメソッドがcloseであるとわかる。
+spy(file).received_messages.last.method_name == :close
+# これも同じ意味。
+spy(file).received_messages[-1].method_name == :close
+```
+
+どうでしょう？直感的だと思いませんか？ \
+更に複雑なこともできます。 \
+今度は`close`よりも**前に**ちゃんと`read`メソッドを使って、`file`を読んでいるかも調べてみましょう。
+
+```ruby
+spy(file)
+  .received_messages          # file が呼んだすべてのメソッドから、
+  .map(&:method_name)         # メソッド名だけを取り出し、
+  .take_while do|method_name| # close より前のものだけを抜き出し、
+    method_name != :close
+  end
+  .include?(:read)            # read があるか調べる。
+```
+
+実際には大抵の場合、ここまで複雑なことをしなくてもテストしたいことをテストし切るのは簡単でしょう。 \
+しかしながらこの節の例は、`spy`と`received_messages`と`method_name`を除けば、
+すべてRubyのEnumerableやArrayの標準的なAPIを使って書かれています。 \
+crispyはこのように、**Rubyを普通に勉強した知識をそのまま活かして、複雑なmessage expectationを書ける**ようにしてくれます。 \
+そしてそのように勉強したRubyの知識は、テストだけでなく、実装する上でも必ず活かせるはずです。 \
+ピンとこない方はちょうど昨日のRuby Advent Calendar 2014の記事、
+tbpgrさんの「[条件分岐とループベースのロジックからコレクションパイプラインを利用したロジックへ #ruby](http://qiita.com/tbpgr/items/190859b5080914896db8)」
+を読んだりいろいろググったりして、今から使えるよう勉強してみるのをオススメします。
+
+これに対して他のTest Doubleライブラリはいかがでしょうか？ \
+私は少なくとも前述の例をrspec-mocksで実現する方法を知りません。 \
+他のライブラリはこうした複雑なケースをクリアするためにいろいろ直感的なAPIを考えて実装していますが、
+いずれもそれ専用の学習が必要ですし、時々曖昧さを産んでしまうこともあります（例は申し訳なくも割愛いたします）。 \
+私は日々rspec-mocksを使い、そうしたことに悩みながら、crispyを考え、開発することにしました。 \
+こうした思いに賛同される方も、あるいは「ホントかよ〜」なんて疑いの目を持たれる方も、ぜひ一度お試しになって、もろもろフィードバックをください！
+
+[https://github.com/igrep/crispy](https://github.com/igrep/crispy)
+
 # 仕組み
 
 # これから
