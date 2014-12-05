@@ -1,5 +1,5 @@
 ---
-title: より「普通に」書くためのTest Doubleライブラリ「crispy」 #SWTestAdvent
+title: より「普通に」書くためのTest Doubleライブラリ「crispy」 #ruby #SWTestAdvent
 author: Yuji Yamamoto
 tags: Ruby, Test Double
 ...
