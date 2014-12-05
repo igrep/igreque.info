@@ -233,3 +233,8 @@ tbpgrさんの「[条件分岐とループベースのロジックからコレ�
 # 仕組み
 
 # これから
+
+# 次回！
+
+- [ソフトウェアテストあどべんとかれんだー2014](http://connpass.com/event/9500/)が[a\_suenami](https://twitter.com/a_suenami)さん、
+- [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)が[komiyak](http://qiita.com/komiyak)さん、です！
