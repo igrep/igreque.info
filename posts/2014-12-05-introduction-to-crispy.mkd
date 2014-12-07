@@ -255,4 +255,4 @@ prependが使えないといけないので、あいにくRuby 2.0以降でな�
 # 次回！
 
 - [ソフトウェアテストあどべんとかれんだー2014](http://connpass.com/event/9500/)が[a\_suenami](https://twitter.com/a_suenami)さんの「[テストとは開発プロセスそのものである](http://a-suenami.hatenablog.com/entry/2014/12/06/125532)」、
-- [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)が[komiyak](http://qiita.com/komiyak)さん、です！
+- [Ruby Advent Calendar 2014](http://qiita.com/advent-calendar/2014/ruby)が[komiyak](http://qiita.com/komiyak)さんの「[Ruby だけで経験できること](http://komiyak.com/article/2014/12/06/you-can-experience-only-in-ruby.html)」、です！
