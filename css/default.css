@@ -80,7 +80,15 @@ article .history {
 /* article body */
 
 h1 {
-  font-size: 120%;
+  font-size: 150%;
+}
+
+h2 {
+  font-size: 130%;
+}
+
+h3 {
+  font-size: 115%;
 }
 
 ol,ul {
