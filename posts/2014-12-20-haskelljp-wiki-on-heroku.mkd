@@ -1,0 +1,44 @@
+---
+title: HaskellJP WikiをHerokuに上げるまで #haskell
+author: Yuji Yamamoto
+tags: Haskell, Heroku
+...
+---
+
+この記事は、
+[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の12月5日の記事です。 \
+前日の記事はhogeでした。
+
+# 業務連絡：HaskellJP WikiはHerokuにお引っ越ししました。
+
+きっかけは[HaskellJPのGoogle グループ]に、ある日突然現れた投稿でした。
+
+[すいません、、、http://wiki.haskell.jp/ をシャットダウンしようと思います](https://groups.google.com/forum/#!topic/haskell-jp/eBpKV6zGM5o)
+
+それまでHaskellJP Wikiの管理をされていた[masterq](https://twitter.com/masterq_mogumog)こと岡部さんが、
+Haskellよりも[ATS](http://jats-ug.metasepi.org/)という言語に惹かれるようになったのをきっかけに、
+HaskellJP Wikiの管理をやめることになってしまったのです[^masterq]。
+
+[^masterq]: 誤解なきように申し上げますと、私はmasterqさんを責めるつもりは全くありません。彼はHaskellのよさとATSのよさを理解した上で、彼が作りたいものにはATSがより向いていると判断した、ただそれだけのことです。
+
+
+- gititのユーザー登録をGitHubのOAuthを利用して出来るよう、 https://github.com/settings/applications/new で予め登録しておく。
+    - 中身は後で書き換えるので、とりあえずバリデーションエラーにならないよう適当に埋めてください。
+    - 作成したらそのClient IDとClient Secretを後で利用します。
+- wikiデータ用のリポジトリを作って、deployキーを発行する。
+- https://github.com/mietek/gitit に行って「Deploy to Heroku」
+    - ![](/imgs/2014-11-29-screencapture-dashboard-next-heroku-com-new.png) のフォームを埋める。
+        - 概ねデフォルトでいいのですが、以下重要な項目だけメモします。
+        - App Name: そのままアプリのサブドメインになります。後で独自ドメインに書き換えるので、適当な文字列にして非公開にしましょうとmasterqさんに言われましたので適当にしました。
+        - Region: とりあえずUnited Statesで
+        - BUILDPACK_URL: Heroku自体触るのほぼ初めてだったので詳しく理解できてないのですが、なんかビルド用のスクリプト群が入っているリポジトリのURLを指定するみたいです。何はともあれ[デフォルトであるmietekさんのリポジトリ](https://github.com/mietek/haskell-on-heroku)を指定しましょう。
+        - BUILDPACK_SSH_PRIVATE_KEY: なんか名前が紛らわしいですが、masterqさんいわく、Herokuにデプロイしたgititが、GitHubに保存したwikiの中身を更新する（gititユーザーの更新を受け、pushする）際に使うPRIVATE KEYだそうです。秘密鍵のファイル名（e.g. id_rsa）とかではなく、**秘密鍵の中身**をそのまんまコピペしましょう。
+        - Deploy for freeをクリック！
+
+- ドメインの設定
+    - DNSの設定
+    - Heroku側の設定
+    - コールバックURLの設定
+        - httpsをhttpに変えるのをお忘れなく！
+
+# 次回！
