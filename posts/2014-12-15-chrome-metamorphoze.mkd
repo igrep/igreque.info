@@ -68,26 +68,26 @@ tags: Precure, Google Chrome
 
 **ランス ドキドキプリキュア** と入力すると先ほどのように
 
-hoge
+![](/imgs/2014-12-15-timeline2-before.png)
 
 が
 
-hoge
+![](/imgs/2014-12-15-timeline2-after.png)
 
 になって
 
 **ぐらさん ハピネスチャージプリキュア** と入力すると
 
-hoge
+![](/imgs/2014-12-15-timeline-gplus-before.png)
 
 が
 
-hoge
+![](/imgs/2014-12-15-timeline-gplus-after.png)
 
 になりますし、
 あなたの嫁の名前を入力すれば、タイムラインのみなさんはみんなあなたの嫁に「変身」し、あなたにハピネスお届けデリバリーしてくれます。
 
-さあ、そんな調子でreplacerさんの力を使ってあんなサイトやこんなサイトにどんどん変身してもらいましょう。
+さあ、そんな調子でReplacerさんの力を使ってあんなサイトやこんなサイトにどんどん変身してもらいましょう。
 
 殺伐としたGitHubのIssueも...
 
