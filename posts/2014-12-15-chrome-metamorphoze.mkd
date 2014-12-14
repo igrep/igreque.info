@@ -60,7 +60,7 @@ tags: Precure, Google Chrome
 
 こちらの拡張を使います。本当は自分でこういうの作りたかったんだけどどう考えても時間がなかったのでね！
 
-[![replacer](hoge)](https://chrome.google.com/webstore/detail/replacer/nkkofabfinoleplbkkbmhhkjmomdgpag)
+[![Replacer](/imgs/2014-12-15-replacer.png)](https://chrome.google.com/webstore/detail/replacer/nkkofabfinoleplbkkbmhhkjmomdgpag)
 
 この拡張、使い方はすっごくシンプルで、インストールしたら例のごとくツールバーをクリックし、適当な検索ワードを入力してください。
 するとGoogleかなんかで画像検索した結果の画像で、表示しているウェブページのすべての画像が置き換えられます。
