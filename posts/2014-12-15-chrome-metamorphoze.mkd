@@ -37,8 +37,8 @@ tags: Precure, Google Chrome
 マナをはじめいろいろな人を助けて感謝される、という心温まるエピソードでした。
 
 今回は、そんなシャルルちゃんはじめドキドキ！プリキュアの妖精さん達にならって、
-われわれWebエンジニアにとってある意味パートナー妖精のような存在であるWebブラウザ、
-その中でも私が毎日使うGoogle Chromeに変身してもらい、たっぷり癒してもらおうという企画であります。
+われわれWebエンジニアにとってある意味パートナー妖精のような存在であるブラウザ、
+その中でも人気の高いGoogle Chromeに変身してもらい、たっぷり癒してもらおうという企画であります。
 
 # どんな風に変身するシャル？
 
@@ -140,5 +140,5 @@ tags: Precure, Google Chrome
 
 # 次回！
 
-明日の「[プリキュア Advent Calendar 2014](http://www.adventar.org/calendars/328)」の担当は、[@sue445](https://twitter.com/sue445)さんです！ \
+明日の「[プリキュア Advent Calendar 2014](http://www.adventar.org/calendars/328)」の担当は、[sue445](https://twitter.com/sue445)さんです！ \
 どんなキュアピース愛が語られるか、楽しみですね！
