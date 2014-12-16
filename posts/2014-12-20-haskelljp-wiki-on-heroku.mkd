@@ -21,8 +21,9 @@ HaskellJP Wikiの管理をやめることになってしまったのです[^mast
 
 [^masterq]: 誤解なきように申し上げますと、私はmasterqさんを責めるつもりは全くありません。彼はHaskellのよさとATSのよさを理解した上で、彼が作りたいものにはATSがより向いていると判断した、ただそれだけのことです。
 
-スタートHaskell 2の記録など、私にとっても思い出深いコンテンツが含まれるHaskellJP Wikiがこのままなくなってしまうことは避けたい事態でした。 \
-そこでどうにか復活させたいと申し出たところ、岡部さんが、[HerokuでHaskell製のWebアプリを動かす方法が最近出来た](hoge)のでどうか、と教えて下さいました。
+スタートHaskell 2の記録など、私にとっても思い出深いコンテンツが含まれるHaskellJP Wikiがこのままなくなってしまうことは、避けたい事態でした。 \
+そこでどうにか復活させたいと申し出たところ、岡部さんが、[HerokuでHaskell製のWebアプリを動かす方法が最近出来た](hoge)のでどうか、と教えて下さいました。 \
+Herokuならとりあえずは無料でできるしいいや、ということで軽いノリで始めたところ ... 意外とあっさりできちゃったので、今回は方法を共有したいと思います。
 
 - gititのユーザー登録をGitHubのOAuthを利用して出来るよう、 https://github.com/settings/applications/new で予め登録しておく。
     - 中身は後で書き換えるので、とりあえずバリデーションエラーにならないよう適当に埋めてください。
@@ -43,4 +44,10 @@ HaskellJP Wikiの管理をやめることになってしまったのです[^mast
     - コールバックURLの設定
         - httpsをhttpに変えるのをお忘れなく！
 
+# HaskellJP Wikiの今後
+
+# 仕組み
+
 # 次回！
+
+明日の[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の記事はhogeです。
