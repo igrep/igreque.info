@@ -26,6 +26,8 @@ Herokuならとりあえずは無料でできるしいいや、ということ�
 HaskellJP Wikiは[gitit](https://github.com/jgm/gitit)というWikiシステム（もちろんHaskell製）で動いていますので、以下の方法はgititをHerokuで使う場合にほぼそのまま使える方法です。
 みなさんもgititでWikiを作りたいということがあれば、ぜひお試しください。
 
+<a name="registerOauthApp"></a>
+
 # 1. GitHubのOAuth ApplicationとしてHaskellJP Wikiを登録する
 
 新しくなったHaskellJP Wikiでは、GitHubのOAuthを利用してユーザーの登録・認証を行うようになっています。
@@ -33,6 +35,8 @@ HaskellJP Wikiは[gitit](https://github.com/jgm/gitit)というWikiシステム�
 最初に[https://github.com/settings/applications/new](https://github.com/settings/applications/new)に行って、作成したいWikiの情報を登録しましょう。
 **中身は後で書き換える**ので、とりあえずバリデーションエラーにならないよう適当に埋めておいてください。 \
 OAuth Applicationなんで当然ですが、作成したらあとでその**Client IDとClient Secretを利用**するので、作成後の画面は開きっぱなしにでもしておきましょう。
+
+<a name="registerDeployKey"></a>
 
 # 2. Wikiデータ用のリポジトリを作って、deployキーを登録する
 
