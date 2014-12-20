@@ -1,0 +1,125 @@
+---
+title: HaskellJP WikiをHerokuに上げるまで #haskell
+author: Yuji Yamamoto
+tags: Haskell, Heroku
+...
+---
+
+この記事は、
+[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の12月20日の記事です。
+
+# 業務連絡：[HaskellJP Wiki](http://wiki.haskell.jp/)はHerokuにお引っ越ししました。
+
+きっかけは[HaskellJPのGoogle グループ](https://groups.google.com/forum/#!forum/haskell-jp)に、ある日突然現れた投稿でした。
+
+[すいません、、、http://wiki.haskell.jp/ をシャットダウンしようと思います](https://groups.google.com/forum/#!topic/haskell-jp/eBpKV6zGM5o)
+
+それまでHaskellJP Wikiの管理をされていた[masterq](https://twitter.com/masterq_mogumog)こと岡部さんが、
+Haskellよりも[ATS](http://jats-ug.metasepi.org/)という言語に惹かれるようになったのをきっかけに、
+HaskellJP Wikiの管理をやめることになってしまったのです[^masterq]。
+
+[^masterq]: 誤解なきように申し上げますと、私はmasterqさんを責めるつもりは全くありません。彼はHaskellのよさとATSのよさを理解した上で、彼が作りたいものにはATSがより向いていると判断した、ただそれだけのことです。
+
+スタートHaskell 2の記録など、私にとっても思い出深いコンテンツが含まれるHaskellJP Wikiがこのままなくなってしまうことは、避けたい事態でした。 \
+そこでどうにか復活させたいと申し出たところ、岡部さんが、[HerokuでHaskell製のWebアプリを動かす方法が最近出来た](https://haskellonheroku.com/)のでどうか、と教えて下さいました。 \
+Herokuならとりあえずは無料でできるしいいや、ということで軽いノリで始めたところ ... 意外とあっさりできちゃったので、今回は方法を共有したいと思います。 \
+HaskellJP Wikiは[gitit](https://github.com/jgm/gitit)というWikiシステム（もちろんHaskell製）で動いていますので、以下の方法はgititをHerokuで使う場合にほぼそのまま使える方法です。
+みなさんもgititでWikiを作りたいということがあれば、ぜひお試しください。
+
+<a name="registerOauthApp"></a>
+
+# 1. GitHubのOAuth ApplicationとしてHaskellJP Wikiを登録する
+
+新しくなったHaskellJP Wikiでは、GitHubのOAuthを利用してユーザーの登録・認証を行うようになっています。
+そのため、作成したいWiki毎にGitHubのOAuth Applicationとして登録する必要があります。 \
+最初に[https://github.com/settings/applications/new](https://github.com/settings/applications/new)に行って、作成したいWikiの情報を登録しましょう。 \
+とりあえずバリデーションエラーにならないよう適当に埋めればよいのですが、「**Authorization callback URL**」という項目は重要です。
+ここには「*\<Wikiに設定する予定のドメイン\>*/\_githubCallback」という値を入力してください。
+HaskellJP Wikiの場合はやはり「http://wiki.haskell.jp/\_githubCallback」でした。
+
+OAuth Applicationなんで当然ですが、作成したらあとでその**Client IDとClient Secretを利用**するので、作成後の画面は開きっぱなしにでもしておきましょう。
+
+<a name="registerDeployKey"></a>
+
+# 2. Wikiデータ用のリポジトリを作って、deployキーを登録する
+
+今度は、gititのWikiデータを保存するリポジトリを作りましょう[^wiki-data]。 \
+gititはその名が表す通り、Wikiデータの変更をgitで管理するようになっています。 \
+「それだとファイルシステムに直接データを保存することになるから、dynoがkillされるとファイルシステムも消えちゃうHerokuでは動かせないのでは？」と疑問に思う方もいらっしゃるかもしれません。 \
+今回利用する[mietekさんがforkしたgitit](https://github.com/mietek/instant-gitit)は、
+**dynoを起動するたびに元のリポジトリから`git pull`**し、**Wikiが更新されるたびに元のリポジトリに`git push`**する、
+というなかなかアクロバティックなアプローチでこの問題を回避しています。 \
+ここで作るのは、その際に使用する「元のリポジトリ」と、それと`git pull`したり`git push`してWikiデータをやり取りする際の公開鍵と秘密鍵のペアです。 \
+gititのデータが入ったgitリポジトリであれば何でも良いはずですが、ここではGitHubを利用した方法を説明します。
+
+1. お好きな名前で新しくGitHubにリポジトリを作りましょう（作り方は割愛します）。もちろんすでにWikiデータが入ったリポジトリがあるならそれでもOKです。
+2. 公開鍵を作ったリポジトリに登録するので、当然ながら`ssh-keygen`を使って新たに作成しましょう。gititが機械的に利用するものなので、passphraseは空にしてください[^no-passphrase]。
+    ```bash
+    $ ssh-keygen -f deploy_key
+    ```
+3. 作成した公開鍵ファイルと秘密鍵ファイルのうち、公開鍵ファイル（上記のコマンドだと`deploy_key.pub`）の中身を、先ほど作成したリポジトリのDeploy Keysとして登録しましょう。  \
+   作成したリポジトリのページから、「Settings」=\>「Deploy keys」の順にクリックすれば、下記のような画面が表示されるはずです。 \
+   ![](/imgs/2014-12-20-deploy-keys.png)
+4. 「Add Keys」ボタンをクリックすればOKです。
+
+[^wiki-data]: ちなみに、HaskellJP Wikiのものは[https://github.com/igrep/haskell-jp-wiki](https://github.com/igrep/haskell-jp-wiki)にあります。
+
+[^no-passphrase]: 今のところ、秘密鍵を暗号化したりして安全性を高めるオプションはなさそうです...。
+
+# 3. Herokuにgititをデプロイする
+
+いよいよHerokuにデプロイです。 \
+[https://github.com/mietek/gitit](https://github.com/mietek/instant-gitit) に行って \
+[![](/imgs/2014-12-20-deploy-to-heroku.svg)](https://heroku.com/deploy?template=https://github.com/mietek/instant-gitit)
+をクリックしてください。 \
+下記のような（恐らくHerokuファンにはお馴染みの）フォームが表示されるので、じゃんじゃん埋めちゃいましょう。
+
+![](/imgs/2014-12-20-screencapture-dashboard-next-heroku-com-new.png)
+
+埋める内容は概ねデフォルトでいいのですが、以下重要な項目だけメモします。
+
+App Name
+:    そのままアプリのサブドメインになります。HaskellJP Wikiの場合は後で独自ドメインに書き換えるので、適当な文字列にして非公開にしましょう、とmasterqさんに言われましたので適当にしました。
+
+Region
+:    とりあえずUnited Statesで。Tokyoもやっぱり使いたいですけどね！
+
+BUILDPACK\_URL
+:    Heroku自体触るのほぼ初めてだったので詳しく理解できてないのですが、ビルド用のスクリプト群が入っているリポジトリのURLを指定するみたいです。
+     何はともあれ、[デフォルトであるmietekさんのリポジトリ](https://github.com/mietek/haskell-on-heroku)を指定しましょう。
+
+BUILDPACK\_SSH\_PRIVATE\_KEY
+:    名前が紛らわしいですが、「[2. Wikiデータ用のリポジトリを作って、deployキーを登録する](#registerDeployKey)」で作成した**秘密鍵の中身**をそのまんまコピペしましょう。
+
+GITIT\_GIT\_URL
+:    「[2. Wikiデータ用のリポジトリを作って、deployキーを登録する](#registerDeployKey)」で作成した**リポジトリのURL**（sshプロトコル）を指定しましょう。 \
+     HaskellJP Wikiの場合、`git@github.com:igrep/haskell-jp-wiki.git`です。
+
+GITIT\_OAUTH\_CLIENT\_ID
+:    文字通りGitHubのOAuthを利用する際のClient IDです。 \
+     「[1. GitHubのOAuth ApplicationとしてHaskellJP Wikiを登録する](#registerOauthApp)」で作成した際のClient IDをコピペしてください。
+
+GITIT\_OAUTH\_CLIENT\_SECRET
+:    こちらも文字通りGitHubのOAuthを利用する際のClient Secretです。 \
+     [先ほどの節](#registerOauthApp)で作成した際のClient Secretをコピペしてください。
+
+GITIT\_OAUTH\_CALLBACK
+:    こちらも読んで字のごとくユーザーの登録・認証の際に用いるOAuthのcallback用URLです。 \
+     デフォルト値から察せられるように、「CHANGE\_ME」と書いてある部分をそのまま「App Name」に書き換えてもいいのですが、
+     ここでは「[1. GitHubのOAuth ApplicationとしてHaskellJP Wikiを登録する](#registerOauthApp)」で書いた、「**Authorization callback URL**」という項目と同じ値を入力してください。
+     「*\<Wikiに設定する予定のドメイン\>*/\_githubCallback」ですね。 \
+     httpとhttp**s**を間違えないようくれぐれもご注意ください。
+
+ここまで入力できたらDeploy for freeをクリックしてください！いよいよ本当に本当のデプロイです！ \
+とりあえず https://*「App Name」で設定した値*.herokuapp.com にアクセスして、gititが動いていることを確認しましょう。 \
+こんな感じのページが表示されるはずです。
+
+![](/imgs/2014-12-20-deployed-wiki.png)
+
+後はお使いのドメインのDNSレコードを編集して、https://*「App Name」で設定した値*.herokuapp.com をお使いのドメインのCNAMEとして設定するなりして、Herokuに対象のドメインを設定すればOKなはずです。
+[Herokuで独自ドメインを割り当てる(お名前.com)](http://qiita.com/icb54615/items/76acf2a1ea151535c5dc)などを参考にどうぞ。
+完了したらもろもろ動作確認してみましょう！お疲れ様でした！
+
+# 次回！
+
+明日の[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の記事は[fumievalさん](http://qiita.com/fumieval)の番です。
