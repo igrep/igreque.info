@@ -116,11 +116,9 @@ GITIT\_OAUTH\_CALLBACK
 
 ![](/imgs/2014-12-20-deployed-wiki.png)
 
-- ドメインの設定
-    - DNSの設定
-    - Heroku側の設定
-    - コールバックURLの設定
-        - httpsをhttpに変えるのをお忘れなく！
+後はお使いのドメインのDNSレコードを編集して、https://*「App Name」で設定した値*.herokuapp.com をお使いのドメインのCNAMEとして設定するなりして、Herokuに対象のドメインを設定すればOKなはずです。
+[Herokuで独自ドメインを割り当てる(お名前.com)](http://qiita.com/icb54615/items/76acf2a1ea151535c5dc)などを参考にどうぞ。
+完了したらもろもろ動作確認してみましょう！お疲れ様でした！
 
 # 問題点・注意事項
 
