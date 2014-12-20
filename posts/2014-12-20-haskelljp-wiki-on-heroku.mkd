@@ -32,8 +32,11 @@ HaskellJP Wikiは[gitit](https://github.com/jgm/gitit)というWikiシステム�
 
 新しくなったHaskellJP Wikiでは、GitHubのOAuthを利用してユーザーの登録・認証を行うようになっています。
 そのため、作成したいWiki毎にGitHubのOAuth Applicationとして登録する必要があります。 \
-最初に[https://github.com/settings/applications/new](https://github.com/settings/applications/new)に行って、作成したいWikiの情報を登録しましょう。
-**中身は後で書き換える**ので、とりあえずバリデーションエラーにならないよう適当に埋めておいてください。 \
+最初に[https://github.com/settings/applications/new](https://github.com/settings/applications/new)に行って、作成したいWikiの情報を登録しましょう。 \
+とりあえずバリデーションエラーにならないよう適当に埋めればよいのですが、「**Authorization callback URL**」という項目は重要です。
+ここには「*\<Wikiに設定する予定のドメイン\>*/\_githubCallback」という値を入力してください。
+HaskellJP Wikiの場合はやはり「http://wiki.haskell.jp/\_githubCallback」でした。
+
 OAuth Applicationなんで当然ですが、作成したらあとでその**Client IDとClient Secretを利用**するので、作成後の画面は開きっぱなしにでもしておきましょう。
 
 <a name="registerDeployKey"></a>
