@@ -8,7 +8,7 @@ tags: Haskell, Heroku
 この記事は、
 [Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の12月20日の記事です。
 
-# 業務連絡：HaskellJP WikiはHerokuにお引っ越ししました。
+# 業務連絡：[HaskellJP Wiki](http://wiki.haskell.jp/)はHerokuにお引っ越ししました。
 
 きっかけは[HaskellJPのGoogle グループ](https://groups.google.com/forum/#!forum/haskell-jp)に、ある日突然現れた投稿でした。
 
