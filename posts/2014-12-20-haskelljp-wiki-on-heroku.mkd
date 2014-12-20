@@ -66,14 +66,55 @@ gititのデータが入ったgitリポジトリであれば何でも良いはず
 
 [^no-passphrase]: 今のところ、秘密鍵を暗号化したりして安全性を高めるオプションはなさそうです...。
 
-- https://github.com/mietek/gitit に行って「Deploy to Heroku」
-    - ![](/imgs/2014-11-29-screencapture-dashboard-next-heroku-com-new.png) のフォームを埋める。
-        - 概ねデフォルトでいいのですが、以下重要な項目だけメモします。
-        - App Name: そのままアプリのサブドメインになります。後で独自ドメインに書き換えるので、適当な文字列にして非公開にしましょうとmasterqさんに言われましたので適当にしました。
-        - Region: とりあえずUnited Statesで
-        - BUILDPACK_URL: Heroku自体触るのほぼ初めてだったので詳しく理解できてないのですが、なんかビルド用のスクリプト群が入っているリポジトリのURLを指定するみたいです。何はともあれ[デフォルトであるmietekさんのリポジトリ](https://github.com/mietek/haskell-on-heroku)を指定しましょう。
-        - BUILDPACK_SSH_PRIVATE_KEY: なんか名前が紛らわしいですが、masterqさんいわく、Herokuにデプロイしたgititが、GitHubに保存したwikiの中身を更新する（gititユーザーの更新を受け、pushする）際に使うPRIVATE KEYだそうです。秘密鍵のファイル名（e.g. id_rsa）とかではなく、**秘密鍵の中身**をそのまんまコピペしましょう。
-        - Deploy for freeをクリック！
+# 3. Herokuにgititをデプロイする
+
+いよいよHerokuにデプロイです。 \
+[https://github.com/mietek/gitit](https://github.com/mietek/instant-gitit) に行って \
+[![](/imgs/2014-12-20-deploy-to-heroku.svg)](https://heroku.com/deploy?template=https://github.com/mietek/instant-gitit)
+をクリックしてください。 \
+下記のような（恐らくHerokuファンにはお馴染みの）フォームが表示されるので、じゃんじゃん埋めちゃいましょう。
+
+![](/imgs/2014-12-20-screencapture-dashboard-next-heroku-com-new.png)
+
+埋める内容は概ねデフォルトでいいのですが、以下重要な項目だけメモします。
+
+App Name
+:    そのままアプリのサブドメインになります。HaskellJP Wikiの場合は後で独自ドメインに書き換えるので、適当な文字列にして非公開にしましょう、とmasterqさんに言われましたので適当にしました。
+
+Region
+:    とりあえずUnited Statesで。Tokyoもやっぱり使いたいですけどね！
+
+BUILDPACK\_URL
+:    Heroku自体触るのほぼ初めてだったので詳しく理解できてないのですが、ビルド用のスクリプト群が入っているリポジトリのURLを指定するみたいです。
+     何はともあれ、[デフォルトであるmietekさんのリポジトリ](https://github.com/mietek/haskell-on-heroku)を指定しましょう。
+
+BUILDPACK\_SSH\_PRIVATE\_KEY
+:    名前が紛らわしいですが、「[2. Wikiデータ用のリポジトリを作って、deployキーを登録する](#registerDeployKey)」で作成した**秘密鍵の中身**をそのまんまコピペしましょう。
+
+GITIT\_GIT\_URL
+:    「[2. Wikiデータ用のリポジトリを作って、deployキーを登録する](#registerDeployKey)」で作成した**リポジトリのURL**（sshプロトコル）を指定しましょう。 \
+     HaskellJP Wikiの場合、`git@github.com:igrep/haskell-jp-wiki.git`です。
+
+GITIT\_OAUTH\_CLIENT\_ID
+:    文字通りGitHubのOAuthを利用する際のClient IDです。 \
+     「[1. GitHubのOAuth ApplicationとしてHaskellJP Wikiを登録する](#registerOauthApp)」で作成した際のClient IDをコピペしてください。
+
+GITIT\_OAUTH\_CLIENT\_SECRET
+:    こちらも文字通りGitHubのOAuthを利用する際のClient Secretです。 \
+     [先ほどの節](#registerOauthApp)で作成した際のClient Secretをコピペしてください。
+
+GITIT\_OAUTH\_CALLBACK
+:    こちらも読んで字のごとくユーザーの登録・認証の際に用いるOAuthのcallback用URLです。 \
+     デフォルト値から察せられるように、「CHANGE\_ME」と書いてある部分をそのまま「App Name」に書き換えてもいいのですが、
+     ここでは「[1. GitHubのOAuth ApplicationとしてHaskellJP Wikiを登録する](#registerOauthApp)」で書いた、「**Authorization callback URL**」という項目と同じ値を入力してください。
+     「*\<Wikiに設定する予定のドメイン\>*/\_githubCallback」ですね。 \
+     httpとhttp**s**を間違えないようくれぐれもご注意ください。
+
+ここまで入力できたらDeploy for freeをクリックしてください！いよいよ本当に本当のデプロイです！ \
+とりあえず https://*「App Name」で設定した値*.herokuapp.com にアクセスして、gititが動いていることを確認しましょう。 \
+こんな感じのページが表示されるはずです。
+
+![](/imgs/2014-12-20-deployed-wiki.png)
 
 - ドメインの設定
     - DNSの設定
