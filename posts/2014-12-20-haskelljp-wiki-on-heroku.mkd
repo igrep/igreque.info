@@ -10,7 +10,7 @@ tags: Haskell, Heroku
 
 # 業務連絡：HaskellJP WikiはHerokuにお引っ越ししました。
 
-きっかけは[HaskellJPのGoogle グループ]に、ある日突然現れた投稿でした。
+きっかけは[HaskellJPのGoogle グループ](https://groups.google.com/forum/#!forum/haskell-jp)に、ある日突然現れた投稿でした。
 
 [すいません、、、http://wiki.haskell.jp/ をシャットダウンしようと思います](https://groups.google.com/forum/#!topic/haskell-jp/eBpKV6zGM5o)
 
