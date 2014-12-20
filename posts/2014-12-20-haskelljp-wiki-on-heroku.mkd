@@ -6,8 +6,7 @@ tags: Haskell, Heroku
 ---
 
 この記事は、
-[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の12月5日の記事です。 \
-前日の記事はhogeでした。
+[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の12月20日の記事です。
 
 # 業務連絡：HaskellJP WikiはHerokuにお引っ越ししました。
 
