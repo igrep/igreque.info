@@ -122,4 +122,4 @@ GITIT\_OAUTH\_CALLBACK
 
 # 次回！
 
-明日の[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の記事はhogeです。
+明日の[Haskell Advent Calendar 2014](http://qiita.com/advent-calendar/2014/haskell)の記事は[fumievalさん](http://qiita.com/fumieval)の番です。
