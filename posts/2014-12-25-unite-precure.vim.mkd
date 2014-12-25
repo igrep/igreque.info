@@ -6,7 +6,8 @@ tags: Precure, Vim
 ---
 
 この記事は、
-この記事は「[プリキュア Advent Calendar 2014](http://www.adventar.org/calendars/328)」25日目の記事です。
+この記事は「[プリキュア Advent Calendar 2014](http://www.adventar.org/calendars/328)」25日目の記事です。 \
+前日の記事は[@\_signalessさんのtweet](https://twitter.com/_signaless/status/547539130557534209)でした。 \
 いよいよ最終日、クリスマスですね～！
 
 # そこにあるバグ！プログラマの日常！
