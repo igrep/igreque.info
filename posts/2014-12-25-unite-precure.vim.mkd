@@ -57,8 +57,41 @@ tags: Precure, Vim
 アクションのリストにあったとおり、他にも変身シーンでのセリフや、日本語の名前も簡単に入力できるようになってます。 \
 これならひよっこプログラマさんのように2時間もハマる必要はないでしょう。
 
-ぱっと思いつきで作ったため、正直なところまだまだいろいろ機能不足なところはありますが、まぁ気が向いた時に拡張しようかな、と思います。 \
+ぱっと思いつきで作ったため、正直なところまだまだいろいろ機能不足なところはありますが、まぁ気が向いた時に拡張しようかな、と思います。
 もちろんPull Requestも歓迎です。
+
+# プリキュア！ネオバンドルインストール！
+
+先程も触れたとおりrubicureに依存しているため、利用するには`if_ruby`付きでコンパイルされたVimが必要です[^ruby]。 \
+お使いのVim上で`:version`コマンドを実行し、`+ruby`と書かれていなければ頑張って再コンパイルしましょう。 \
+自分は[「Linux(Ubuntu)で(G)Vimをコンパイルする | コンピュータ忘備録」](http://c0lvlput3r.blogspot.jp/2013/07/building-gvim-on-ubuntu-linux.html)を参考にしました。 \
+MacやWindowsをお使いの方は、おなじみ[Kaoriyaのvim](http://vim-jp.org/)を使いましょう。 \
+Windowsの場合は更に[RubyInstaller for Windows](http://rubyinstaller.org/)でRuby 2.0をインストールしてください。 \
+`PATH`にRubyを設定するのも忘れないでくださいね。 \
+そしてもちろんRubyをインストールしたら`gem install rubicure`して、rubicureをインストールしましょう。
+
+[^ruby]: なぜ`if_python`とかに比べて普及してない`if_ruby`にしたかって？
+自分が一番得意というのもありますが、Vimから使える言語のプリキュア実装の中でrubicureが一番メンテされていたからなのです...。
+
+仕上げはやっぱり本プラグイン`unite-precure`のインストールです。 \
+Vimプラグインのインストール方法はいろいろありますが、
+とりあえず[neobundle.vim](https://github.com/Shougo/neobundle.vim)を使った方法を紹介します。 \
+と言ってもneobundle.vimに慣れてらっしゃる方はもはや言うまでもないかと思いますが...。
+
+vimrcなど、NeoBundleするプラグインを書いているところで
+
+```
+NeoBundle 'igrep/unite-precure'
+```
+
+してVimを再起動すれば多分動きます。
+
+駆け足になってしまいましたが、以上が`unite-precure`のインストール方法です。 \
+プリキュアが好きなVimmerの方はぜひお試しください！
+
+最後に。rubicureという素晴らしいgemを書いてくださったsue445さん、
+[PreCure Driven Developmentの楽しさ](http://blog.ligun.net/2014/12/cure_advent_2014_02/)を教えてくださったligunさんありがとうございました！
+PDD楽しかったです！
 
 # 次回！
 
