@@ -1,5 +1,5 @@
 ---
-title: ユナイトプリキュア！このあとVim！
+title: ユナイトプリキュア！このあとVim！ #cure_advent
 author: Yuji Yamamoto
 tags: Precure, Vim
 ...
