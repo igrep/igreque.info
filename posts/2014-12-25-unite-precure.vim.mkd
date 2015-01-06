@@ -66,7 +66,8 @@ tags: Precure, Vim
 お使いのVim上で`:version`コマンドを実行し、`+ruby`と書かれていなければ頑張って再コンパイルしましょう。 \
 自分は[「Linux(Ubuntu)で(G)Vimをコンパイルする | コンピュータ忘備録」](http://c0lvlput3r.blogspot.jp/2013/07/building-gvim-on-ubuntu-linux.html)を参考にしました。 \
 MacやWindowsをお使いの方は、おなじみ[Kaoriyaのvim](http://vim-jp.org/)を使いましょう。 \
-Windowsの場合は更に[RubyInstaller for Windows](http://rubyinstaller.org/)でRuby 2.0をインストールしてください。 \
+Windowsの場合は更に[RubyInstaller for Windows](http://rubyinstaller.org/)で**Ruby 2.0**をインストールしてください。 \
+本校執筆時点でKaoriyaのVim (ver. 7.4.475)は、Ruby 2.0での利用を想定しています。なので**必ずRuby 2.0**を選んでください。 \
 `PATH`にRubyを設定するのも忘れないでくださいね。 \
 そしてもちろんRubyをインストールしたら`gem install rubicure`して、rubicureをインストールしましょう。
 
