@@ -79,7 +79,7 @@ crispyは、名前が「spy」で終わっていることが示しているよ�
 そのものずばり`spy`メソッドによって作られる、spy専用のオブジェクトを使わなければなりません[^actually-double]。
 
 [^actually-double]:
-詳しい人にバカにされない人のために補足しますと、実際にはrspec-mocksの`spy`は`double`とほぼ同等のものを返します。
+詳しい人にバカにされないために補足しますと、実際にはrspec-mocksの`spy`は`double`とほぼ同等のものを返します。
 rspec-mocksでは`double`がspyの機能を備えているためです。
 
 ```ruby
