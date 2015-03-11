@@ -51,3 +51,4 @@ Idea2
 
 idea3
     Reader, State, Writerはこう使うっぽい。
+    => Haskellを知らない人向けにとっておく。
