@@ -87,9 +87,10 @@ lookup uID firstNameDB >>= (\fname -> ...)
 - `do`記法で
     ```haskell
     do
-      (foo
-       bar)
-      baz
+      a <- do
+        b <- foo
+        bar b
+      baz a
     ```
 - みたいに書いたり、
 
@@ -98,11 +99,13 @@ lookup uID firstNameDB >>= (\fname -> ...)
 - `do`記法で
     ```haskell
     do
-      foo
-      (bar
-       baz)
+      b <- foo
+      do
+        a <- bar b
+        baz a
     ```
-- みたいにカッコで気を使わなくてよくなっていること
+- みたいに結合の仕方に気を使わなくてよくなっていること
+    - （この例と前のスライドの例が必ず同じ意味になること）
 
 # 違うのは
 
