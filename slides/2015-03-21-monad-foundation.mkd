@@ -50,7 +50,7 @@
     ```haskell
     main = do
       putStr "こんなんだったり"
-      replicateM_ 3 $ \_ -> do
+      replicateM_ 3 $ do
         threadDelay 1000000
         putStr "."
       putStrLn "。"
