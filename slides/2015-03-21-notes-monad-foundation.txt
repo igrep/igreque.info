@@ -52,3 +52,8 @@ Idea2
 idea3
     Reader, State, Writerはこう使うっぽい。
     => Haskellを知らない人向けにとっておく。
+
+# 質問
+
+- HaskellのMonadで「Monad則」と呼んでいるものは実際のところ「自己関手のCategory」がCategory則を満たすための規則？
+    - 普通にTypeclassopediaにそう書いてあった。
