@@ -23,11 +23,11 @@ tags: Precure, Google Chrome
 
 ドキドキ！プリキュアの妖精さんと言えば、そんな私がとってもキュンキュンしちゃう、大変ハートフルなお話がありました。
 
-<center>
+<div style="text-align:center">
 [![マナのために！シャルル大変身！](/imgs/2014-12-15-title.jpg)](http://www.toei-anim.co.jp/tv/dokidoki_precure/episode/summary/29/)
 
 （... 脳内タイトルコール再生中 ...）
-</center>
+</div>
 
 上記の画像に貼ったリンク先の通りですが、 \
 このお話は、キュアハートこと相田マナさんのパートナー妖精、 \
