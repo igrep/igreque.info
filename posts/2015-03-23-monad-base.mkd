@@ -1,0 +1,104 @@
+---
+title: モナド基礎勉強会 参加・LTしました + 【重要】発表内容の訂正
+author: Yuji Yamamoto
+tags: Haskell, Monad
+...
+---
+
+3月21日土曜日、名古屋で行われた[モナド基礎勉強会](http://xbase.connpass.com/event/11252/)に参加し、LTしました。 \
+後れ馳せながら感想記事です。
+
+# 知ったこと
+
+やはり想像通りの難しさで内容の9割は理解できなかったように思いますorz \
+事前にLTのために初歩的な部分は理解したつもりだったので結構行けるかな、と思いましたが甘くないですねー。
+
+そんな中でもふんわりと理解できたこととその印象を。（一部、[\@khibino](https://twitter.com/khibino)さんからアドバイスを元に得た理解もあります。）
+
+- <a href="http://www.amazon.co.jp/gp/product/4621063243/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=4621063243&linkCode=as2&tag=poe02-22">圏論の基礎</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=4621063243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />は全部読むんじゃなくてリファレンス的に持っておくといいそうですね！特に前書きは地雷らしい。
+- モナドが「モノイド対象」たるゆえんは`join`が結合則を満たすところにあるそうです。だから`join`はあんなに持ち上げられる [^join-lift]のか...
+- `Free`モナドは「algebraの圏」。Abstract Syntax Treeを作る。対象は「式M aを評価してaを取り出す評価の仕方（一つのセマンティクス）」で射はよくわかんなかった！
+    - 確かに改めて定義を見るとTreeっぽい。
+    - 「M a」と聞きますとラムダ項を思い出しますが、多分関係あるんでしょうね。というかそのもの？
+- [Monatron](http://hackage.haskell.org/package/Monatron)、名前がなんかかわいい（？）。Yet another [mtl](http://hackage.haskell.org/package/mtl)らしい。
+- 一番よく理解できたのは[\@mzp](https://twitter.com/mzp)さんの「IOモナドを実装してみた」でした。まぁ、そんなに数学数学した話をしてないからですけど...。
+    - GHCの`IO`が線形論理を基礎に作られている、というのは意外でした。一意型ってまさかそんな意味だったとは...。実装がよく`World`を隠蔽で来てる証ですね。
+- 共変Hom関手、確かにReaderっぽい。
+- [ちゅーんさんの発表](http://tokiwoousaka.github.io/takahashi/contents/150321monadBase.html)からのコピペで恐縮ですが...
+    - Operationalは、APIを書き連ねる所から設計がはじまる。
+    - Operationalなら、API設計と実装部分は完全に切り離す事ができる。
+- [`<*>`は「applied over」と読むらしい。](https://wiki.haskell.org/Pronunciation)
+- Scala, 複雑な型宣言は辛い。でも今後Scala派の人とも仲良くすることになるかもだし、理解したほうがいいのかも。
+- `objective`, 難しそう。そしてなんでHaskellやのにオブジェクト使わなならんねん感ある。[発表者本人のこの発言](https://twitter.com/fumieval/status/574055197984485376)通り常に必要というわけではないみたいだけど...。
+
+[^join-lift]: `join`は持ち上げる(`lift`)のとはある意味真逆の動作ですが、この場合関係はありません。
+
+その他、どんな話題が出たか、などは[\@hirataraさんの記事](http://hiratara.github.io/posts/2015-03-21-monadbase_2.html)や[togetter](http://togetter.com/li/797710)をご覧ください。
+
+# 話したこと
+
+こちらが発表時のスライドです。 \
+参加してない人のためを思って最初から詳しめに書いているので、読んでいただけると幸いです [^no-change]。
+
+[^no-change]: 前の[関数型LT大会](/posts/2014-05-11-monad-as-have-to-do.html)での発表と合わせて読んでいただけるともっと幸いです。
+
+[Monadなんてどうってことなかった話](/slides/2015-03-21-monad-foundation.html)
+
+例のごとく[Slideshare](//www.slideshare.net/igrep/monad-46166107)にも上げました。
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/46166107" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px">   </div>
+
+当日1週間前を切ってもほとんどなんにも書けず、何度もLT枠をキャンセルして「浸される枠」に移ろうかと思い悩みながら書きましたが、
+結果的にはTL上でも懇親会上でも良い反応を頂けてすごく嬉しかったです。 \
+特に、「圏論を真面目に勉強してる人の気を害さないだろうか」という点が懸念材料でしたが、杞憂だったようでホッとしました。 \
+喜びの声が[togetterのこの辺](http://togetter.com/li/797710?page=9)にも上がっております！みんなありがとう！
+
+
+また、今回まがいなりにも圏論をちょっとかじってみて、少しでも理解できたのが面白かったです。 \
+<a href="http://www.amazon.co.jp/gp/product/4621063243/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=4621063243&linkCode=as2&tag=poe02-22">圏論の基礎</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=4621063243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を読むなりしてこれからも少しずつ勉強してみます。
+
+ついでに、私が参考にした資料も一応貼っておきますね。
+
+- [Haskell for all: The category design pattern](http://www.haskellforall.com/2012/08/the-category-design-pattern.html)\
+    英語で恐縮ですがめちゃめちゃ分かりやすかったです。Haskellやその他プログラミングで使われる概念とのつながりを大変明瞭にしてくれました。
+- [Haskell for all: The functor design pattern](http://www.haskellforall.com/2012/09/the-functor-design-pattern.html)\
+    上の続き。こちらも同様に素晴らしい。
+- [簡約!? λカ娘 Go!](http://www.paraiso-lang.org/ikmsm/books/c84.html)の第4章「殺物語」 \
+    実は僕にとって圏論への入り口はここでした。簡潔にまとまっていて、いい入口になったかと思います。
+- [灘校パソコン研究部 部誌の「圏論によるプログラミングと論理」](http://www.npca.jp/works/magazine/#2013) \
+    こちらは肝心の圏論的な部分がほとんど読めてませんが、これからおいおいと...。
+
+## 【重要】発表内容の訂正
+
+おっと、それと大事なことを忘れておりました。掲題通り発表内容に一部重要な誤りがあったので訂正します。 \
+**ニートは`Monad`ではありません**でした。
+
+```haskell
+data NotWorking = NotWorking
+
+instance Monoid NotWorking where
+  mempty = NotWorking
+  mappend = const
+
+type Neet = Const NotWorking
+```
+
+ニートは`Const NotWorking`なので [^NotWorking]、`Const a`がそうであるように`Applicative`ではありますが`Monad`ではありません。 \
+この場を借りて訂正させていただきます。大変失礼いたしました。
+
+[^NotWorking]: `NetWorking`と空目しないように！`Const NetWorking`だとなんだか逆に意識高そうに聞こえます！
+
+# 最後に感謝など
+
+第一に[\@khibino](https://twitter.com/khibino)さん、
+[Haskellもくもく会](http://haskellmokumoku.connpass.com/)で会場を貸していただいたり、
+わからないところを教えていただいたり、以前から大変お世話になっております。
+今回はお昼にばったりお会いした時から会の終了までご一緒させていただきましたが、要所要所で興味深いアドバイスをいただき、良い刺激となりました。
+ありがとうございます。
+次回のHaskellもくもく会も、ぜひよろしくお願いします！
+
+第二に[\@kyon\_mm](https://twitter.com/kyon_mm)さん、企画、会場の手配、お菓子の差し入れなど諸々本当にありがとうございました。
+今回の企画がなければ私の名古屋関数型帝国行きはまた遠のいていたことでしょう。
+
+そして発表者の方々含め参加者の皆さん、興味深い発表をお聞かせいただいたり、私の拙い発表を聞いていただたりして本当にありがとうございました。 \
+初名古屋は本当に楽しかったです！
