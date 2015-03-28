@@ -22,6 +22,12 @@ Neo4jについて、[Eight](https://8card.net/)でも使えないかな、なん
 - [Graph Databases](http://graphdatabases.com/)
 - [2.1. What is a Graph Database? -  - The Neo4j Manual v2.0.3](http://docs.neo4j.org/chunked/stable/what-is-a-graphdb.html)
 
+追記: 最近[Graph Databases](http://graphdatabases.com/)の日本語版が出ましたね。
+せっかくなんでアフィリエイトのタグでも載せておきましょうか。
+
+<a href="http://www.amazon.co.jp/gp/product/4873117143/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=4873117143&linkCode=as2&tag=poe02-22">グラフデータベース ―Neo4jによるグラフデータモデルとグラフデータベース入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=4873117143" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+
+
 # 速さの秘密について
 
 Neo4jの人気の理由をまず一つ挙げるならば、
