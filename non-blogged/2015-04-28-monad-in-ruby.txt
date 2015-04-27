@@ -1,0 +1,55 @@
+わかった気になれるかもしれないMonad Ruby編
+
+みなさん！
+	Haskellと言えばMonadですよね？
+
+	じゃあRubyでは？
+    ( ﾟ д ﾟ ) えっ
+
+	RubyにもMonadはあります。
+
+どう言うことだってばよ？
+	本来の圏論で言うところのMonadは、HaskellのMonadに限らず、プログラムの世界に満ち溢れています。
+
+と、言うわけで
+	今日はRubyで言うとMonadってどないなもんやねん、という話と、
+	なぜそれがHaskellで便利なのか、を簡単に説明するよ♪
+
+	怖い人もいないからマサカリも飛んでこない！安心だね ☆（ゝω・）vｷｬﾋﾟ
+
+先に結論（どこまで話せるかなー）
+	RubyでもMonadは定義できますが、ハッキリ言って全く役に立たないでしょう。
+	Monadはどこにでもあり、Haskellは敢えてそれに名前を与え、do記法という特別な構文糖を用意しています。
+	ネストを浅くしたり、純粋な関数ではやりづらかったことをdo記法を使ってやったりします。
+
+Monadって？
+	「圏論」という数学の一分野の用語です。
+	が、今回は圏論の話は省略（超ムズい）。
+
+じゃあHaskellのMonadって？
+	こんな定義の型クラスです。
+
+		class Monad m where
+		  return :: a -> m a
+		  >>= :: m a -> (a -> m b) -> m b
+
+？？？
+	日本語でおk!
+
+そもそも型クラスって？
+	JavaやC#で言うところのinterface
+	Rubyで言うところのmix-inされるModule (例えばEnumerable)
+
+Ruby語でもおk!
+
+	module Monad
+	  def return x
+	    raise NotImplementedError
+	  end
+	  def bind &block
+	    raise NotImplementedError
+	  end
+	end
+
+やっぱり日本語でもおk!
+  Monadは
