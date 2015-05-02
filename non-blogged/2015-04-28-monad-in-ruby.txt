@@ -18,7 +18,7 @@
 	怖い人もいないからマサカリも飛んでこない！安心だね ☆（ゝω・）vｷｬﾋﾟ
 
 先に結論（どこまで話せるかなー）
-	RubyでもMonadは定義できますが、ハッキリ言って全く役に立たないでしょう。
+  Monadは何かしら「やらなければならないこと」がくっついた値を表現しています。
 	Monadはどこにでもあり、Haskellは敢えてそれに名前を与え、do記法という特別な構文糖を用意しています。
 	ネストを浅くしたり、純粋な関数ではやりづらかったことをdo記法を使ってやったりします。
 
@@ -30,10 +30,10 @@ Monadって？
 	こんな定義の型クラスです。
 
 		class Monad m where
+		  (>>=) :: m a -> (a -> m b) -> m b
 		  return :: a -> m a
-		  >>= :: m a -> (a -> m b) -> m b
 
-？？？
+??? ( ﾟдﾟ)ﾎﾟｶｰﾝ ???
 	日本語でおk!
 
 そもそも型クラスって？
@@ -43,13 +43,186 @@ Monadって？
 Ruby語でもおk!
 
 	module Monad
-	  def return x
+	  def bind &block
 	    raise NotImplementedError
 	  end
-	  def bind &block
+	  def return x
 	    raise NotImplementedError
 	  end
 	end
 
+orz
+  型情報が抜け落ちた結果、Rubyではほとんど無意味なModuleに...。
+
 やっぱり日本語でもおk!
-  Monadは
+
+  Monadは（オブジェクト指向の言葉を借りて言うと）
+    bindというメソッドと、
+    returnというメソッドを実装したクラスです。
+    何かしら「やらなければならないこと」がくっついた値を表現しています。
+
+bind？
+  「やらなければならないこと」を行ったうえで、付属のブロックに渡すメソッド。
+  ※Haskellでは「>>=」という妙な記号となってますが、一般に「bind」と呼ばれています。
+
+return？
+  実質「何もしない」けど「やらなければならないこと」がくっついた値を作るメソッド。
+  ※他の言語の「return」とはまるで違う意味なのでご注意ください。Haskell界でも悪名高き悪名です。
+
+そんで？
+
+  これらの、
+  returnメソッドでやっている処理と、
+  bindメソッドでやっている諸々の処理（のグループ）を、
+  一定のルールに従うように作れれば、
+  それらはなんでも「Monad」と呼ぶことが出来ます。
+  それらの処理の（のグループ）のことを「Monad」と呼んでも概ね差し支えありません。
+
+一定のルール？
+  「Monad則」と呼びます。
+
+何のためにそんなものが？
+	Monadの話から逸れるけど、例えばこんなクラス、嫌でしょ？
+
+		class AnnoyingEqual
+		  def == _other
+		    true
+		  end
+		end
+
+	右辺が違うクラスのオブジェクトの場合、交換則を満たさないから
+
+		  x == y
+		  y == x
+
+	の結果が一貫しない！
+
+じゃあ、Monad則って？
+  今回は諸般の事情により、一部のみお話します。
+
+Ruby語で言うよ！
+
+	mがMonadをincludeしたクラスのインスタンス、
+  hoge1, hoge2がそのインスタンスを返す関数だとして、
+
+<!-- Haskellからコピペしたメモ
+m >>= (\x -> k x >>= h) == (m >>= k) >>= h
+
+m.bind {|x| (k x).bind {|y| h y } }
+(m.bind {|x| k x}).bind {|y| h y }
+
+  y <- do
+    x <- m k
+    k x
+  h y
+
+do
+  x <- m
+  do
+    y <- k x
+    h y
+-->
+
+	  m.bind do|a|
+      hoge1(a).bind do|b|
+        hoge2(b)
+      end
+    end
+
+  と、
+
+    m.bind do|a|
+      hoge1(a)
+    end.bind do|b|
+      hoge2(b)
+    end
+
+  が、同じ意味になること！
+
+こういう「書き換え」ができることが、Monadのインスタンスが満たすべき「Monad則」（の一つ）です。
+
+例えば...
+
+「bind」を
+「レシーバーがnilだったら付属のブロックを実行しないで、
+レシーバーがnil以外だったら付属のブロックを実行する」、
+という処理だとしてみましょう。
+
+nilとnil以外のオブジェクトなんで、Objectに実装しちゃいましょう。
+
+Ruby語でおk!
+
+  class Object
+    include Monad
+    def bind &block
+      block.call unless self.nil?
+    end
+  end
+
+使い方
+
+  x1.bind do|y1|
+    hoge(y1)
+  end.bind do|x2|
+    ...
+  end
+
+nilチェックが隠れて、ちょっと楽になりましたね！
+
+実はこれ、Railsにあるtryメソッドにブロックを付けたバージョンと一緒。
+
+他にも例えば...
+
+「bind」を
+ファイルを開いて、プログラムの最後に必ず閉じる、という処理だとしてみましょう。
+
+  class Open
+    include Monad
+    def initialize file_name
+      @file_name
+    end
+    def bind &block
+      file = File.open @filename
+      at_exit { file.close }
+      block.call file
+    end
+  end
+
+使い方
+
+  Open.new(path1).bind do|file1|
+    hoge file1
+  end
+  Open.new(path2).bind do|file2|
+    foo file2
+  end
+
+bindの戻り値を使っていないことからしてちょっと不規則ですが、これもアリです。
+returnが関係しているのですが、詳しい事情は省略します...
+
+ちなみにこれは、File.openで以下のように書いたのとよく似たことをしています。
+
+  File.open(path1) do|file1|
+    hoge file1
+    File.open(path2) do|file2|
+      hoge file2
+    end
+  end
+
+まぁ要するにRuby的な視点で見れば
+
+  ブロックを受け取るメソッドがあって、
+  例の変な規則を満たしているオブジェクトであれば、なんでもいいんです。
+
+まてよ...
+
+  ( ˘⊖˘) 。o(もしかして、ああいうふうに書き換えられる、ということは...）
+
+実はこれでもいけんじゃね？
+
+  ※擬似Rubyでおk!
+  a <- m1.bind
+  b <- hoge1(a)
+  hoge2(b)
+
+(　ﾟдﾟ) doがブロックが消えた！
