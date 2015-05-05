@@ -4,6 +4,8 @@ module Main where
 import Data.Monoid ((<>))
 import Control.Applicative ((<$>))
 
+import Network.URL (encString)
+
 import Debug.Trace
 import Hakyll
 
@@ -52,7 +54,7 @@ postRules tags =
   match "posts/*" $ do
     route   $ setExtension ".html"
     compile $ do
-      let loadWithTags = loadTemplateIn (taggedContext tags)
+      let loadWithTags = loadTemplateIn (postContext tags)
       pandocCompiler
         >>= loadWithTags "templates/post.html"
         >>= saveSnapshot "content"
@@ -134,6 +136,16 @@ loadTemplateIn = flip loadAndApplyTemplate
 
 datedContext :: Context String
 datedContext = dateField "date" "%B %e, %Y" <> defaultContext
+
+postContext :: Tags -> Context String
+postContext tags = (taggedContext tags) <> (
+  field "encodedTitle" $ \item -> do
+    encodeUrlComponent <$> getMetadataField' (itemIdentifier item) "title"
+  )
+
+encodeUrlComponent :: String -> String
+encodeUrlComponent = encString True (`elem` safeCharacters)
+  where safeCharacters = ['A'..'Z'] ++ ['a'..'z'] ++ "-_.,"
 
 -- any better concrete name?
 postList ::
