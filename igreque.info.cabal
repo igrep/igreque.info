@@ -25,5 +25,4 @@ executable hakyll
       base >= 4.0
     , Cabal >= 1.18
     , hakyll
-    -- temporarily fix version due to pandoc's compilation error: https://github.com/jgm/pandoc/issues/1590
     , pandoc >= 1.13
