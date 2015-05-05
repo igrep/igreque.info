@@ -5,7 +5,6 @@
 hakyll
 /fonts/
 *cabal.sandbox.config
-/slides/*.html
 
 slidy.js
 slidy.css
