@@ -24,5 +24,6 @@ executable hakyll
   build-depends:
       base >= 4.0
     , Cabal >= 1.18
+    , url >= 2.1
     , hakyll >= 4.5
     , pandoc >= 1.13
