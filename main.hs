@@ -30,7 +30,7 @@ main = hakyll $ do
   atomRules             -- Atom feed
   templateRules         -- Template
   -- For slides written in HTML
-  idRules "slides/*.html"
+  slideRules
   idRules "slides/styles/*.css"
   idRules "slides/scripts/*.js"
 
@@ -60,6 +60,13 @@ postRules tags =
         >>= saveSnapshot "content"
         >>= loadWithTags "templates/default.html"
         >>= relativizeUrls
+
+slideRules :: Rules ()
+slideRules = match "slides/*.mkd" $ do
+    route   $ setExtension ".html"
+    compile $
+      getResourceString >>=
+        withItemBody (unixFilter "pandoc" ["-t", "slidy", "-i", "-s", "-V", "slidy-url=."])
 
 postsListRules :: Rules ()
 postsListRules = do
