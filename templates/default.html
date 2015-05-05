@@ -10,6 +10,11 @@
         $if(tags)$
           <meta name="Keywords" content="$tags$" />
         $endif$
+        $if(lang)$
+          <meta http-equiv="Content-Language" content="$lang$">
+        $else$
+          <meta http-equiv="Content-Language" content="ja">
+        $endif$
         <link rel="alternate"
               type="application/atom+xml"
               title="igreque :: Info"
