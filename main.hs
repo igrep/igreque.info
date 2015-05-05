@@ -145,10 +145,9 @@ datedContext :: Context String
 datedContext = dateField "date" "%B %e, %Y" <> defaultContext
 
 postContext :: Tags -> Context String
-postContext tags = (taggedContext tags) <> (
-  field "encodedTitle" $ \item -> do
-    encodeUrlComponent <$> getMetadataField' (itemIdentifier item) "title"
-  )
+postContext tags = (taggedContext tags) <>
+  (field "encodedTitle" $ \item -> do
+    encodeUrlComponent <$> getMetadataField' (itemIdentifier item) "title")
 
 encodeUrlComponent :: String -> String
 encodeUrlComponent = encString True (`elem` safeCharacters)
