@@ -65,8 +65,8 @@ postsListRules = do
     route idRoute
     compile $ do
       posts <- recentFirst =<< loadAll "posts/*"
-      itemTpl <- loadBody "templates/postitem.html"
-      list <- applyTemplateList itemTpl datedContext posts
+      itemTemplate <- loadBody "templates/postitem.html"
+      list <- applyTemplateList itemTemplate datedContext posts
       makeItem list
         >>= loadWithAllPosts "templates/posts.html"
         >>= loadWithAllPosts "templates/default.html"
@@ -81,8 +81,8 @@ indexRules tags = do
     route idRoute
     compile $ do
       posts <- recentFirst =<< loadAll "posts/*"
-      itemTpl <- loadBody "templates/postitem.html"
-      list <- applyTemplateList itemTpl datedContext posts
+      itemTemplate <- loadBody "templates/postitem.html"
+      list <- applyTemplateList itemTemplate datedContext posts
       makeItem list
         >>= loadAndApplyTemplate "templates/index.html" (indexContext tags)
         >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -140,6 +140,6 @@ postList ::
   Tags -> Pattern -> ([Item String] -> Compiler [Item String])
     -> Compiler String
 postList tags pattern preprocessor = do
-    postItemTpl <- loadBody "templates/postitem.html"
+    postItemTemplate <- loadBody "templates/postitem.html"
     posts <- preprocessor =<< loadAll pattern
-    applyTemplateList postItemTpl (taggedContext tags) posts
+    applyTemplateList postItemTemplate (taggedContext tags) posts
