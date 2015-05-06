@@ -13,16 +13,16 @@
 
 # 今日話すこと・話さないこと
 
-- やたら難しいと言われる**Haskellの**Monadについて私なりの理解を説明してみます。
-    - これ↓
+- Describe Monad **in Haskell** from a programmer's point of view.
+    - This↓
     ```haskell
     class Monad m where
       return :: a -> m a
       (>>=) :: m a -> (a -> m b) -> m b
-      -- 以下略
+      -- snip. --
     ```
-- **圏論の**モナドはよくわかりません！
-- 「もう知ってるぜ！」という部分も多いかとは思いますがあしからず。
+- I don't know much about Monad in category theory.
+- Disclaimer: you already know much part of this talk.
 
 # 先に結論
 
