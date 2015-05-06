@@ -22,7 +22,7 @@
       -- snip. --
     ```
 - I don't know much about Monad in category theory.
-- Disclaimer: you already know much part of this talk.
+- Disclaimer: you might already know much part of this talk.
 
 # 先に結論
 
