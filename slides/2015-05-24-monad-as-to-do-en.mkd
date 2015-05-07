@@ -2,8 +2,6 @@
 % 山本悠滋
 % 2015-05-25
 
-<div lang="en">
-
 # はじめまして！
 
 - [Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
@@ -151,5 +149,3 @@
 - Monadは「値を返すたびにやらなければならないこと」をまとめる。
 - こうして、おびただしい数のMonadチュートリアルの歴史に、
   また一つ新たなページを刻んでしまうのであった...。
-
-</div>
