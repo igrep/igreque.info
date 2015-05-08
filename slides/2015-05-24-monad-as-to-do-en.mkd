@@ -24,10 +24,8 @@
 
 # 先に結論
 
-- HaskellのMonadを \
-  「関数が値を返す度に**やらなければならないこと**」 \
-  として捉えると、 \
-  なんだかいろいろスッキリ理解できたよ！
+- I got **fairy sure** of Monad in Haskell by interpreting it as \
+  "*things to do* every time returning a value of a function"
 
 # Monadは型クラス
 
