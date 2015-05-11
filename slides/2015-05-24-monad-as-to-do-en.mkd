@@ -1,4 +1,4 @@
-% 「やらなければならないこと」としてのHaskellのMonad
+% Monad as "Things to Do"
 % Yuji Yamamoto
 % 2015-05-25
 
