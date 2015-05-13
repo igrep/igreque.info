@@ -9,7 +9,7 @@
 - Hobby Haskeller.
 - Holding [workshop of Haskell (Japanese)](http://connpass.com/series/754/) per month.
 
-# 今日話すこと・話さないこと
+# I'm gonna talk about...
 
 - Describe Monad **in Haskell** from a programmer's point of view.
     - This↓
