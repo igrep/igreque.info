@@ -27,15 +27,15 @@
 - I got **fairy sure** of Monad in Haskell by interpreting it as \
   "*things to do* every time returning a value of a function"
 
-# Monadは型クラス
+# Monad is a type class
 
-- （再掲）こんな感じのやつ↓
+- Like this (reprinted) ↓
 
     ```haskell
     class Monad m where
       return :: a -> m a
       (>>=) :: m a -> (a -> m b) -> m b
-      -- 以下略
+      -- snip. --
     ```
 
 # そもそも型クラスって
