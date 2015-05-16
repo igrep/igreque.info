@@ -22,7 +22,7 @@
 - I don't know much about Monad in category theory.
 - Disclaimer: you might already know much part of this talk.
 
-# 先に結論
+# In short,
 
 - I got **fairy sure** of Monad in Haskell by interpreting it as \
   "*things to do* every time returning a value of a function"
