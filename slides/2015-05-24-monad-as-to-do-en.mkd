@@ -103,11 +103,11 @@
   to pass a value (not wrapped by a Monad) to a `(a -> m b)` function \
   each time the source `(a -> m b)` function returns a value.
 
-# 要するに！！
+# That is!
 
-- `(a -> m b)`という型の、 \
-  **値を返す度に、やらなければならないことがある関数** \
-  がいっぱいある時、Monadは役に立つ。
+- Monad is useful \
+  when you have many functions of type `(a -> m b)`
+  with *things to do*.
 
 # 例えば！！
 
