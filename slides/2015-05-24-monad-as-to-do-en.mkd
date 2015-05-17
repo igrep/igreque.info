@@ -118,15 +118,12 @@
 - For functions that force you to make a side effect (e.g. I/O) each time executing. \
   **=\> IO Monad**
 
-# で、なにがうれしいの？
+# Then, what's the merit of this idea?
 
-- 「[文脈](http://d.hatena.ne.jp/kazu-yamamoto/20110413/1302683869)だ！」とか、
-- 「[手続き](http://fumieval.hatenablog.com/entry/2013/06/05/182316)だ！」とか、
-- 「いや[モナド](http://fumieval.hatenablog.com/entry/2013/06/28/224439)だ！」とか、
-- いろいろとMonadを簡単に言い換える言葉は多く出てきたけど、 \
-  どれも結構抽象的で、ピンと来なかった。
+- I've seen many metaphors describing Monads (in Japanese), \
+- But all of them are too abstract to grasp.
 
-# で、なにがうれしいの？
+# Then, what's the merit of this idea?
 
 - それに対して「関数が値を返すたびにやらなければならないこと」だと、
     - 少なくともわれわれプログラマはイメージしやすい（はず）。
