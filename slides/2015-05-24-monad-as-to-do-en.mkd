@@ -88,11 +88,12 @@
 (>>=) :: m a -> (a -> m b) -> m b
 ```
 
-- いずれも、
-    - `m a`の`a`を`(a -> m b)`に渡すために、 \
-      **必要な処理をそれぞれ持っている。**
-- そして、
-    - `(a -> m b)`が返した`m b`をまた別の関数に渡すよう、必要な処理を繰り返している。
+- In both types,
+    - `>>=` has *some required computation* \
+      to pass `a` of `m a` to `(a -> m b)`.
+- In addition,
+    - `>>=` is implemented so that \
+      the required computation can be repeated by passing `m b` of `(a -> m b)` to another function.
 
 # つまり！！
 
