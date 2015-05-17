@@ -134,10 +134,9 @@
     - it unnecessay to classify Monads into samaller kinds.
         - e.g. "failure monads", "stateful monads" etc.
 
-# まとめ
+# Conclusion
 
-- HaskellのMonadは型クラス
-- 型クラスは、同じ振る舞いをする型達を、まとめて扱うために使用する。
-- Monadは「値を返すたびにやらなければならないこと」をまとめる。
-- こうして、おびただしい数のMonadチュートリアルの歴史に、
-  また一つ新たなページを刻んでしまうのであった...。
+- Monad in Haskell is a type class.
+- Type classes abstracts types with same behavior.
+- Monad abstracts "things to do each time returning a value".
+- Thus, I've appended a new page of the history of the numerous Monad tutorials...
