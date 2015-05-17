@@ -74,13 +74,13 @@
 (>>=) :: m a -> (a -> m b) -> m b
 ```
 
-- 例えば...
-    - Maybeでは、`m a`の`a`を`(a -> m b)`に渡すため、 \
-      **Just aなのかNothingなのかどうか判定している**
-    - Readerでは、`m a`の`a`を`(a -> m b)`に渡すため、 \
-      **関数に、足りない分の引数を与えている**
-    - Parserでは、`m a`の`a`を`(a -> m b)`に渡すため、 \
-      **与えられた文字列を消費している**
+- For example...
+    - In `Maybe`, `>>=` *checks Just a or Nothing* \
+      before passing `a` of `m a` to `(a -> m b)`.
+    - In `Reader`, `>>=` *supplies the missing argument to the reader function* \
+      before passing `a` of `m a` to `(a -> m b)`.
+    - In `Parser`, `>>=` *consumes the given string* \
+      before passing `a` of `m a` to `(a -> m b)`.
 
 # Let's see (\>\>=) method!
 
