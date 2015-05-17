@@ -45,12 +45,11 @@
     - Module providing mix-in in Ruby.
 - **=\> Provides a way to put types with same behavior altogether!**
 
-# 型クラスのいいところ
+# Why type class is useful
 
-- 新しい型を作った時、必要なメソッドを定義しておくだけで、 \
-  **その型クラスに対して使える色々な関数が使える！**
-- 新しい型に固有な、**新しい型のみに必要な処理**は、 \
-  必要な（未定義の）メソッドに**全て押し込めちゃえばいい！**
+- When creating a type, **Get various functions available for the type class** \
+  only by defining the required methods.
+- The only thing to do is to write all the computation unique to the new type in the required (undefined) methods!.
 
 # Monadの場合は？
 
