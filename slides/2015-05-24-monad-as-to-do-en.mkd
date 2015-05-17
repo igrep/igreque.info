@@ -51,13 +51,13 @@
   only by defining the required methods.
 - The only thing to do is to write all the computation unique to the new type in the required (undefined) methods!.
 
-# Monadの場合は？
+# Then, how about Monad?
 
-- 必要なreturnメソッドと(\>\>=)メソッドを定義しておくだけで！
-    - do記法を使ったり、
-- いろいろできる！
-- 新しいMonad（クラスのインスタンス）に**固有な処理は**、 \
-  必要な（未定義の）メソッドに**全て押し込めちゃえばいい！**
+- By defining only `return` and `>>=` method,
+    - `do` notation available!
+- And more!
+- Write only computation unique to a new Monad (its instance) \
+  in the required (and undefined) method!
 
 # ここで(\>\>=)を見てみましょう。
 
