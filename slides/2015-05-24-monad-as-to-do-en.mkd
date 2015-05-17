@@ -38,13 +38,12 @@
       -- snip. --
     ```
 
-# そもそも型クラスって
+# Recall what a type class is:
 
-- まぁ言ってしまえば
-    - JavaやC#などのinterface
-    - Rubyのmix-inされるmodule
-- みたいなもの
-- **=\> 同じ振る舞いをする型達を、ひっくるめて扱う仕組み**
+- something like...
+    - Interface in Java and C# etc.
+    - Module providing mix-in in Ruby.
+- **=\> Provides a way to put types with same behavior altogether!**
 
 # 型クラスのいいところ
 
