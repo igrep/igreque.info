@@ -125,13 +125,14 @@
 
 # Then, what's the merit of this idea?
 
-- それに対して「関数が値を返すたびにやらなければならないこと」だと、
-    - 少なくともわれわれプログラマはイメージしやすい（はず）。
-    - あくまでも「型クラスとしてのMonad」の性質に即して説明できる。
-    - 「どう役立つか」説明できるので、メリットを感じさせやすい。
-        - 特に「毎回やらなければならないことを一箇所にまとめられる」と言えば、
-          コードのDRYさに敏感な人に効果がありそう。
-    - 「失敗系」とか「状態系」とかに分けなくていい。
+- By contrast, "things to do each time a function returns a value" makes
+    - it easier to imagine at least for us programmers (probably).
+    - it possilbe to describe Monad based only on its property as a type class.
+    - them find Monad's merit more naturally.
+        - Especially for those who are careful about DRYness \
+          by telling "Monad packs things to do every time into one method".
+    - it unnecessay to classify Monads into samaller kinds.
+        - e.g. "failure monads", "stateful monads" etc.
 
 # まとめ
 
