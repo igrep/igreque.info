@@ -59,16 +59,16 @@
 - Write only computation unique to a new Monad (its instance) \
   in the required (and undefined) method!
 
-# ここで(\>\>=)を見てみましょう。
+# Let's see (\>\>=) method!
 
 ```haskell
 (>>=) :: m a -> (a -> m b) -> m b
 ```
 
-- 他の型クラスと同様、Monadも必要なメソッド(\>\>=)に、 \
-  固有の処理を書くことで、抽象化している。
+- Like the other type classes, Monad abstracts types  \
+  by defining the unique computation in the required `>>=` method.
 
-# ここで(\>\>=)を見てみましょう。
+# Let's see (\>\>=) method!
 
 ```haskell
 (>>=) :: m a -> (a -> m b) -> m b
@@ -82,7 +82,7 @@
     - Parserでは、`m a`の`a`を`(a -> m b)`に渡すため、 \
       **与えられた文字列を消費している**
 
-# ここで(\>\>=)を見てみましょう。
+# Let's see (\>\>=) method!
 
 ```haskell
 (>>=) :: m a -> (a -> m b) -> m b
