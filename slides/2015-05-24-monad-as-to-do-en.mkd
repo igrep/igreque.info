@@ -95,13 +95,13 @@
     - `>>=` is implemented so that \
       the required computation can be repeated by passing `m b` of `(a -> m b)` to another function.
 
-# つまり！！
+# In other words,
 
-- Monadは(\>\>=)の`m a`の`a`を`(a -> m b)`に渡す部分に、 \
-  やらなければならないことをすべて押し込んでいる！
-- `(a -> m b)`が値を返す度に、 \
-  別の`(a -> m b)`な関数にMonadに包まれていない値を渡すために、 \
-  やらなければならないことを(\>\>=)に任せている。
+- Monad's `>>=` has all things to do \
+  in the part of passing `a` of `m a` to `(a -> m b)`
+- Monad assigns `>>=` things to do \
+  to pass a value (not wrapped by a Monad) to a `(a -> m b)` function \
+  each time the source `(a -> m b)` function returns a value.
 
 # 要するに！！
 
