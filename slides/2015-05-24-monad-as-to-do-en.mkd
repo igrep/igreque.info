@@ -49,7 +49,7 @@
 
 - When creating a type, **Get various functions available for the type class** \
   only by defining the required methods.
-- The only thing to do is to write all the computation unique to the new type in the required (undefined) methods!.
+- The only thing to do is to write all the computation unique to the new type in the required (undefined) methods!
 
 # Then, how about Monad?
 
@@ -131,12 +131,12 @@
     - them find Monad's merit more naturally.
         - Especially for those who are careful about DRYness \
           by telling "Monad packs things to do every time into one method".
-    - it unnecessay to classify Monads into samaller kinds.
+    - it unnecessay to classify Monads into smaller kinds.
         - e.g. "failure monads", "stateful monads" etc.
 
 # Conclusion
 
 - Monad in Haskell is a type class.
-- Type classes abstracts types with same behavior.
+- Type classes abstract types with same behavior.
 - Monad abstracts "things to do each time a function returns a value".
 - Thus, I've appended a new page of the history of the numerous Monad tutorials...
