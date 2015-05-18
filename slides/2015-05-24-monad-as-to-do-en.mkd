@@ -19,8 +19,8 @@
       (>>=) :: m a -> (a -> m b) -> m b
       -- snip. --
     ```
-- Disclaimer: you might already know much part of this talk.
 - I don't know much about Monad **in category theory**.
+- Disclaimer: you might already know much of this talk.
 
 # In short,
 
