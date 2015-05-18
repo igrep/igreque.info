@@ -11,7 +11,7 @@
 
 # I'm gonna talk about...
 
-- Describe Monad **in Haskell** from a programmer's point of view.
+- Describe Monad **in Haskell** from a my point of view.
     - This↓
     ```haskell
     class Monad m where
