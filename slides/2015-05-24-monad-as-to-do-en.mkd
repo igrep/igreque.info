@@ -25,7 +25,7 @@
 # In short,
 
 - I got **fairy sure** of Monad in Haskell by interpreting it as \
-  "*things to do* every time returning a value of a function"
+  "*things to do* every time a function returns a value."
 
 # Monad is a type class
 
@@ -138,5 +138,5 @@
 
 - Monad in Haskell is a type class.
 - Type classes abstracts types with same behavior.
-- Monad abstracts "things to do each time returning a value".
+- Monad abstracts "things to do each time a function returns a value".
 - Thus, I've appended a new page of the history of the numerous Monad tutorials...
