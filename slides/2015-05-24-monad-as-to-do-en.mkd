@@ -59,7 +59,7 @@
 - Write only computation unique to a new Monad (its instance) \
   in the required (and undefined) method!
 
-# Let's see (\>\>=) method!
+# Let's see \>\>= method!
 
 ```haskell
 (>>=) :: m a -> (a -> m b) -> m b
@@ -68,7 +68,7 @@
 - Like the other type classes, Monad abstracts types  \
   by defining the unique computation in the required `>>=` method.
 
-# Let's see (\>\>=) method!
+# Let's see \>\>= method!
 
 ```haskell
 (>>=) :: m a -> (a -> m b) -> m b
@@ -82,7 +82,7 @@
     - In `Parser`, `>>=` *consumes the given string* \
       before passing `a` of `m a` to `(a -> m b)`.
 
-# Let's see (\>\>=) method!
+# Let's see \>\>= method!
 
 ```haskell
 (>>=) :: m a -> (a -> m b) -> m b
