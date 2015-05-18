@@ -43,7 +43,7 @@
 - something like...
     - Interface in Java and C# etc.
     - Module providing mix-in in Ruby.
-- **=\> Provides a way to put types with same behavior altogether!**
+- =\> Provides a way to put **types with same behavior altogether!**
 
 # Why type class is useful
 
