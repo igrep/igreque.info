@@ -5,6 +5,12 @@
 # Nice to meet you!
 
 - [Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
+    - Remember this avator:
+    - ![](/imgs/avator-twitter.png)
+
+# Nice to meet you!
+
+- [Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
 - Japanese Ruby engineer working at [Sansan, Inc.](http://www.corp-sansan.com/)
 - Hobby Haskeller.
 - Holding [workshop of Haskell (Japanese)](http://connpass.com/series/754/) per month.
