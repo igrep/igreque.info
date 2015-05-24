@@ -26,7 +26,7 @@
       -- snip. --
     ```
 - I don't know much about Monad **in category theory**.
-- Disclaimer: you might already know much of this talk.
+- Disclaimer: it'd sound too natural for people who already know Monad.
 
 # In short,
 
