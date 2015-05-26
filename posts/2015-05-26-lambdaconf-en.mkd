@@ -2,6 +2,7 @@
 title: Attended LambdaConf 2015 in Boulder!
 author: Yuji Yamamoto
 tags: Haskell, Elm
+lang: en
 ...
 ---
 
