@@ -1,0 +1,16 @@
+---
+title: Attended LambdaConf 2015 in Boulder!
+author: Yuji Yamamoto
+tags: Haskell, Elm
+...
+---
+
+I attened LambdaConf 2015, hold from May 22 to May 24.
+
+# What I learned
+
+# What I did
+
+# What I didn't
+
+# Thanks to all!
