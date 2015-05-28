@@ -16,6 +16,8 @@ Here's a list of workshops and presentations I took part in or watched during th
 
 - [Write Some Idris](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/puffnfresh)
 - [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
+- [A Practical Introduction to Haskell GADTs](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/goldfirere)
+- [LiquidHaskell: Refinement Types for Haskell](http://ucsd-progsys.github.io/liquidhaskell-tutorial/)
 
 ## Day 2
 
