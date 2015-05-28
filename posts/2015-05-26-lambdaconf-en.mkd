@@ -10,6 +10,28 @@ I attened LambdaConf 2015, hold from May 22 to May 24.
 
 # What I learned
 
+Here's a list of workshops and presentations I took part in or watched during the conference.
+
+## Day 1
+
+- [Write Some Idris](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/puffnfresh)
+- [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
+
+## Day 2
+
+- [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf))
+- [Give me Freedom or Forgeddaboutit: What Does "Free" Really Mean?](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/freedom.pdf)
+- [Finally Tagless DSLs and MTL](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/mtl.pdf)
+- Accelerating Haskell: GPGPU Programming with Haskell
+- In Rust We Trust
+- [Introduction to Intuitionistic Type Theory](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/vpatryshev/intuitionistic-type-theory/IntroToIntuitionisticTypeTheory.pptx)
+- [Introducing Emily: Simplifying Functional Programming](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/mcclure)
+- [The Next Great Functional Programming Language](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/jdegoes/next-great-fpl/presentation.pdf)
+
+## Day 3
+
+- [An Adventure in Elm: Writing an Adventure Game in Elm](https://github.com/rtfeldman/lambdaconf-2015-elm-workshop)
+
 # What I did
 
 # What I didn't
