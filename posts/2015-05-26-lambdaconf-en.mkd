@@ -10,14 +10,26 @@ I attened LambdaConf 2015, hold from May 22 to May 24.
 
 # What I learned
 
-Here's a list of workshops and presentations I took part in or watched during the conference.
+Here's a list of sessions I took (or planned to take) part in during the conference.  
+I tell their summary and my impression only for ones I could watch without sleeping.  
+(I feel regret and sorry but I sufferred from jet lag...)
 
 ## Day 1
 
 - [Write Some Idris](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/puffnfresh)
+    - Introduction to Idris. And introduction to dependent types for me.
+    - Interesting but very difficult perhaps because I couldn't hear the details. During the session I guessed the answer and tried to tinker the sample codes, but in vail.
 - [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
+    - Learned from building HTML (with shakespeare), routing (with Spock), ORM (with persistent), to form validation (with digestive-functors).
+    - I had fun and understood very well. Because I knew a bit about the theme before this and Alejandro's voice was clear and loud enough.
+    - But I couldn't do most of the exercises because I was almost always cabal-install-ing in each exercise's sandbox...
 - [A Practical Introduction to Haskell GADTs](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/goldfirere)
+    - Well, as I remember, about implementing dependent types with GADTs, maybe.
+    - I felt bad by jet lag before exercise 2. I'm sorry that I couldn't use [glambda](https://github.com/goldfirere/glambda) though I compiled in the morning.
 - [LiquidHaskell: Refinement Types for Haskell](http://ucsd-progsys.github.io/liquidhaskell-tutorial/)
+    - As its title, tutorial of LiquidHaskell.
+    - But the only part I saw was the last; I was sleeping from the previous session on.
+    - Even the last part (maybe the case study) made me impressed with the power of LiquidHaskell. So I'll review the book (the above link).
 
 ## Day 2
 
