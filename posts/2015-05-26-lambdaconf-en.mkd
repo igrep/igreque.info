@@ -18,7 +18,8 @@ I tell their summary and my impression only for ones I could watch without sleep
 
 - [Write Some Idris](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/puffnfresh)
     - Introduction to Idris. And introduction to dependent types for me.
-    - Interesting but very difficult perhaps because I couldn't hear the details. During the session I guessed the answer and tried to tinker the sample codes, but in vail.
+    - Interesting but very difficult perhaps because I couldn't hear the details.
+      During the session I guessed the answer and tried to tinker the sample codes, before the speaker showed the answer, but in vail.
 - [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
     - Learned from building HTML (with shakespeare), routing (with Spock), ORM (with persistent), to form validation (with digestive-functors).
     - I had fun and understood very well. Because I knew a bit about the theme before this and Alejandro's voice was clear and loud enough.
@@ -28,16 +29,16 @@ I tell their summary and my impression only for ones I could watch without sleep
     - I felt bad by jet lag before exercise 2. I'm sorry that I couldn't use [glambda](https://github.com/goldfirere/glambda) though I compiled in the morning.
 - [LiquidHaskell: Refinement Types for Haskell](http://ucsd-progsys.github.io/liquidhaskell-tutorial/)
     - As its title, tutorial of LiquidHaskell.
-    - But the only part I saw was the last; I was sleeping from the previous session on.
-    - Even the last part (maybe the case study) made me impressed with the power of LiquidHaskell. So I'll review the book (the above link).
+    - The only part I saw was the last; I was sleeping from the previous session on.
+    - But even the last part (maybe the case study) made me impressed with the power of LiquidHaskell. So I'll review the book (the above link).
 
 ## Day 2
 
 - [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf))
 - [Give me Freedom or Forgeddaboutit: What Does "Free" Really Mean?](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/freedom.pdf)
-    - Free is free because it makes a Functor a Monad for free, as List makes any Hask object a Monoid.
+    - Free is free because it converts a Functor into a Monad for free, as List converts any Hask object into a Monoid.
     - The speaker and slide must have said more, but only I could understand is that.
-    - I've been learning category theory a little. But I could understand little of them.
+    - I've been learning category theory since preparing for [a workshop of Monad (Japanese)](/posts/2015-03-23-monad-base.html). But I could understand little of them.
 - [Finally Tagless DSLs and MTL](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/mtl.pdf)
 - Accelerating Haskell: GPGPU Programming with Haskell
     - Introduction to GPGPU and [accelerate](http://hackage.haskell.org/package/accelerate), provides an easy way to use GPGPU in Haskell.
@@ -46,14 +47,14 @@ I tell their summary and my impression only for ones I could watch without sleep
 - In Rust We Trust
     - About attractions of Rust, Mozilla's programming language.
     - Things I got impressed with were:
-        - Memory management by ownership (without both GC and runtime!). Sounded like linear type to me.
+        - Memory management by ownership (with neither GC nor runtime!). Sounded like linear type to me.
         - Default immutability.
         - Support of combinators I (as a functional programmer) am familiar with (e.g. map, filter, take_while).
 - [Introduction to Intuitionistic Type Theory](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/vpatryshev/intuitionistic-type-theory/IntroToIntuitionisticTypeTheory.pptx)
 - [Introducing Emily: Simplifying Functional Programming](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/mcclure)
-    - In [Emily](http://emilylang.org), all is access to a JavaScript's object. Even assignment statement (such as `a = 123`) is a syntactic sugar of `set` method of a scope object.
-    - It looked like Lisp based on JavaScript's object to me. Interesting.
-- [The Next Great Functional Programming Language](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/jdegoes/next-great-fpl/presentation.pdf)
+    - In [Emily](http://emilylang.org), all is access to an object like JavaScript's one. Even assignment expression (such as `a = 123`) is a syntactic sugar of `set` method of a scope object.
+    - It sounded like Lisp based on JavaScript's object to me. Interesting.
+- [The Next Great Functional Programming Language](http://www.slideshare.net/jdegoes/the-next-great-functional-programming-language)
     - John (seems the leader of LambdaConf 2015) told us many features of his ideal language (of cource most of them must be jokes) by criticizing various features and bad points of today's languages.
     - All people in the hall discussed most actively in the day, and then prolonged the session very well. They looked very fun :)
 
