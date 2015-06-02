@@ -87,4 +87,22 @@ And I played bungee-jumping without string from there!
 
 # What I didn't
 
+I did want to give a lightning talk in LambdaConf 2015, but I missed the chance in the unconference.  
+I wanted to show my opinion about Monad, as well as to introduce [apiary](https://github.com/philopon/apiary).
+
+So let me publish one set of the slides:
+
+[Monad as "Things to Do"](/slides/2015-05-24-monad-as-to-do-en.html)
+
+Of cource I uploaded onto Slideshare:
+
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/ktoguT36qNQfw5" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+I'll publish the one about apiary if I remember to complete :)
+
 # Thanks to all!
+
+Finally, I want to say thank you to many people who guided me to this fantastic conference.  
+Including people who held, gave sessions, attened with me, or accommodated me any others!
+
+Thank you! \<3\<3\<3
