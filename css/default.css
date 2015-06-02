@@ -100,8 +100,18 @@ li {
   margin-top: 0.2em;
 }
 
+/** image in article **/
+
+p.caption:before {
+  content: '― ';
+}
+
 p.caption {
-  text-align: center;
+  margin-left: 3em;
+  margin-bottom: 3em;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 120%;
 }
 
 /* source code */
