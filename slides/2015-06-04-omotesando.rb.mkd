@@ -16,13 +16,13 @@ crispyの機能を切り出した
 
 Refinementsも用意してます
 
-# まとめ
+# まとめ（みなさん向け）
 
 ```bash
 $ gem install predef
 ```
 
-# まとめ
+# まとめ（みなさん向け）
 
 ```ruby
 require 'predef'
@@ -34,3 +34,7 @@ Mysql2::Client.predef :query do|sql|
   super
 end
 ```
+
+# まとめ（私向け）
+
+- さっさと `bundle exec rake release` しなさい。
