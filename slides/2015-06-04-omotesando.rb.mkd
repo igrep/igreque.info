@@ -1,0 +1,36 @@
+% Predefを使ったデバッグテク
+% 山本悠滋
+% 2015-06-04 表参道.rb #1
+
+# こんにちは！
+
+- [山本悠滋](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) 26歳♂
+- Eightのサーバーサイド担当ですが最近はCoffeeScriptでクライアントをよく触ります。
+- [Haskellの勉強会](http://haskellmokumoku.connpass.com/)を毎月やっとります。
+
+ただのModule#prependのショートカット
+
+joker1007の例
+
+crispyの機能を切り出した
+
+Refinementsも用意してます
+
+# まとめ
+
+```bash
+$ gem install predef
+```
+
+# まとめ
+
+```ruby
+require 'predef'
+
+using Predef::Refinements
+
+Mysql2::Client.predef :query do|sql|
+  puts sql if sql =~ /.../
+  super
+end
+```
