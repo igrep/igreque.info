@@ -1,0 +1,22 @@
+---
+title: 表参道.rb #1 参加・発表しました。
+author: Yuji Yamamoto
+tags: Ruby
+...
+---
+
+今日はSansanにて行われた[](http://omotesandorb.connpass.com/event/14973/)に参加し、LTしました。
+
+# 話したこと
+
+こちらが発表時のスライドです。
+
+[Predefを使ったSQLのトレース](/slides/2015-06-04-omotesando.rb.html)
+
+とりあえず、自分のWebサイトに上げただけではGoogleさんがインデックスに加えてすらくれないので記事にしました。
+
+もちろんslideshareにもあげました。
+
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/bFoZZfc6IrYDfS" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+今日は取り急ぎここまでで。
