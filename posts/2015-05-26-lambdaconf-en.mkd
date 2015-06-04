@@ -6,7 +6,7 @@ lang: en
 ...
 ---
 
-I attened LambdaConf 2015, hold from May 22 to May 24.
+I attened LambdaConf 2015, held from May 22 to May 24.
 
 # What I learned
 
