@@ -25,6 +25,7 @@
 
 <div class="takahashiLike">
 ~~リリースまだですけどwww~~
+
 => しました！ [predef](https://rubygems.org/gems/predef)
 </div>
 
@@ -167,5 +168,6 @@ end
 # まとめ（私向け）
 
 <div class="incremental">
-さっさと `bundle exec rake release` しなさい。
+~~さっさと `bundle exec rake release` しなさい。~~  
+こちらも終了: [predef](https://rubygems.org/gems/predef)
 </div>
