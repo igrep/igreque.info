@@ -24,7 +24,8 @@
 # 小さな小さなgemを作りました
 
 <div class="takahashiLike">
-リリースまだですけどwww
+~~リリースまだですけどwww~~
+=> しました！ [predef](https://rubygems.org/gems/predef)
 </div>
 
 # なにするgem?
@@ -51,9 +52,9 @@ end
 例えば...
 
 ```ruby
-Predef.predef SomeAlienClass, :method_you_know do|*args|
+Predef.predef SomeExternalClass, :method_you_know do|*args|
   p args
-  super
+  super(*args)
 end
 ```
 
@@ -69,11 +70,11 @@ end
 module Wrapper
   def method_you_know *args
     p args
-    super
+    super(*args)
   end
 end
 
-class SomeAlienClass
+class SomeExternalClass
   prepend Wrapper
 end
 ```
@@ -115,7 +116,7 @@ end
         puts sql
         pp caller
       end
-      super # 忘れずに
+      super(sql) # 引数を忘れずに
     end
     ```
 
@@ -159,7 +160,7 @@ using Predef::Refinements
 
 Mysql2::Client.predef :query do|sql|
   puts sql if sql =~ /.../
-  super
+  super(sql)
 end
 ```
 
