@@ -74,7 +74,7 @@ module Wrapper
 end
 
 class SomeAlienClass
-  include Wrapper
+  prepend Wrapper
 end
 ```
 
