@@ -6,7 +6,7 @@ lang: en
 ...
 ---
 
-I attened LambdaConf 2015, held from May 22 to May 24.
+I attended LambdaConf 2015, held from May 22 to May 24.
 
 # What I learned
 
@@ -104,6 +104,6 @@ I'll publish the one about apiary if I remember to complete :)
 # Thanks to all!
 
 Finally, I want to say thank you to many people who guided me to this fantastic conference.  
-Including people who held, gave sessions, attened with me, or accommodated me any others!
+Including people who held, gave sessions, attended with me, or accommodated me any others!
 
 Thank you! \<3\<3\<3
