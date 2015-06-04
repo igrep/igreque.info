@@ -5,7 +5,7 @@ tags: Ruby
 ...
 ---
 
-今日はSansanにて行われた[](http://omotesandorb.connpass.com/event/14973/)に参加し、LTしました。
+今日はSansanにて行われた[表参道.rb #1](http://omotesandorb.connpass.com/event/14973/)に参加し、LTしました。
 
 # 話したこと
 
