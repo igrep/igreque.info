@@ -78,6 +78,8 @@ class SomeAlienClass
 end
 ```
 
+- 詳しくはprependでググってください。
+
 # なにするgem?
 
 - 余計なmoduleを定義しなくて済む
