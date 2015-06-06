@@ -1,7 +1,7 @@
 ---
 title: モナド基礎勉強会 参加・LTしました + 【重要】発表内容の訂正
 author: Yuji Yamamoto
-tags: Haskell, Monad
+tags: Haskell, Monad, 圏論
 ...
 ---
 
