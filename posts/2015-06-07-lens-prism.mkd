@@ -1,8 +1,0 @@
----
-title: Lens&Prism勉強会 私的まとめ
-author: Yuji Yamamoto
-tags: Haskell, Scala, 圏論
-...
----
-
-

@@ -1,0 +1,100 @@
+---
+title: Lens&Prism勉強会 私的まとめ
+author: Yuji Yamamoto
+tags: Haskell, Scala, 圏論
+...
+---
+
+もう開催から2週間以上経ってしまいましたが、[Lens&Prism勉強会](http://connpass.com/event/13929/)に行ってきたのでそのまとめ記事です。  
+当日しこしことっていたメモと記憶を頼りに、発表内容や個人的な気付きなどを書きます。
+
+# [\@gakuzzzz](https://twitter.com/gakuzzzz)さんの「Lensの説明」
+
+connpassには別のスライドが貼ってありますが、実際の中身は[Beyond Scala Lens](http://www.slideshare.net/JulienTruffaut/beyond-scala-lens)というスライドの日本語での解説でした。
+
+要約するとこんな感じの表に収まるのですかね。
+スライドではScalaでの呼び名で説明されてましたが、ここでは私向けにHaskellに訳しています。
+
+```haskell
+-- 全てのsをaに変換でき、かつ全てのaをsに変換できる関数のペア
+             Iso' s a: f :: s ->       a, g ::     a  -> s
+-- 全てのsからaに変換できるわけではないが、aからsには変換できる関数のペア
+           Prism' s a: f :: s -> Maybe a, g ::     a  -> s
+-- 全てのsをaに変換でき、sの一部をaで書き換えたsを作れる関数のペア
+            Lens' s a: f :: s ->       a, g :: (s, a) -> s
+-- 上記2つの特徴を併せ持つ。
+-- Traversalと異なるのは、aを取得した結果が "zero or one" である点？（ここよくわかってない）
+Affine Traversal' s a: f :: s -> Maybe a, g :: (s, a) -> s
+```
+
+ちなみに、lensやScalaのMonocleが提供する、LensやIso, Prismなどの型の総称を「Optic」と呼ぶそうです。
+
+# [\@its_out_of_tune](http://twitter.com/its_out_of_tune)さんの「[LensでHaskellをもっと格好良く！](http://www.slideshare.net/itsoutoftunethismymusic/ekmett-17955009)」
+
+以前の[ekmett勉強会](http://partake.in/events/1698f7f8-4151-4048-b317-03a8c3f1a7ab)でやった内容の復習。  
+HaskellのLensの使い方、仕組みをわかりやすく総ざらいしてくれます。  
+lensライブラリ全体ではなく各種Opticのうち、Lensに特化した内容となっております。
+
+# [\@its_out_of_tune](http://twitter.com/its_out_of_tune)さんの「[Opticから見たLens/Prism](http://tokiwoousaka.github.io/takahashi/contents/20150530LensPrism.html)」
+
+前の発表からの引き続き。  
+HaskellのlensライブラリはMonocleと違って、各種Opticは全部↓の
+
+```haskell
+type Optic p f s t a b = p a (f b) -> p s (f t)
+```
+
+に**ちょっとずつ制約を加えただけ**のバージョンなんだぜ！  
+例えば、`Prism`は`p`に`Choice`, `f`に`Applicative`の制約を加えただけなんだぜ！  
+というお話。
+
+その後はその詳細についてでしたが、正直この時はIRCやらタイムラインやらに夢中になり、あまり内容を覚えておりません...。
+
+
+# [\@halcat0x15a](http://twitter.com/halcat0x15a)さんの「[DERIVING LENSES](http://halcat0x15a.github.io/slide/lens_prism/#/)」
+
+Haskellでいうところの
+
+```haskell
+data Lens s a = Lens { get :: s -> a, set :: s -> a -> s }
+```
+
+な定義のLens、つまりScalaのMonocleの定義に近いLensを
+Java・Scala・Haskellそれぞれのメタプログラミングで自動生成する話でした。  
+Javaでできちゃうこととか面白かったです（小並感）。
+
+...だけでなく、本題とそれますが、Scala風のLensの定義はHaskellのと違って
+「全部1種類の関数(Optic)から定義できるんだぜ！」みたいなかっこよさは欠けるものの、  
+「Lensはgetとsetができるんだぜ！」とか、  
+「IsoはgetとreverseGetができるんだぜ！」、  
+みたいなことが2秒でわかるので、これはこれでわかりやすくていいですね。
+
+# [\@tanakh](https://twitter.com/tanakh)さんの 「[XPath in Lens](http://www.slideshare.net/tanakh/xpath-inlens)」
+
+xml-lensの話。  
+lensは広く知られて、広く使われているので、lensでXMLも扱っちゃえば、変なクエリ言語を新しく覚える必要もなく、つぶしが効いていいよ！やっぱりLensはデータ構造のjQueryだ！
+
+# [\@fumieval](https://twitter.com/fumieval)さんの「ちょっぴり危険なLensのヒミツ」
+
+- `unsafeCoerce`: 実質同じ型(newtypeとか)を強制変換（変換処理の削除）することで最適化を図れる。
+    - GHC 7.8以降はより安全な`coerce`（型から自動的に強制変換できるか判定する？）が使える。
+- `views`も`over`も`review`も突き詰めると実質「NOOP」なので`unsafeCoerce`(または`coerce`)だけで定義できちゃうw
+    - そしてekmett氏のlens内部でも積極的にそれを活用しているのでekmett氏のlensは高速に動くという、背筋が凍るようで凍らない安心できる怖い話。
+
+# [\@fumieval](https://twitter.com/fumieval)さんの「LensにもPrismにもなるフィールド」
+
+- LensもPrismも結局全部Opticなんで意外と簡単に抽象化できた。
+- そしたら型レベルパターンマッチなるものもできたよマジやばそう。
+
+# [\@AoiroAoino](https://twitter.com/AoiroAoino)さんの「[Monocleとかいうのがありまして](http://www.slideshare.net/AoiroAoino/lens-prism-48780563)」
+
+Monocle利用体験談。  
+Javaのライブラリを包むときにPrismが便利かも！
+
+# 以上！
+
+途中からかなり雑になってしまいましたが、まぁ私が理解できなかったり眠かったりと、いろいろ大人の事情があるのでどうかこの辺でご容赦ください。  
+
+何はともあれ主催の[\@pocketberserker](https://twitter.com/pocketberserker)さんはじめ準備や楽しいお話をありがとうございました！  
+Lens使ったことない自分も十分楽しめました！  
+Haskell周りはずっとインプットばっかりなんで、Lens使うなりしてそろそろもっとアウトプットしたいですね！
