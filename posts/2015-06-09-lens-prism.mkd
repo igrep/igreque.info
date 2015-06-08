@@ -5,7 +5,7 @@ tags: Haskell, Scala, 圏論
 ...
 ---
 
-もう開催から2週間以上経ってしまいましたが、[Lens&Prism勉強会](http://connpass.com/event/13929/)に行ってきたのでそのまとめ記事です。  
+もう開催から1週間以上経ってしまいましたが、[Lens&Prism勉強会](http://connpass.com/event/13929/)に行ってきたのでそのまとめ記事です。  
 当日しこしことっていたメモと記憶を頼りに、発表内容や個人的な気付きなどを書きます。
 
 # [\@gakuzzzz](https://twitter.com/gakuzzzz)さんの「Lensの説明」
