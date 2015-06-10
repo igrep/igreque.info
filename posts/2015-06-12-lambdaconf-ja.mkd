@@ -1,18 +1,24 @@
 ---
-title: Attended LambdaConf 2015 in Boulder!
+title: LambdaConf 2015に参加しました!
 author: Yuji Yamamoto
 tags: Haskell, Elm
-lang: en
+lang: ja
 ...
 ---
 
-I attended LambdaConf 2015, held from May 22 to May 24.
+This is a tranlation of [Attended LambdaConf 2015 in Boulder!](http://the.igreque.info/posts/2015-05-26-lambdaconf-en.html).
 
-# What I learned
+5月22日から24日かけてアメリカのコロラド州、
+ボールダー[^boulder]にて開催された、「[LambdaConf 2015](http://degoesconsulting.com/lambdaconf-2015/)」に参加しました！  
+なのでまた超今更の私的まとめです！
 
-Here's a list of sessions I took (or planned to take) part in during the conference.  
-I tell their summary and my impression only for ones I could watch without sleeping.  
-(I feel regret and sorry but I sufferred from jet lag...)
+[^boulder]: Boulder。英語の発音的には「ブゥルダー」の方が近かった気がします。
+
+# 知ったこと
+
+[いろいろありました](https://docs.google.com/spreadsheets/d/1f2VB7YrWojUmZ3Q1RAPGdGd9NsVLEl4x48zhDYbsUgM/edit#gid=0)が、以下のセッションに参加しました。  
+概要と感想は、私が居眠りしないでちゃんと参加できたものだけ書いておきます。  
+（残念ながら時差ボケにやられてしまったのです...）
 
 ## Day 1
 
