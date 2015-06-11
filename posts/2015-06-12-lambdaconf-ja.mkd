@@ -23,20 +23,22 @@ This is a tranlation of [Attended LambdaConf 2015 in Boulder!](http://the.igrequ
 ## Day 1
 
 - [Write Some Idris](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/puffnfresh)
-    - Introduction to Idris. And introduction to dependent types for me.
-    - Interesting but very difficult perhaps because I couldn't hear the details.
-      During the session I guessed the answer and tried to tinker the sample codes, before the speaker showed the answer, but in vail.
+    - Idris入門。私にとっては依存型の入門でもありました。
+    - 面白かったのですが、詳細を聞き取れなかったせいもあってか、めちゃめちゃ難しかったです。
+      練習問題中の合間を縫って、まだ答えていない問題の答えを推測したりサンプルコードをいじったりしてみましたが、全然うまく行きませんでした。
 - [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
-    - Learned from building HTML (with shakespeare), routing (with Spock), ORM (with persistent), to form validation (with digestive-functors).
-    - I had fun and understood very well. Because I knew a bit about the theme before this and Alejandro's voice was clear and loud enough.
-    - But I couldn't do most of the exercises because I was almost always cabal-install-ing in each exercise's sandbox...
+    - shakespeareでのHTMLの生成から、Spockによるルーティング、persistentを使ったORM、それからdigestive-functorsを使ったフォームのバリデーションまで、
+      Webアプリづくりに必要なもろもろを勉強しました。
+    - もともとある程度知った話題であったのと、スピーカーのAlejandroさんの声が聞きやすかったおかげもあってか、十分理解できましたし、楽しくできました。
+    - でも、練習問題を解いている間はほとんど`cabal install`していた気がします...。sandboxをもっと賢く使いたかった。
 - [A Practical Introduction to Haskell GADTs](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/goldfirere)
-    - Well, as I remember, about implementing dependent types with GADTs, maybe.
-    - I felt bad by jet lag before exercise 2. I'm sorry that I couldn't use [glambda](https://github.com/goldfirere/glambda) though I compiled in the morning.
+    - 確か覚えている限り、GADTsを利用して依存型を実装する、という話だった、はずです。
+    - 2つ目の練習問題の前、時差ボケで恐ろしく眠く、気分も悪くなってしまってたのです。
+      せっかく朝早くに[glambda](https://github.com/goldfirere/glambda)をコンパイルしたのに、使うことがなく終わってしまいました。無念。
 - [LiquidHaskell: Refinement Types for Haskell](http://ucsd-progsys.github.io/liquidhaskell-tutorial/)
-    - As its title, tutorial of LiquidHaskell.
-    - The only part I saw was the last; I was sleeping from the previous session on.
-    - But even the last part (maybe the case study) made me impressed with the power of LiquidHaskell. So I'll review the book (the above link).
+    - タイトル通り、LiquidHaskellのチュートリアルでした。
+    - が、聞けたのは最後の方だけでした。引き続きお休み中だったためです。
+    - それでも、その最後の方（事例の紹介だったと思います）だけでも、LiquidHaskellの力を非常に印象づけてくれました。ぜひ上記リンク先の資料を見返したいと思います。
 
 ## Day 2
 
