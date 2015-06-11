@@ -72,10 +72,10 @@ This is a tranlation of [Attended LambdaConf 2015 in Boulder!](http://the.igrequ
 ## Day 3
 
 - [An Adventure in Elm: Writing an Adventure Game in Elm](https://github.com/rtfeldman/lambdaconf-2015-elm-workshop)
-    - Tutorial of Elm.
-    - I'm glad to use Elm for the first time even though I declared ["Do Elm from today!" in the previous post (in Japanese)](/posts/2015-02-17-kbkz_tech.html)
-    - The speaker Joe Nash was so kind that many audience (including me) asked questions comfortably.
-    - Elm was actually easy and powerful for me. I wish to use more...
+    - Elmのチュートリアル。
+    - [「今日からElmですね！」](/posts/2015-02-17-kbkz_tech.html)なんて以前の記事で叫んでいながら、それまでElmに全く手を付けられていなかったので、大変ありがたかったです。
+    - 登壇者のJoe Nashさんも親切で、私を含め多くの参加者が気軽に質問できる良いワークショップでした。
+    - Elmは思った通り簡単で強力でした。もっと使いたいなあ。
 
 # What I did
 
