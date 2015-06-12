@@ -6,11 +6,18 @@ lang: en
 ...
 ---
 
-I attended LambdaConf 2015, held from May 22 to May 24.
+※[日本語版](/posts/2015-06-12-lambdaconf-ja.html)も書きました。
+
+I attended [LambdaConf 2015](http://degoesconsulting.com/lambdaconf-2015/), held from May 22 to May 24.
+
+<div style="text-align:center">
+![](/imgs/2015-05-22-lambdaconf-gate.jpg)
+</div>
 
 # What I learned
 
-Here's a list of sessions I took (or planned to take) part in during the conference.  
+
+I took (or planned to take) part in these sessions [among the various and interesting others](https://docs.google.com/spreadsheets/d/1f2VB7YrWojUmZ3Q1RAPGdGd9NsVLEl4x48zhDYbsUgM/edit#gid=0).
 I tell their summary and my impression only for ones I could watch without sleeping.  
 (I feel regret and sorry but I sufferred from jet lag...)
 
@@ -19,14 +26,15 @@ I tell their summary and my impression only for ones I could watch without sleep
 - [Write Some Idris](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/puffnfresh)
     - Introduction to Idris. And introduction to dependent types for me.
     - Interesting but very difficult perhaps because I couldn't hear the details.
-      During the session I guessed the answer and tried to tinker the sample codes, before the speaker showed the answer, but in vail.
+      In the intervals of exercises, I guessed some answers of undone exercises and tried to tinker the sample codes, but in vail.
 - [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
     - Learned from building HTML (with shakespeare), routing (with Spock), ORM (with persistent), to form validation (with digestive-functors).
     - I had fun and understood very well. Because I knew a bit about the theme before this and Alejandro's voice was clear and loud enough.
     - But I couldn't do most of the exercises because I was almost always cabal-install-ing in each exercise's sandbox...
+      I should have prepare sandboxes in better way.
 - [A Practical Introduction to Haskell GADTs](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/goldfirere)
     - Well, as I remember, about implementing dependent types with GADTs, maybe.
-    - I felt bad by jet lag before exercise 2. I'm sorry that I couldn't use [glambda](https://github.com/goldfirere/glambda) though I compiled in the morning.
+    - I felt bad and extremely sleepy by jet lag before exercise 2. I'm sorry that I couldn't use [glambda](https://github.com/goldfirere/glambda) though I compiled in the early morning.
 - [LiquidHaskell: Refinement Types for Haskell](http://ucsd-progsys.github.io/liquidhaskell-tutorial/)
     - As its title, tutorial of LiquidHaskell.
     - The only part I saw was the last; I was sleeping from the previous session on.
@@ -34,9 +42,10 @@ I tell their summary and my impression only for ones I could watch without sleep
 
 ## Day 2
 
-- [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf))
+- [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf)
 - [Give me Freedom or Forgeddaboutit: What Does "Free" Really Mean?](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/freedom.pdf)
     - Free is free because it converts a Functor into a Monad for free, as List converts any Hask object into a Monoid.
+    - Actually, List and Free is similar in their structure.
     - The speaker and slide must have said more, but only I could understand is that.
     - I've been learning category theory since preparing for [a workshop of Monad (Japanese)](/posts/2015-03-23-monad-base.html). But I could understand little of them.
 - [Finally Tagless DSLs and MTL](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/mtl.pdf)
@@ -53,7 +62,7 @@ I tell their summary and my impression only for ones I could watch without sleep
 - [Introduction to Intuitionistic Type Theory](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/vpatryshev/intuitionistic-type-theory/IntroToIntuitionisticTypeTheory.pptx)
 - [Introducing Emily: Simplifying Functional Programming](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/mcclure)
     - In [Emily](http://emilylang.org), all is access to an object like JavaScript's one. Even assignment expression (such as `a = 123`) is a syntactic sugar of `set` method of a scope object.
-    - It sounded like Lisp based on JavaScript's object to me. Interesting.
+    - It sounded like Lisp based on JavaScript's object to me (I don't know how similar it is actually). Interesting.
 - [The Next Great Functional Programming Language](http://www.slideshare.net/jdegoes/the-next-great-functional-programming-language)
     - John (seems the leader of LambdaConf 2015) told us many features of his ideal language (of cource most of them must be jokes) by criticizing various features and bad points of today's languages.
     - All people in the hall discussed most actively in the day, and then prolonged the session very well. They looked very fun :)
@@ -64,17 +73,17 @@ I tell their summary and my impression only for ones I could watch without sleep
     - Tutorial of Elm.
     - I'm glad to use Elm for the first time even though I declared ["Do Elm from today!" in the previous post (in Japanese)](/posts/2015-02-17-kbkz_tech.html)
     - The speaker Joe Nash was so kind that many audience (including me) asked questions comfortably.
-    - Elm was actually easy and powerful for me. I wish to use more...
+    - Elm was easy and powerful for me as I expected. I wish to use more...
 
 # What I did
 
-Besides sessions about programming, we enjoyed hiking in LambdaConf 2015!
+Besides sessions about functional programming, we enjoyed hiking in LambdaConf 2015!
 
 ![Town among Mountains](/imgs/2015-05-25-boulder-town-among-mountains.jpg)
 
 ![Mountains in Boulder](/imgs/2015-05-25-boulder-mountains.jpg)
 
-As the photos above show, Boulder is among mountains. I used to see beautiful mountains from everywhere.
+As the photos above show, Boulder is among mountains. I saw beautiful mountains from everywhere.
 Then of cource it's near from hiking trails. So we hiked there with the leader of LambdaConf, John.
 
 And [as LambdaConf 2015's intro says](http://www.degoesconsulting.com/lambdaconf-2015/#lambdaconf-h1),
@@ -82,13 +91,13 @@ people in Boulder held [a festival around the downtown](http://www.bceproduction
 It seems John intentionally scheduled LambdaConf 2015 for those days, to make us have fun with Boulder more!  
 I think it's really nice idea, I found and felt John's love toward Boulder strongly.
 
-And I played bungee-jumping without string from there!
+And in the festival, I played bungee-jumping without string for the first time from there!
 
 ![](/imgs/2015-05-25-boulder-creek-festival-jumping-step.jpg)
 
 # What I didn't
 
-I did want to give a lightning talk in LambdaConf 2015, but I missed the chance in the unconference.  
+I did want to give some lightning talks in LambdaConf 2015, but I missed the chance in the unconference.  
 I wanted to show my opinion about Monad, as well as to introduce [apiary](https://github.com/philopon/apiary).
 
 So let me publish one set of the slides:
@@ -104,6 +113,6 @@ I'll publish the one about apiary if I remember to complete :)
 # Thanks to all!
 
 Finally, I want to say thank you to many people who guided me to this fantastic conference.  
-Including people who held, gave sessions, attended with me, or accommodated me any others!
+Including people who held, gave sessions, attended with me, accommodated me or any others!
 
 Thank you! \<3\<3\<3
