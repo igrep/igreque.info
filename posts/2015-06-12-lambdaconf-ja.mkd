@@ -6,13 +6,17 @@ lang: ja
 ...
 ---
 
-This is a tranlation of [Attended LambdaConf 2015 in Boulder!](http://the.igreque.info/posts/2015-05-26-lambdaconf-en.html).
+This is a Japanese tranlation of [Attended LambdaConf 2015 in Boulder!](/posts/2015-05-26-lambdaconf-en.html).
 
 5月22日から24日かけてアメリカのコロラド州、
-ボールダー[^boulder]にて開催された、「[LambdaConf 2015](http://degoesconsulting.com/lambdaconf-2015/)」に参加しました！  
+Boulder（ボールダー[^boulder]）にて開催された、「[LambdaConf 2015](http://degoesconsulting.com/lambdaconf-2015/)」に参加しました！  
 なのでまた超今更の私的まとめです！
 
-[^boulder]: Boulder。英語の発音的には「ブゥルダー」の方が近かった気がします。
+[^boulder]: 英語の発音的には「ブゥルダー」の方が近かった気がします。
+
+<div style="text-align:center">
+![](/imgs/2015-05-22-lambdaconf-gate.jpg)
+</div>
 
 # 知ったこと
 
