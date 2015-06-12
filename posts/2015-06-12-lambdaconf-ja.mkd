@@ -77,44 +77,46 @@ This is a tranlation of [Attended LambdaConf 2015 in Boulder!](http://the.igrequ
     - 登壇者のJoe Nashさんも親切で、私を含め多くの参加者が気軽に質問できる良いワークショップでした。
     - Elmは思った通り簡単で強力でした。もっと使いたいなあ。
 
-# What I did
+# やったこと
 
-Besides sessions about programming, we enjoyed hiking in LambdaConf 2015!
+関数型プログラミング関連のセッションの他に、LambdaConf 2015ではハイキングもしました！
 
-![Town among Mountains](/imgs/2015-05-25-boulder-town-among-mountains.jpg)
+![山に囲まれた街並み](/imgs/2015-05-25-boulder-town-among-mountains.jpg)
 
-![Mountains in Boulder](/imgs/2015-05-25-boulder-mountains.jpg)
+![Boulderの山](/imgs/2015-05-25-boulder-mountains.jpg)
 
-As the photos above show, Boulder is among mountains. I used to see beautiful mountains from everywhere.
-Then of cource it's near from hiking trails. So we hiked there with the leader of LambdaConf, John.
+写真の通り、Boulderは山に囲まれています。街のどこからでも美しく連なる山々が見られました。
+そしてもちろんハイキングコースも近くにあったので、Johnさんはじめ参加者のみなさんと一緒に行きました。
 
-And [as LambdaConf 2015's intro says](http://www.degoesconsulting.com/lambdaconf-2015/#lambdaconf-h1),
-people in Boulder held [a festival around the downtown](http://www.bceproductions.com/boulder-creek-festival/).
-It seems John intentionally scheduled LambdaConf 2015 for those days, to make us have fun with Boulder more!  
-I think it's really nice idea, I found and felt John's love toward Boulder strongly.
+そして[LambdaConf 2015の紹介で述べているように](http://www.degoesconsulting.com/lambdaconf-2015/#lambdaconf-h1)、
+Boulderでは[ダウンタウンでお祭り](http://www.bceproductions.com/boulder-creek-festival/)も行われました。  
+どうやらJohnさんは、このタイミングに合わせてLambdaConf 2015の日取りを決めたようです。
+Boulderをもっと楽しんでほしい、というJohnさんの熱いBoulder愛を感じました。  
+Nice idea!
 
-And I played bungee-jumping without string from there!
+折角なんで私はそのお祭りで、下記のジャンプ台から、紐なしバンジーに初挑戦しました！
 
 ![](/imgs/2015-05-25-boulder-creek-festival-jumping-step.jpg)
 
-# What I didn't
+# やらなかったこと
 
-I did want to give a lightning talk in LambdaConf 2015, but I missed the chance in the unconference.  
-I wanted to show my opinion about Monad, as well as to introduce [apiary](https://github.com/philopon/apiary).
+本当はLTを一本、できれば二本やりたかったのですが、3日目のunconferenceで見つけたチャンスを逃してしまいました。
+私のMonadに対する考えや[apiary](https://github.com/philopon/apiary)の紹介を行うつもりでした。
 
-So let me publish one set of the slides:
+なのでこの場を借りて掲載させてください。  
+ただ、内容は以前日本語でやった、「[『やらなければならないこと』としてのHaskellのMonad](/slides/2014-05-11-monad-as-have-to-do.html)」の英訳ですので、
+ご存知の方は改めて見る間でもないでしょう。
 
 [Monad as "Things to Do"](/slides/2015-05-24-monad-as-to-do-en.html)
 
-Of cource I uploaded onto Slideshare:
+もちろん、Slideshareにも上げました。
 
 <iframe src="https://www.slideshare.net/slideshow/embed_code/key/ktoguT36qNQfw5" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 
-I'll publish the one about apiary if I remember to complete :)
+apiaryの方は私のやる気が続いて、ちゃんと完成させたら公開します。あしからず。
 
-# Thanks to all!
+# みんな、ありがとう！
 
-Finally, I want to say thank you to many people who guided me to this fantastic conference.  
-Including people who held, gave sessions, attended with me, or accommodated me any others!
+最後に、私をこの素敵なイベントに導いてくれたすべての人たち ー 主催者はもちろん、発表された方、参加された方、ホームステイさせてくれた方、その他もろもろ全員 ー に感謝したいと思います。
 
-Thank you! \<3\<3\<3
+本当にありがとうございました！ \<3\<3\<3
