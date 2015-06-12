@@ -46,7 +46,7 @@ Boulder（ボールダー[^boulder]）にて開催された、「[LambdaConf 201
 
 ## Day 2
 
-- [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf))
+- [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf)
 - [Give me Freedom or Forgeddaboutit: What Does "Free" Really Mean?](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/freedom.pdf)
     - FreeがfreeなのはFunctorをfreeで（タダで）Monadに変換するから。ListがHask圏のオブジェクトをfreeでMonoidに変換するのと同様。
     - よく見るとListとFreeは構造もすごく似ている。
