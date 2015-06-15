@@ -84,7 +84,7 @@ lensは広く知られて、広く使われているので、lensでXMLも扱っ
 # [\@fumieval](https://twitter.com/fumieval)さんの「LensにもPrismにもなるフィールド」
 
 - LensもPrismも結局全部Opticなんで意外と簡単に抽象化できた。
-- そしたら型レベルパターンマッチなるものもできたよマジやばそう。
+- そしたらファーストクラスパターンマッチなるものもできたよマジやばそう。
 
 # [\@AoiroAoino](https://twitter.com/AoiroAoino)さんの「[Monocleとかいうのがありまして](http://www.slideshare.net/AoiroAoino/lens-prism-48780563)」
 
