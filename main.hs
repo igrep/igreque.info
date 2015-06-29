@@ -6,6 +6,9 @@ import Control.Applicative ((<$>))
 
 import Network.URL (encString)
 
+import Data.Binary (Binary)
+import Data.Typeable (Typeable)
+
 import Debug.Trace
 import Hakyll
 
@@ -19,7 +22,7 @@ inspectTags = inspect "tags"
 
 main :: IO ()
 main = hakyll $ do
-  tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+  tags <- buildTags postsPattern (fromCapture "tags/*.html")
   cssRules              -- Compressed CSS
   idRules "fonts/*"     -- Fonts
   idRules "imgs/*"      -- Images
@@ -51,7 +54,7 @@ cssRules =
 
 postRules :: Tags -> Rules ()
 postRules tags =
-  match "posts/*" $ do
+  match postsPattern $ do
     route   $ setExtension ".html"
     compile $ do
       let loadWithTags = loadTemplateIn (postContext tags)
@@ -62,18 +65,18 @@ postRules tags =
         >>= relativizeUrls
 
 slideRules :: Rules ()
-slideRules = match "slides/*.mkd" $ do
+slideRules = match "slides/**.mkd" $ do
     route   $ setExtension ".html"
     compile $
       getResourceString >>=
         withItemBody (unixFilter "pandoc" ["-t", "slidy", "-i", "-s", "-V", "slidy-url=."])
 
 postsListRules :: Rules ()
-postsListRules = do
+postsListRules =
   create ["posts.html"] $ do
     route idRoute
     compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
+      posts <- allPostsByRecentFirst
       itemTemplate <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTemplate datedContext posts
       makeItem list
@@ -85,11 +88,11 @@ postsListRules = do
     allPostsContext = constField "title" "All posts" <> datedContext
 
 indexRules :: Tags -> Rules ()
-indexRules tags = do
+indexRules tags =
   create ["index.html"] $ do
     route idRoute
     compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
+      posts <- allPostsByRecentFirst
       itemTemplate <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTemplate datedContext posts
       makeItem list
@@ -102,7 +105,7 @@ indexRules tags = do
           <> defaultContext
 
 taggedPostsRules :: Tags -> Rules ()
-taggedPostsRules tags = do
+taggedPostsRules tags =
   tagsRules tags $ \tag pattern -> do
     route idRoute
     let title = "Posts tagged " ++ tag
@@ -123,7 +126,7 @@ atomRules =
   create ["atom.xml"] $ do
     route idRoute
     compile $ do
-      posts <- take 10 <$> (recentFirst =<< loadAllSnapshots "posts/*" "content")
+      posts <- take 10 <$> (recentFirst =<< loadAllSnapshots postsPattern "content")
       renderAtom feedConfig feedContext posts
   where
     feedContext = bodyField "description" <> datedContext
@@ -145,9 +148,14 @@ datedContext :: Context String
 datedContext = dateField "date" "%B %e, %Y" <> defaultContext
 
 postContext :: Tags -> Context String
-postContext tags = (taggedContext tags) <>
-  (field "encodedTitle" $ \item -> do
-    encodeUrlComponent <$> getMetadataField' (itemIdentifier item) "title")
+postContext tags = taggedContext tags <> field "encodedTitle" getEncodedTitle
+  where getEncodedTitle item = encodeUrlComponent <$> getMetadataField' (itemIdentifier item) "title"
+
+allPostsByRecentFirst :: (Binary a, Typeable a) => Compiler [Item a]
+allPostsByRecentFirst = recentFirst =<< loadAll postsPattern
+
+postsPattern :: Pattern
+postsPattern = "posts/**"
 
 encodeUrlComponent :: String -> String
 encodeUrlComponent = encString True (`elem` safeCharacters)
