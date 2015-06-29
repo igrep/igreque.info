@@ -71,6 +71,15 @@ nav #bar {
 
 article h1.title {
   font-size: 170%;
+  margin-bottom: 0.4em;
+}
+
+article h1.subtitle {
+  font-size: 100%;
+  font-weight: normal;
+  font-style: italic;
+  margin-top: 0;
+  margin-left: 2.5em;
 }
 
 article .history {
