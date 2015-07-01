@@ -30,8 +30,8 @@ I tell their summary and my impression only for ones I could watch without sleep
 - [Developing Web Applications with Haskell](https://github.com/serras/lambdaconf-2015-web)
     - Learned from building HTML (with shakespeare), routing (with Spock), ORM (with persistent), to form validation (with digestive-functors).
     - I had fun and understood very well. Because I knew a bit about the theme before this and Alejandro's voice was clear and loud enough.
-    - But I couldn't do most of the exercises because I was almost always cabal-install-ing in each exercise's sandbox...
-      I should have prepare sandboxes in better way.
+    - But I couldn't do most of the exercises because I was almost always cabal-install-ing in each exercise's sandbox....
+      I should have prepared sandboxes in better way.
 - [A Practical Introduction to Haskell GADTs](https://github.com/degoes-consulting/lambdaconf-2015/tree/master/speakers/goldfirere)
     - Well, as I remember, about implementing dependent types with GADTs, maybe.
     - I felt bad and extremely sleepy by jet lag before exercise 2. I'm sorry that I couldn't use [glambda](https://github.com/goldfirere/glambda) though I compiled in the early morning.
@@ -45,14 +45,14 @@ I tell their summary and my impression only for ones I could watch without sleep
 - [Pattern Functors: Wandering Around Fix-points, Free Monads and Generics](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/serras/pattern-functors.pdf)
 - [Give me Freedom or Forgeddaboutit: What Does "Free" Really Mean?](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/freedom.pdf)
     - Free is free because it converts a Functor into a Monad for free, as List converts any Hask object into a Monoid.
-    - Actually, List and Free is similar in their structure.
+    - Actually, List and Free is similar in their structures.
     - The speaker and slide must have said more, but only I could understand is that.
     - I've been learning category theory since preparing for [a workshop of Monad (Japanese)](/posts/2015-03-23-monad-base.html). But I could understand little of them.
 - [Finally Tagless DSLs and MTL](https://github.com/degoes-consulting/lambdaconf-2015/blob/master/speakers/tel/mtl.pdf)
 - Accelerating Haskell: GPGPU Programming with Haskell
     - Introduction to GPGPU and [accelerate](http://hackage.haskell.org/package/accelerate), provides an easy way to use GPGPU in Haskell.
     - I heard about accelerate in [Parallel and Concurrent Programming in Haskell](http://chimera.labs.oreilly.com/books/1230000000929), but never used.
-      So I'd be glad if I have a nice workshop to learn... (actually I wouldn't use it voluntarily. Because I don't think I should use it so far...)
+      So I'd be glad if I have a nice workshop to learn... (actually I wouldn't use it voluntarily. Because I don't think I should use it so far...).
 - In Rust We Trust
     - About attractions of Rust, Mozilla's programming language.
     - Things I got impressed with were:
@@ -73,7 +73,7 @@ I tell their summary and my impression only for ones I could watch without sleep
     - Tutorial of Elm.
     - I'm glad to use Elm for the first time even though I declared ["Do Elm from today!" in the previous post (in Japanese)](/posts/2015-02-17-kbkz_tech.html)
     - The speaker Joe Nash was so kind that many audience (including me) asked questions comfortably.
-    - Elm was easy and powerful for me as I expected. I wish to use more...
+    - Elm was easy and powerful for me as I expected. I wish to use more....
 
 # What I did
 
@@ -83,7 +83,7 @@ Besides sessions about functional programming, we enjoyed hiking in LambdaConf 2
 
 ![Mountains in Boulder](/imgs/2015-05-25-boulder-mountains.jpg)
 
-As the photos above show, Boulder is among mountains. I saw beautiful mountains from everywhere.
+As the photos above show, Boulder is surrounded mountains. I saw beautiful mountains from everywhere.
 Then of cource it's near from hiking trails. So we hiked there with the leader of LambdaConf, John.
 
 And [as LambdaConf 2015's intro says](http://www.degoesconsulting.com/lambdaconf-2015/#lambdaconf-h1),
