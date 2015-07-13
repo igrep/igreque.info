@@ -58,12 +58,12 @@ end
 ```Haskell
 -- Haskellが分からない場合はとりあえず読み飛ばそう！ここではそんなに重要じゃない！
 sum :: [Int] -> Int
-sum numbers = runST do
+sum numbers = runST $ do
   result <- newSTRef 0
   forM_ numbers $ \n -> do
-    current <- readSTRef
+    current <- readSTRef result
     writeSTRef result (current + n)
-  result
+  readSTRef result
 ```
 
 ここでの議論に限ったことではないが、
