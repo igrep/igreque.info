@@ -3,7 +3,7 @@ title: 関数型プログラミングから予測可能プログラミングへ
 subtitle: あるいは、私がHaskellに求めるもの
 author: Yuji Yamamoto
 tags: Haskell
-date: July 1, 2015
+date: July 25, 2015
 ...
 ---
 
