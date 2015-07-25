@@ -82,11 +82,10 @@ end
 -- Haskellが分からない場合はとりあえず読み飛ばそう！ここではそんなに重要じゃない！
 sum :: [Int] -> Int
 sum numbers = runST $ do
-  result <- newSTRef 0
+  result <- newSTRef 0 -- 最終的に結果として返す変数を初期化して...
   forM_ numbers $ \n -> do
-    current <- readSTRef result
-    writeSTRef result (current + n)
-  readSTRef result
+    modifySTRef' result (+n) -- 書き変えていって...
+  readSTRef result -- 結果として返す
 ```
 
 また、ここでの議論に限ったことではないが、
