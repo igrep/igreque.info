@@ -69,6 +69,7 @@ slideRules = match "slides/**.mkd" $ do
     route   $ setExtension ".html"
     compile $
       getResourceString >>=
+        -- FIXME: use pandocCompilerWith
         withItemBody (unixFilter "pandoc" ["-t", "slidy", "-i", "-s", "-V", "slidy-url=."])
 
 postsListRules :: Rules ()
