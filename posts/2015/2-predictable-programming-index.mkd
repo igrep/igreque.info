@@ -1,0 +1,19 @@
+---
+title: 関数型プログラミングから予測可能プログラミングへ: 目次、というか今後書きたいテーマ
+author: Yuji Yamamoto
+tags: Haskell
+date: July 26, 2015
+...
+---
+
+0. [序論](/posts/2015/1-predictable-programming.html)
+0. 純粋な関数
+0. 静的型付け
+0. 代数的データ型 (前の章にマージするかも)
+0. 命令型プログラミング (IO, ST, State, Reader, Writer)
+0. その他思い出せたら
+
+番外編
+
+0. Haskellの「予測可能プログラミング」に反する機能
+0. オブジェクトと代数的データ型
