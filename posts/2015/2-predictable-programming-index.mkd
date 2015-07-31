@@ -7,7 +7,7 @@ date: July 26, 2015
 ---
 
 0. [序論](/posts/2015/1-predictable-programming.html)
-0. 純粋な関数
+0. 純粋な関数・イミュータブルな構造
 0. 静的型付け
 0. 代数的データ型 (前の章にマージするかも)
 0. 命令型プログラミング (IO, ST, State, Reader, Writer)
