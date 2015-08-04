@@ -12,13 +12,13 @@
 
 こういうの↓とか、
 
-![](imgs/dokidoki-fairies-01.png)
+![](/imgs/dokidoki-fairies-01.png)
 
 # こんにちは！
 
 こういうの↓が大好きなおおきなおともだちです！
 
-![](imgs/paff-01.jpg)
+![](/imgs/paff-01.jpg)
 
 # きょうのおはなし！
 
