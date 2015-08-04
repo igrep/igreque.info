@@ -82,7 +82,7 @@
 
 
 
-# その5! readlines? read?
+# その5! coerceする？それともto_f？
 
 # もっと細かい編! concat vs +=
 
