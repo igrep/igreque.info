@@ -25,7 +25,7 @@
 - **ふっつー**のプログラムを書いている限りはまず問題にならないけど、
 - Rubyならできる、**みみっちい**最適化についておはなしするよ！
 - ベンチマークに使ったスクリプトはこちらで！
-    - [trivial-optimization-in-ruby](https://github.com/igrep/trivial-optimization-in-ruby)
+    - [2015-08-06-compare-trivial-codes.rb](https://github.com/igrep/igreque.info/blob/master/prgs/2015-08-06-compare-trivial-codes.rb)
 
 # きほん！
 
