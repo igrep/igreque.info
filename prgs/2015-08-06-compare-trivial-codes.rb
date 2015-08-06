@@ -1,7 +1,7 @@
 require 'optparse'
 require 'benchmark'
 
-N = ARGV.getopts('n:1000_0000')['n'].to_i
+N = ARGV.getopts('n')['n'].to_i
 TARGETS = ARGV
 
 def run_bm label, &block
