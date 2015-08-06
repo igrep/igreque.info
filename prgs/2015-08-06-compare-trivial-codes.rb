@@ -100,7 +100,25 @@ run_bm("その3! キーワード引数とHashならどうかな？\n") do|bm|
   end
 
   bm.item 'Hashで引数定義' do
-    def foo3(_args)
+    def foo3(args)
+    end
+    N.times do
+      foo3(b: 1, c: 2)
+    end
+  end
+
+  bm.item 'キーワード引数で引数定義（引数を参照した場合）' do
+    def hoge3(b:, c:)
+      c
+    end
+    N.times do
+      hoge3(b: 1, c: 2)
+    end
+  end
+
+  bm.item 'Hashで引数定義（引数を参照した場合）' do
+    def foo3(args)
+      args[:c]
     end
     N.times do
       foo3(b: 1, c: 2)
