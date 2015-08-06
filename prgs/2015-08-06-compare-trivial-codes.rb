@@ -5,8 +5,8 @@ N = ARGV.getopts('n:1000_0000')['n'].to_i
 TARGETS = ARGV
 
 def run_bm label, &block
-  puts '             user     system      total        real'
   if TARGETS.empty? || (TARGETS.any? {|target| label.include? target })
+    puts '                                     user     system      total        real'
     Benchmark.benchmark(label, &block)
   end
 end
