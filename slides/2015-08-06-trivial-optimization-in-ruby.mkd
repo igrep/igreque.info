@@ -63,7 +63,25 @@
 
 - Hashリテラルも、配列リテラルも！
 - 期間を作るメソッドなども！
-- 定数の代わりにできない...
+
+    ```ruby
+    def hage
+      4.days
+    end
+    ```
+
+# その2! それ以外のオブジェクトもね！
+
+そして散らばる定数
+
+```ruby
+class Hoge
+  AAA = 'aaa'.freeze
+  ONE_DAY = 1.day
+  NANTOKA_TABLE = { ... }
+  ...
+end
+```
 
 # その3! キーワード引数とHashならどうかな？
 
