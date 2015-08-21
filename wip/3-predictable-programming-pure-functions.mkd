@@ -95,3 +95,14 @@ var mapped = array.map(function(n){
 
 ## 力の弱い関数
 
+純粋な関数の
+
+# イミュータブルな構造
+
+## 単純で極端な例
+
+JavaScriptの`Array#sort`や`undefined`など
+
+## 並列処理との相性
+
+# これだけではつまらないので次の予告を少し
