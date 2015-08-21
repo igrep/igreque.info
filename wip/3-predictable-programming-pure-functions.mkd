@@ -17,8 +17,7 @@ date: August 29, 2015
 「純粋な関数」が何なのかは、[前の記事](/posts/2015/1-predictable-programming.html#definitionFunctionalProgramming)でも述べた。  
 そうした「純粋な関数」が[「予測可能プログラミング」](/posts/2015/1-predictable-programming.html#definitionPredictableProgramming)
 にもたらすメリットは実にシンプルで、
-関数がプログラムに及ぼす影響の範囲が、
-結果を渡した先(束縛する変数や別の関数の引数)のみに限定されるので、
+関数がプログラムに及ぼす**影響範囲が、結果を渡した先(束縛する変数や別の関数の引数)のみに限定**されるので、
 余計なことを考えなくてよい、ということである。
 
 例えば、JavaScriptの`Array#sort`を考えてみよう。
