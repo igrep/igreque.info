@@ -119,7 +119,7 @@ Index: magick/transform.c
 この `ExtentImage` 関数の直感に反する振る舞いに戸惑いつつも従ったコードがすでにたくさんあるかもしれないことを思うと、うかつに手は出せません。
 もちろん、私の力不足ゆえの言い訳でもあるのですが...。
 それが証拠に、後で気づいたのですが、
-[RMagickのドキュメント](http://studio.imagemagick.org/RMagick/doc/image2.html#extent)にはすでに、
+[RMagickのドキュメント](https://rmagick.github.io/image2.html#extent)にはすでに、
 "The upper-left corner of the new image is positioned at -x, -y." と、負の数で指定するのがこの関数の仕様であるかのように書かれています。
 ソフトウェアの振る舞いを維持するって難しいなぁと思いつつ、
 最後に、今回の目的であった「画像を決まったサイズの枠に収めるよう、アスペクト比を維持したままリサイズしつつ、余った部分を透明にする」
