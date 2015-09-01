@@ -64,12 +64,12 @@ img.extent width, height, -x, -y
 
 何じゃこの不思議ビヘイビアは...と思いつつ、
 [RMagickの `extent` メソッド](https://github.com/rmagick/rmagick/blob/689271fbb439dbf735f120811ac3b2dc79ba95a2/ext/RMagick/rmimage.c#L5878-L5946)から、
-それが呼んでいる [`ExtentImage` 関数](http://www.imagemagick.org/api/MagickCore/transform_8c_source.html#l01173)を追いかけてみると、
-[`CompositeImage` という関数に画像の座標を渡すところ](http://www.imagemagick.org/api/MagickCore/transform_8c_source.html#l01202)で、
+それが呼んでいる [`ExtentImage` 関数](https://github.com/trevor/ImageMagick/blob/a8ffb9991cc0e551cd096184142216721c4b70ea/trunk/MagickCore/transform.c#L1128-L1159)を追いかけてみると、
+[`CompositeImage` という関数に画像の座標を渡すところ](https://github.com/trevor/ImageMagick/blob/a8ffb9991cc0e551cd096184142216721c4b70ea/trunk/MagickCore/transform.c#L1156-L1157)で、
 `geometry->x` と `geometry->y` にマイナスをかけているじゃありませんか！
 
 もしかしてこれが関係してるんじゃ、と思って
-[ImageMagickのChangeLog](https://subversion.imagemagick.org/subversion/ImageMagick/branches/ImageMagick-6.8.9/ChangeLog)を
+[ImageMagickのChangeLog](https://github.com/trevor/ImageMagick/blob/a8ffb9991cc0e551cd096184142216721c4b70ea/branches/ImageMagick-6.8.8/ChangeLog#L3086-L3087)を
 探ってみると、バッチリそれに該当しそうなことが書かれていました。
 ```
 2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
