@@ -115,11 +115,38 @@ var mapped = array.map(function(n){
 姓と名のペア（要素数2の配列）に変換し、
 姓名それぞれを大文字に変換する処理である。
 
-1. reduceを使った場合
+1. mapやfilterを使った場合
+
+```javascript
+names.map(function(name){
+  // 各文字列を空白文字で分割した結果の配列に変換して、
+  //   e.g. ["a b", "c d", ...] => [["a", "b"], ["c", "d"], ...]
+  // 次のfilterメソッドに渡す。
+  return name.split(/\s+/);
+}).filter(function(nameParts){
+  return (
+    // 空白文字でsplitするので、
+    // 先頭末尾に空白文字含め余計な文字列がなければ、分割後は長さ2になる。
+       nameParts.length === 2
+    // なおかつ、姓名共に空でないもののみの配列を返す。
+    && nameParts[0] && nameParts[1]
+  );
+}).map(function(nameParts){
+  // 姓と名、両方を大文字にした結果を、
+  var firstName = nameParts[0].toUpperCase();
+  var lastName nameParts[1].toUpperCase();
+
+  // 最終的な結果の配列として返す。
+  return [firstName, lastName];
+});
+```
+
+2. reduceを使った場合
 
 ```javascript
 names.reduce(
   function(firstAndLastNames, nextName){
+    // 文字列を空白文字で分割する。
     var nameParts = nextName.split(/\s+/);
 
     // 空白文字でsplitするので、
@@ -130,25 +157,24 @@ names.reduce(
       return firstAndLastNames;
     }
 
-    return firstAndLastNames.concat(
-      [nameParts[0].toUpperCase(), nameParts[1].toUpperCase()]
-    );
+    // なおかつ、姓名共に空であってはいけない
+    if (nameParts[0] && nameParts[1]){
+      // 条件を満たさないので、結果の配列には追加しない。
+      return firstAndLastNames;
+    }
+
+    // 姓と名、両方を大文字にした結果を、
+    var firstName = nameParts[0].toUpperCase();
+    var lastName nameParts[1].toUpperCase();
+
+    // 最終的な結果の配列に追加する
+    return firstAndLastNames.concat([[firstName, lastName]]);
   },
-  []
+  [] // firstAndLastNamesの初期値。第一引数の関数が最初に実行される時に渡される。
 )
 ```
 
-2. mapやfilterを使った場合
 
-```javascript
-names.map(function(name){
-  return name.split(/\s+/);
-}).filter(function(nameParts){
-  return nameParts.length === 2;
-}).map(function(nameParts){
-  return [nameParts[0].toUpperCase(), nameParts[1].toUpperCase()];
-});
-```
 
 # イミュータブルな構造
 
