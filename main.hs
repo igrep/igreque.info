@@ -93,7 +93,7 @@ indexRules tags =
   create ["index.html"] $ do
     route idRoute
     compile $ do
-      posts <- allPostsByRecentFirst
+      posts <- indexPostsByRecentFirst
       itemTemplate <- loadBody "templates/postitem.html"
       list <- applyTemplateList itemTemplate datedContext posts
       makeItem list
@@ -154,6 +154,9 @@ postContext tags = taggedContext tags <> field "encodedTitle" getEncodedTitle
 
 allPostsByRecentFirst :: (Binary a, Typeable a) => Compiler [Item a]
 allPostsByRecentFirst = recentFirst =<< loadAll postsPattern
+
+indexPostsByRecentFirst :: (Binary a, Typeable a) => Compiler [Item a]
+indexPostsByRecentFirst = take 10 <$> allPostsByRecentFirst
 
 postsPattern :: Pattern
 postsPattern = "posts/**"
