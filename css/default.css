@@ -7,9 +7,19 @@
 
 body {
   font-family: 'VL PGothic', 'メイリオ', sans-serif;
-  width: 700px;
   margin: 0px auto 0px auto;
   background-color: #f8f8f8;
+}
+
+@media (min-width: 720px) {
+  body { width: 700px; }
+}
+
+@media (max-width: 480px) {
+  img {
+    max-width: 98%;
+    height: auto;
+  }
 }
 
 p,ol,ul,footer {
