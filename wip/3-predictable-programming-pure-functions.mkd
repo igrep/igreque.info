@@ -102,7 +102,6 @@ var mapped = array.map(function(n){
 `mapM`や`filterM`といった関数を使えば上記と似たような処理は実現できる。
 詳細は次回述べる予定。
 
-<<<<<<< Updated upstream
 ## 力の弱い関数
 
 純粋な関数が「予測可能プログラミング」にもたらすもう一つのメリットは、
