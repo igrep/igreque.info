@@ -160,9 +160,9 @@ names.map(function(name){
 
 ```javascript
 names.reduce(
-  function(firstAndLastNames, nextName){
+  function(firstAndLastNames, name){
     // 文字列を空白文字で分割する。
-    var nameParts = nextName.split(/\s+/);
+    var nameParts = name.split(/\s+/);
 
     // 空白文字でsplitするので、
     // nextNameの先頭末尾に空白文字を含め余計な文字列がなければ、
