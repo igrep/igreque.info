@@ -58,8 +58,8 @@
 私の場合...
 
 - マシン：
-<a href="http://www.amazon.co.jp/gp/product/B00GSJ1EXY/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B00GSJ1EXY&linkCode=as2&tag=poe02-22">ASUS TransBook T100TA</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=B00GSJ1EXY" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-<a href="http://www.amazon.co.jp/gp/product/B00GSJ1EXY/ref=as_li_ss_il?ie=UTF8&camp=247&creative=7399&creativeASIN=B00GSJ1EXY&linkCode=as2&tag=poe02-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=B00GSJ1EXY&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=poe02-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=B00GSJ1EXY" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+<a href="http://www.amazon.co.jp/gp/product/B00GSJ1EXY/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00GSJ1EXY&amp;linkCode=as2&amp;tag=poe02-22">ASUS TransBook T100TA</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00GSJ1EXY" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+<a href="http://www.amazon.co.jp/gp/product/B00GSJ1EXY/ref=as_li_ss_il?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00GSJ1EXY&amp;linkCode=as2&amp;tag=poe02-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;ASIN=B00GSJ1EXY&amp;Format=_SL250_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=poe02-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00GSJ1EXY" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
 
 # コツ1: 道具にこだわれ
 

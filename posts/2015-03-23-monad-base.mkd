@@ -15,7 +15,7 @@ tags: Haskell, Monad, 圏論
 
 そんな中でもふんわりと理解できたこととその印象を。（一部、[\@khibino](https://twitter.com/khibino)さんからアドバイスを元に得た理解もあります。）
 
-- <a href="http://www.amazon.co.jp/gp/product/4621063243/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=4621063243&linkCode=as2&tag=poe02-22">圏論の基礎</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=4621063243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />は全部読むんじゃなくてリファレンス的に持っておくといいそうですね！特に前書きは地雷らしい。
+- <a href="http://www.amazon.co.jp/gp/product/4621063243/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4621063243&amp;linkCode=as2&amp;tag=poe02-22">圏論の基礎</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4621063243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />は全部読むんじゃなくてリファレンス的に持っておくといいそうですね！特に前書きは地雷らしい。
 - モナドが「モノイド対象」たるゆえんは`join`が結合則を満たすところにあるそうです。だから`join`はあんなに持ち上げられる [^join-lift]のか...
 - `Free`モナドは「algebraの圏」。Abstract Syntax Treeを作る。対象は「式M aを評価してaを取り出す評価の仕方（一つのセマンティクス）」で射はよくわかんなかった！
     - 確かに改めて定義を見るとTreeっぽい。
@@ -55,7 +55,7 @@ tags: Haskell, Monad, 圏論
 
 
 また、今回まがいなりにも圏論をちょっとかじってみて、少しでも理解できたのが面白かったです。 \
-<a href="http://www.amazon.co.jp/gp/product/4621063243/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=4621063243&linkCode=as2&tag=poe02-22">圏論の基礎</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&l=as2&o=9&a=4621063243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を読むなりしてこれからも少しずつ勉強してみます。
+<a href="http://www.amazon.co.jp/gp/product/4621063243/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4621063243&amp;linkCode=as2&amp;tag=poe02-22">圏論の基礎</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4621063243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を読むなりしてこれからも少しずつ勉強してみます。
 
 ついでに、私が参考にした資料も一応貼っておきますね。
 

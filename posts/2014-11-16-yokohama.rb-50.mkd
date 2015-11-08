@@ -32,7 +32,7 @@ tags: Perl, 反社会学講座
 
 ## パオロ・マッツァリーノ「反社会学講座」
 
-<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=poe02-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4480423567" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=poe02-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=ss_til&amp;asins=4480423567" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 正直なところ詳しい内容をほとんど覚えておらず、学校の図書室（当時高校生でした）で読んだため見返すことさえ出来ないのですが[^web]、
 これを読んだ当時 \
@@ -57,7 +57,7 @@ tags: Perl, 反社会学講座
 
 ## 「初めてのPerl」
 
-<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=poe02-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4873115671" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=poe02-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=ss_til&amp;asins=4873115671" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 
 これは私が最初に買ったプログラミングの本でした。
