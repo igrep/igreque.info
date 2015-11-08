@@ -6,5 +6,7 @@ hakyll
 /fonts/
 *cabal.sandbox.config
 
+/.stack-work
+
 slidy.js
 slidy.css
