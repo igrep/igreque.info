@@ -29,6 +29,12 @@ date: August 29, 2015
 
 例えば、JavaScriptの`Array#sort`を考えてみよう。
 
+<!--
+```javascript
+var array = [6, 2, 3, 101, 1, 9, 8, 100];
+```
+-->
+
 ```javascript
 var sorted = array.sort();
 ```
@@ -57,6 +63,14 @@ var sorted = array.sort();
 通常「関数型プログラミング言語」とは呼ばれない言語でも、
 `map`, `filter`といった、
 関数型プログラミングにおいて好んで使われる機能が提供されている。
+
+<!--
+```javascript
+function processLargeValue(n){
+  return n * 2;
+};
+```
+-->
 
 ```javascript
 var mapped = array.map(function(n){
@@ -132,6 +146,19 @@ var mapped = array.map(function(n){
 
 1. mapやfilterを使った場合
 
+<!--
+```javascript
+var names = [
+  "Yuji igrep Yamamoto",
+  "Yamamoto  Yuji  ",
+  "Yamamoto  Yuji",
+  "Yuji Yamamoto",
+  "Yuji",
+  "",
+];
+```
+-->
+
 ```javascript
 names.map(function(name){
   // 各文字列を空白文字で分割した結果の配列に変換して、
@@ -149,7 +176,7 @@ names.map(function(name){
 }).map(function(nameParts){
   // 姓と名、両方を大文字にした結果を、
   var firstName = nameParts[0].toUpperCase();
-  var lastName nameParts[1].toUpperCase();
+  var lastName  = nameParts[1].toUpperCase();
 
   // 最終的な結果の配列として返す。
   return [firstName, lastName];
@@ -173,20 +200,20 @@ names.reduce(
     }
 
     // なおかつ、姓名共に空であってはいけない
-    if (nameParts[0] && nameParts[1]){
+    if (!(nameParts[0]) && !(nameParts[1])){
       // 条件を満たさないので、結果の配列には追加しない。
       return firstAndLastNames;
     }
 
     // 姓と名、両方を大文字にした結果を、
     var firstName = nameParts[0].toUpperCase();
-    var lastName nameParts[1].toUpperCase();
+    var lastName  = nameParts[1].toUpperCase();
 
     // 最終的な結果の配列に追加する
     return firstAndLastNames.concat([[firstName, lastName]]);
   },
   [] // firstAndLastNamesの初期値。第一引数の関数が最初に実行される時に渡される。
-)
+);
 ```
 
 「mapやfilterを使った場合」では、
