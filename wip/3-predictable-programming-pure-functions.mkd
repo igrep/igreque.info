@@ -207,7 +207,7 @@ names.reduce(
     }
 
     // なおかつ、姓名共に空であってはいけない
-    if (!(nameParts[0]) && !(nameParts[1])){
+    if (!(nameParts[0] && nameParts[1])){
       // 条件を満たさないので、結果の配列には追加しない。
       return firstAndLastNames;
     }
