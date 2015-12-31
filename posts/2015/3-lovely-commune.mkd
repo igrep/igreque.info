@@ -1,29 +1,29 @@
 ---
-title: elm-svgでラブリーコミューンを作ってみてる #elmlang #precure #svg
+title: elm-svgでラブリーコミューンを作ってみてる #cure_advent
 author: Yuji Yamamoto
 tags: Elm, Precure, SVG
 date: December 21, 2015
 ...
 ---
 
-この記事は[プリキュア Advent Calendar 2015](http://www.adventar.org/calendars/728)兼、
-[Elm Advent Calendar 2015](http://qiita.com/advent-calendar/2015/elm)兼、
-[SVG Advent Calendar 2015](http://www.adventar.org/calendars/731)、
-21日目の記事です。
+この記事は[プリキュア Advent Calendar 2015](http://www.adventar.org/calendars/728) 21日目の記事兼、
+[Elm Advent Calendar 2015](http://qiita.com/advent-calendar/2015/elm) 21日目の記事兼、
+[SVG Advent Calendar 2015](http://www.adventar.org/calendars/731) 21日目の記事です。
 
 前回の記事はそれぞれ以下のものでした。
 
-- プリキュア Advent Calendar: 
+- プリキュア Advent Calendar: (まだ投稿されていませんorz)
 - Elm Advent Calendar: [sakana](http://qiita.com/sakana)さんの「[ElmでWebアプリケーション作りたい](http://qiita.com/sakana/items/723dae97d8eecd990b09)」
 - SVG Advent Calendar: [butchi\_y](http://qiita.com/butchi_y)さんの「[SVGの作図問題とコードゴルフ](http://qiita.com/butchi_y/items/44b35e659bbeeb452d21)」
 
 ElmとプリキュアとSVGのAdvent Calendarの記事ということで、
-私がここ2ヶ月近くで作ったElm製のプリキュアなプログラムを紹介させてください。
+私がここ2ヶ月近くで作った、Elm製のSVGを使ったプリキュアなプログラムを紹介させてください。
 
 # まずはこちらをご覧いただきましょう！
 
 <div style="text-align:center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/aAQDqrN_EZI" frameborder="0" allowfullscreen></iframe>
+※削除された、などの理由で閲覧できない場合「ドキドキ！プリキュア 変身」「Dokidoki PreCure transformation」などで検索してみてください。
 </div>
 
 はい、みんな大好き私も大好き、「ドキドキ！プリキュア」のキュアハートの変身シーンですね。  
@@ -34,8 +34,9 @@ ElmとプリキュアとSVGのAdvent Calendarの記事ということで、
 
 # 御託はこの辺にして遊んでいただきましょう！  
 
-[こちらに貼った画像など](https://github.com/igrep/lovely-commune#how-to-play)を参考に、
-[lovely-commune.igreque.info](http://lovely-commune.igreque.info/)にアクセスして、なぞってみてください。
+[lovely-commune.igreque.info](http://lovely-commune.igreque.info/)にアクセスして、↓のようになぞってみてください。
+
+![](/imgs/2015-12-21-how2play.gif)
 
 スマホでも大丈夫なはずです。  
 PCなど、横長の画面でアクセスする際はハートが画面全体に収まるよう、  
@@ -62,14 +63,14 @@ PCなど、横長の画面でアクセスする際はハートが画面全体に
 
 時代背景もあってか、この時の変身アイテムはなんとスマホをモチーフにしたものでした[^tablet]。タッチパネルになっているのです。  
 私はこれをリアルタイムで見た時から「いつか再現してみたい！+.(≧∀≦)ﾟ+.ﾟ」と思い、
-[「エース」なんて名前のついたスマホ（ただし色は青）](http://www.softbank.jp/mobile/products/list/202f/)に変えたりしていました。  
+[「エース」なんて名前のついたスマホ（ただし色は青）](http://www.softbank.jp/mobile/products/list/202f/)に買ったりしていました。  
 そんなことも忘れて3年近くが経ち、「ドキドキ！プリキュア」どころか「ハピネスチャージプリキュア！」も終わり、
 更には「Go! プリンセスプリキュア」にタイムラインが盛り上がる中、
 Elmを始めフロントエンド周りへの興味がふつふつと湧き上がりましたので、習作としてちょうどいいだろうと思って作ってみました。
 
 [^tablet]: ちなみに、ドキドキ！プリキュアには「<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00EVJR0RC/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00EVJR0RC&amp;linkCode=as2&amp;tag=poe02-22">マジカルラブリーパッド</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00EVJR0RC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />」というタブレットをモチーフにしたアイテムもありました。  
-こちらは「タッチしなくても操作できる！」ので再現するには何かしらウェアラブル端末と組み合わせるといいかもしれません。私はやりませんよ！
+こちらは、「画面に触れなくても操作できる！」のが売りなので、再現するには何かしらウェアラブル端末と組み合わせるといいかもしれません。私はやりませんよ！
 
 なお、今回は実際のアニメで使用されている（つまり、動画で描かれている）ラブリーコミューンの振る舞いに近づけるよう作成しています。  
 そのため<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">お金で買える方のラブリーコミューン</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
@@ -90,32 +91,32 @@ HaskellライクなAltJS、という意味での競合のPureScriptやHasteな�
 [^precure]: プリキュアネタの解説はここでは控えます。
 
 また、他のAltJSと比べて際立った特徴として、Virtual DOMとFunctional Reactive Programming (FRP)を組み込みでサポートしている点があります。  
-それを利用してアプリケーションの設計方法をまとめた「[Elm Architecture](https://github.com/evancz/elm-architecture-tutorial/)」は、
+それを利用したアプリケーションの設計方法をまとめた「[Elm Architecture](https://github.com/evancz/elm-architecture-tutorial/)」は、
 あの[reduxにも影響を与えた](https://github.com/rackt/redux#influences)とか。  
 私自身reduxを勉強したところ、
 「あ、これきっとElmのアレやん！reducerはElmのupdateやん！」と言った具合に、
-Elmをやっていたおかげでreduxの考えにすんなり溶け込めました。  
+Elmをやっていたおかげでreduxの考えにもすんなり溶け込めました。  
 みなさんも[Elm Architecture](https://github.com/evancz/elm-architecture-tutorial/)の考え方だけを学ぶだけでも面白いと思うので、
 ぜひ一度触れてみてはいかがでしょうか！？  
-まだ途中ですが[**日本語版**](https://github.com/evancz/elm-architecture-tutorial/blob/master/README.ja.md)に翻訳されている方もいらっしゃいますし！
+最近は[**日本語版**](https://github.com/evancz/elm-architecture-tutorial/blob/master/README.ja.md)も作って頂けましたし！
 
-今回はその「Elm Architecture」に基づき、[elm-svg](https://github.com/evancz/elm-svg/)を使用して、SVGを操作しました。  
+で、話を戻しますと今回はその「Elm Architecture」に基づき、[elm-svg](https://github.com/evancz/elm-svg/)を使用して、SVGを操作しました。  
 SVGだからといってなんら特別な点はなく、[elm-html](https://github.com/evancz/elm-html)と全く同じ感覚で楽に使用できました。
 
 Elmを使用した感想としてもう一点加えると、やっぱり型を利用した設計が楽しいですね。  
 反面JSならしゅっとできちゃう部分もElmの考え方に合わせたりしないといけないので、やりづらいと感じることもありましたが。  
 あと、JSを直接書かないといけない状況になると辛いです。  
-[今回はカーソルで指した要素を取得する部分](https://github.com/igrep/lovely-commune/blob/master/src/Native/Position.js)で
+[今回はカーソルで指した要素を取得する部分](https://github.com/igrep/lovely-commune/blob/b6fc4a4a86fdd3145ad5a36afcd81d9fd2de82b1/src/Native/Position.js)で
 `document.elementFromPoint`を使用するためにJSを書いたのですが、
 Nativeライブラリ用のドキュメントもなく、エラーが起きてもどこが悪いのかわからず、苦労しました。  
-なるべく使わなくて済むよう[elm-web-api](https://github.com/rgrempel/elm-web-api)をガリガリ拡張していきたいですね。
+なるべく使わなくて済むよう、各種ブラウザAPIへのラッパー、[elm-web-api](https://github.com/rgrempel/elm-web-api)をガリガリ拡張していきたいですね。
 
 # SVGとかCSSとかの解説
 
 SVGに関しては技術的に特筆すべき点はございません！普通に<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">実物</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />を購入して写真を撮り、Inkscapeでトレースして`path`として作成し、elm-svgで使えるよう書き換えただけです。  
-充分に単純な図形なので自動でトレースすると余計なノードが増えて鬱陶しかったので手でやった、といった点ぐらいでしょうか。  
-最後に触れます課題の「指（あるいはマウスカーソル）でなぞった位置に合わせてハートの色を塗る量を変える」の実装ができたらまたその時ググった情報などを説明します！
+充分に単純な図形なので、自動でトレースすると余計なノードが増えて鬱陶しかったので手でやった、といった点ぐらいでしょうか。  
+最後に触れます、課題の「指（あるいはマウスカーソル）でなぞった位置に合わせてハートの色を塗る量を変える」の実装ができたらまたその時ググった情報などを説明します！
 
 CSSに関しては、[Animate.css](http://daneden.github.io/animate.css/)を使ったおかげで超絶簡単にハートの点滅を実装できた、という点が大きいですね。  
 ホントにお手軽で素晴らしいのでまた使ってみたいです。
@@ -142,6 +143,6 @@ TODO: まとめて英訳してGitHubのIssueに書き写す。
 - 点滅時に何故か真ん中に線が入るバグを直す。  
   ちょっとやってみたけど思ったよりむずい。
 
-とはいえ、やっぱり他に作りたいものもあるので今後は[プリキュアハッカソン](http://connpass.com/series/619/)など、
+とはいえ、やっぱり他に作りたいものもあるので今後は[プリキュアハッカソン](http://connpass.com/series/619/)やこのプリキュア Advent Calendarなど、
 プリキュア関連の開発イベント（他にあるのか？）の時を中心に開発していきたいと思います。  
 それでは2016年もHappy Hacking! ﾉｼ
