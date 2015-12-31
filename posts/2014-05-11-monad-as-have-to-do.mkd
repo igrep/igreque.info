@@ -1,7 +1,7 @@
 ---
 title: 「やらなければならないこと」としてのHaskellのMonad というタイトルで発表しました。
 author: Yuji Yamamoto
-tags: Haskell
+tags: Haskell, Monad
 ...
 ---
 
