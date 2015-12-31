@@ -177,7 +177,7 @@ names.map(function(name){
     // 空白文字でsplitするので、
     // 先頭末尾に空白文字含め余計な文字列がなければ、分割後は長さ2になる。
        nameParts.length === 2
-    // なおかつ、姓名共に空でないもののみの配列を返す。
+    // なおかつ、姓名共に空でないもののみの配列を返して、次のmapメソッドに渡す。
     && nameParts[0] && nameParts[1]
   );
 }).map(function(nameParts){
