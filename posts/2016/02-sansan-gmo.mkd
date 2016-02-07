@@ -1,0 +1,74 @@
+---
+title: Sansan -> GMO
+author: Yuji Yamamoto
+date: February 7, 2016
+...
+---
+
+ご報告が遅くなりましたが、3年間、
+プリキュアで言えば「ドキドキ！プリキュア」の開始から「Go! プリンセスプリキュア」の終了までのちょうど3作品分、
+やや長めに勤めたSansan株式会社を退職しました。  
+先週は新しい職場、「[GMOクリック証券](https://www.click-sec.com/)」での第1週目でした。  
+まだまだ新しい環境に慣れない感じでしんどいですが、やれるところからコツコツ頑張っております。
+
+# なぜやめて、なぜ入ったか
+
+## Rubyやめたかった
+
+もともとRuby力を試すためにRubyを使ってる会社を探して見つけたSansanでしたが、
+仕事で使い始めて僕はすぐにRubyが嫌になりました。
+その前からHaskellにハマっていたため、ある意味致し方ないことでしょう。  
+そのへんのRubyに対するいらだちの**一部**を
+[こちらの記事](http://qiita.com/igrep/items/b2fed2d467f8a16f5eb0)に込めましたので
+併せて読んでいただけると幸いです。
+
+今でもRubyはスクリプト言語としては非常に優秀だと思いますが、
+ある程度の規模になると個人的には「う〜ん」という感じです。  
+文句がある方は次回の[Haskellもくもく会](http://haskellmokumoku.connpass.com/event/26602/)か
+[Yokohama.rb](https://yokohamarb.doorkeeper.jp/events/36916)あたりにいらしてHaskellを始めましょう！  
+そちらには引き続き参加しますので今後ともよろしくおねがいします！ `vim(_ _)mer`
+
+## ちょっと環境を変えたくなった
+
+Rubyの話と関連しますが、仕事で3年間、趣味でやっていたのも含めて6年間Rubyを触ってきた中で、
+使う言語、ソフトウェアの対象、その他諸々をがらっと変えたくなりました。  
+もっとHaskellなどが映えそうな、高度で難しくておかたい問題にチャレンジしたいな〜、
+あと最近フロントエンドへの関心がずんずん高まってきたので難しいUIが組めるところもいいな〜
+とぼんやり思っておりました。
+
+そんな折、エージェントさんがいろいろ紹介された中でGMOクリック証券さんと縁があり、
+そのへんの条件において比較的好ましかったため、選ばせていただきました。  
+「金融業界とは思えないほどの自由さ」にも惹かれましたね。
+
+# 1週目を終えた感想
+
+金融業界に完全に疎かったせいもあり、まだまだ勉強中で、残念ながらまだ業務では一行もコードを書いてません。  
+「FXとはなにか」ぐらいのところから入ったので、当分は勉強の毎日でしょう。  
+そのへんは期待通りの新鮮さですね！学ぶところからさせて頂いて本当にありがたいです！
+
+「金融業界とは思えないほどの自由さ」とは先程も触れ、期待しながら入ったものの、
+さすがに前職ほど自由ではありませんでした。
+詳しくここに書くのは控えますが、ちょっとつらい。  
+とはいえ、もろもろの制限にはそれなりに意思と意図を感じられますし、
+皆さんのことを知って、ちゃんと議論して行動すればきっとよくできるだろうとは思います。  
+早く知りたい。
+
+# 謝辞など
+
+ボスを始めSansanの皆さんには本当にお世話になりました。  
+業務での開発経験が全くなかった私を拾ってくれた上、成果を出せるエンジニアになるまでしっかりと育ててくれました。  
+ありがとうございます！
+この経験を糧に、もっと強いエンジニアになれるよう精進してまいります！
+
+技術的(Java的な意味で）にも金融業界的にも経験が浅い私を採用してくれたGMOクリック証券さん、ありがとうございます！  
+無理解な部分が多いのでいろいろご迷惑をおかけするかもしれませんが、今後ともよろしくお願いします！
+
+それから、「type転職エージェント」で担当されたエージェントさんにも大変感謝しております。  
+申し訳なくもWebサイトはお世辞にも使いやすいと言えるものではありませんでしたが、
+それを帳消しにするぐらいのマンパワーで、親切丁寧に相談に乗っていただけました。
+
+最後に。  
+本記事を読まれたかどうかはともかく、[Twitter](https://twitter.com/igrep)や[Google+](https://plus.google.com/u/0/+YujiYamamoto_igrep)など各種SNSで仲良くさせて頂いているみなさん、
+今後もよろしくお願いします！  
+<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00YBQWKHU/ref=as_li_ss_tl?ie=UTF8amp;camp=247creative=7399creativeASIN=B00YBQWKHUlinkCode=as2tag=poe02-22">Xperia Z4 Tablet</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22l=as2o=9a=B00YBQWKHU" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />用の<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00YBD9T9K/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00YBD9T9K&amp;linkCode=as2&amp;tag=poe02-22">Bluetoothキーボード</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00YBD9T9K" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を買ったので今後は電車で座れるときに書いていく所存です！
+
