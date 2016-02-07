@@ -23,7 +23,7 @@ Pass only hard-coded, and trusted method names (except when you create some spec
 For an obvious example, consider an action of a Rails app's controller like this.
 Haven't you ever written a code like this?
 
-```rb
+```ruby
 def some_action
   FooModel.find_by_id(params[:id]).send(params[:method])
   ...
@@ -38,7 +38,7 @@ This is caused by calling [`Kernel` module's `exit` method](http://ruby-doc.org/
 The `exit` method can be called by almost any objects in Ruby, as well as the model above.
 So try to paste the code below onto your REPL (e.g. `irb`, `pry`).
 
-```rb
+```ruby
 1.send 'exit'
 ```
 
@@ -59,7 +59,7 @@ Attackers could call even more dangerous methods in worse cases
 because `Kernel` has very various features (possibly more than you know).
 Consider you added one parameter to the action which called `send` in the previous example.
 
-```rb
+```ruby
 def some_action
   FooModel.find_by_id(params[:id]).send(params[:method], params[:arg])
   ...
