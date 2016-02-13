@@ -6,21 +6,21 @@ tags: Ruby, Software Securities
 ...
 ---
 
-This is an English translation of [Object#send 有害論](http://qiita.com/igrep/items/b2fed2d467f8a16f5eb0)
+This is an English translation of [Object#send 有害論](http://qiita.com/igrep/items/b2fed2d467f8a16f5eb0).
 
-Let me show you how `Object#send` and `Object#public_send` make vulnerabilities on your app when using without care.
+Let me show you how `Object#send` and `Object#public_send` make vulnerabilities on your app when using without care.  
 Maybe it’s not surprising to you if you know the behavior of the methods well,
 but no one doesn't seem to have written about it yet as long as I googled.
 
 # TL;DR
 
-`Object#send` and `Object#public_send` are almost as risky as `eval` and `system`.
-Avoid to pass strings from any external sources such as users' one to their arguments.
+`Object#send` and `Object#public_send` are almost as risky as `eval` and `system`.  
+Avoid to pass strings from any external sources (such as users' one) to their arguments.  
 Pass only hard-coded, and trusted method names (except when you create some special libraries for meta-programming).
 
 # Dangerous Case
 
-For an obvious example, consider an action of a Rails app's controller like this.
+For an obvious example, consider an action of a Rails app's controller like this.  
 Haven't you ever written a code like this?
 
 ```ruby
@@ -34,8 +34,8 @@ If an attacker gives a string such as `exit`, he/she can **make the Rails app ex
 
 [^exit]: The behavior after the app exits depends on the runner middleware (e.g. Unicorn, Passenger).
 
-This is caused by calling [`Kernel` module's `exit` method](http://ruby-doc.org/core-2.3.0/Kernel.html#method-i-exit).
-The `exit` method can be called by almost any objects in Ruby, as well as the model above.
+This is caused by calling [`Kernel` module's `exit` method](http://ruby-doc.org/core-2.3.0/Kernel.html#method-i-exit).  
+The `exit` method can be called by almost any objects in Ruby, as well as the model above.  
 So try to paste the code below onto your REPL (e.g. `irb`, `pry`).
 
 ```ruby
@@ -46,9 +46,9 @@ The REPL session exited right?
 
 Why such a apparently useless thing can be done?
 It's because almost all `Object`s in Ruby `include`s `Kernel` module.
-In `Kernel` module, methods that can be called anywhere in your programs (so-called *global functions*),
-such as `exit`, `puts`, and so on.
-`Object` class `include`s `Kernel` module, which makes `puts` and `exit` available at almost any line of Ruby programs.
+`Kernel` module has methods that can be called anywhere in your programs (so-called *global functions*),
+such as `exit`, `puts`, and so on.  
+And `Object` class `include`s `Kernel` module, which makes `puts` and `exit` available at almost any line of Ruby programs.  
 Consequently, if you write a code which passes arbitrary strings to `send`,
 any methods accessible by `Object`, including `Kernel` module's methods can be called,
 which exposes a surprisingly big vulnerability.
@@ -56,8 +56,8 @@ which exposes a surprisingly big vulnerability.
 # Much More Dangerous Case
 
 Attackers could call even more dangerous methods in worse cases
-because `Kernel` has very various features (possibly more than you know).
-Consider you added one parameter to the action which called `send` in the previous example.
+because `Kernel` has very various features (possibly more than you know).  
+Consider you add one parameter to the action which called `send` in the previous example.
 
 ```ruby
 def some_action
@@ -66,7 +66,7 @@ def some_action
 end
 ```
 
-Now "OS commands injection" and "Ruby code injection (is this the right name?)" vulnerability has been exposed
+Now "OS commands injection" and "Ruby code injection (Is this the right name?)" vulnerability has been exposed
 because both `system` and `eval` are defined in `Kernel` module.
 
 In other words, arbitrary code can be executed by an attacker:
@@ -77,23 +77,25 @@ he/she can erase all users from your DB.
 
 If you're a Ruby-meta-programming hacker, you might think
 "Okay, you mean the `private` methods in `Kernel` are risky, right?
-Then how about `public_send`, which can't call `private` methods?"
+Then how about `public_send`, which can't call `private` methods?"  
 To tell the truth, I had actually assumed that just until I began to write this post.
-Unfortunately, even `Object` class can call a method as risky as them: `instance_eval`.
-It can execute arbitrary Ruby codes as `Kernel#same`, to pass a string as its second argument.
+Unfortunately, even `Object` class can call a method as risky as them: `instance_eval`.  
+It can execute arbitrary Ruby codes as `Kernel#eval`, by passing a string as its second argument.
 And `instance_eval` is available by `public_send` because its `Object`'s `public` method.
 
 # There can be more risks!
 
 These examples are just some cases among many possibilities.
-Other dangers can arise from some implementation of the receiver class of `send`.
-In addition, unnoticed pitfalls can be made by modification to the standard libraries by your libraries, or your colleagues.
-It's a problem specific to Ruby, in which the user of libraries (including standard ones) can alter them.
+Other dangers can arise from some implementation of the receiver class of `send`.  
+In addition, unnoticed pitfalls can be made
+by modification to the standard libraries by your libraries, or your colleagues.  
+It's a problem specific to Ruby, in which the users of the libraries (including standard ones) can easily alter them.
 
 # Measure
 
-As mentioned in the last secion, risks can exist anywhere when you permit any strings to be passed as the arguments of `send`.
-Blacklisting is not sufficient in most cases.
-So make a whitelist of methods you want to use to surely avoid the risks.
-Giving only hard-coded `Symbol`'s would be the easiest and most reliable measure.
+As mentioned in the last secion, risks can exist anywhere
+when you permit any strings to be passed as the arguments of `send`.
+Maybe blacklisting is not sufficient in most cases.  
+So make a whitelist of methods you want to use to surely avoid the risks.  
+Giving only hard-coded `Symbol`'s would be the easiest and most reliable measure.  
 I guess the most of the use cases of `send` would be covered by it.
