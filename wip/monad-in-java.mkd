@@ -109,17 +109,86 @@ Monadはそもそも圏論という数学の一分野で定義されたものな
 下記の通りです。
 
 ```java
-// 任意の値をxとします。型も任意の型でも対応できなければなりません。
+// 任意の型Xの値をx, y, zとします。
 X x = ...;
-// それに対するMonadFactoryをfとします。
-MonadFactory<X> f = new MonadFactory<>;
+Y y = ...;
+Z z = ...;
 
-f.doNothingReturning(x).then
+// それに対するMonadFactoryをfx, fyとします(fzは不要)
+MonadFactory<X> fx = new MonadFactory<>;
+MonadFactory<Y> fy = new MonadFactory<>;
+
+// それから、Xを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
+Function<X, Monad<Y>> ax = (x) -> ... ;
+Function<Y, Monad<Z>> ay = (y) -> ... ;
+Function<Z, Monad<A>> az = (z) -> ... ;
+
+// 下記の式が**常にtrueを返す**doNothingReturningとthenを
+// 実装している時、Monad則が成立します。
+/* (A ) */ fx.doNothingReturning(x).then(ax) == ax.apply(x)
+/* (A') */ ax.apply(x).then(fy::doNothingReturning) == ax.apply(x)
+/* (B ) */
+     ax.apply(x).then((y) -> ay.apply(y).then(az))
+  == ax.apply(x).then(       ay        ).then(az)
 ```
 
+<!--
 return a >>= k  =  k a
 m >>= return    =  m
 m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
+-->
+
+各変数の定義まで書いてしまったので長ったらしくなってしまいましたが、一つずつ解説しましょう。
+
+### (A), (A')について
+
+最初の2つは、どちらかというと`doNothingReturning`が守るべき性質についての式です。
+
+第一に(A)では、
+`x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、
+それから(`then`)、更にMonadを返す関数`ax`を実行するということは、
+単に`ax`を1回実行するのと同じことだ --- つまり、
+`doNothingReturning`をどんな`ax`の**前**に実行しても、
+`ax`を実行するのと同じ、だから`doNothingReturning`は
+**なにもしない**のと同等だ --- ということです。
+
+(A')についても同様です。  
+`x`を受け取ってMonadを返す関数`ax`を実行(`ax.apply(x)`)して、
+それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、
+単に`ax`を1回実行するのと同じことだ --- つまり、
+`doNothingReturning`をどんな`ax`の**後**に実行しても、
+`ax`を実行するのと同じ、だから`doNothingReturning`は
+**なにもしない**のと同等だ --- ということです。
+
+いずれにおいても、`doNothingReturning`は
+**Monadの値を作って返すだけで、実質なにもしない**、という点を覚えておいてください。  
+「そんなの何の役に立つの？」と思われるかもしれません。  
+とりあえずは「定義上そう決まっているのでそういうものだ」とご理解してください。
+余力があったら後でよい例を紹介しましょう。
+
+### (B)について
+
+(B)はちょっと複雑ですね。  
+集中するために該当の部分だけ持ってきましょう。
+
+```java
+   ax.apply(x).then((y) -> ay.apply(y).then(az))
+== ax.apply(x).then(       ay        ).then(az)
+```
+
+意図的にスペースを挟んで調整したので、勘のいいかたはお気づきかもしれません。  
+要するにこう↓いうことです。
+
+hoge
+
+上記の通り、1つめの`then`に渡す「Monadの値を返す関数」における `then(az)`の部分が、
+一つめの`then`、つまり`ax.apply(x).then`の引数から、
+**括り出せるようになっていなければならない**、ということです。
+
+これは、もうちょっとくだけた日本語に言い換えると、
+「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
+「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
+常に同じ意味でないといけない、という意味です。
 
 # 参考
 
