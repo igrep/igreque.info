@@ -23,19 +23,21 @@ JavaでMonadを定義して説明してみたいと思います。
 
 # TL;DR (ここ以降がよくわかんなくてもとりあえず知ってもらいたいこと）
 
+hoge
+
 # とりあえずJavaでの定義を。
 
 ```java
 interface Monad<T1> {
-  // Haskellで言うところの >>= に該当します。
-  <T2> Monad<T2> then(Function<T1, Monad<T2>>);
+    // Haskellで言うところの >>= (bind)に該当します。
+    <T2> Monad<T2> then(Function<T1, Monad<T2>>);
 
-  // Haskellで言うところのreturnに相当します。
-  // 本当は1個のinterfaceにまとめたいけど
-  // Javaのinterfaceでは無理っぽいorz.
-  interface MonadFactory<T> {
+}
+interface MonadFactory<T> {
+    // Haskellで言うところのreturnに相当します。
+    // 本当は1個のinterfaceにまとめたいけど
+    // Javaのinterfaceでは無理っぽいorz.
     Monad<T> doNothingReturning(T);
-  }
 }
 ```
 
@@ -49,7 +51,7 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
     - `Monad<T2>`の値を返す。
 - `Monad`を実装したクラスを実装したとき、任意のクラス値に対して、そのインスタンスを返すためのファクトリークラス（`MonadFactory`インターフェースを実装したクラス）も実装しなければならない [^refval]。
 
-[refval]: 参照型と値型の区別はこの際お見のがしください。やっぱりJavaで厳密にMonadを表現するのは難しい。
+[refval]: 参照型と値型の区別はこの際お見逃しください。やっぱりJavaで厳密にMonadを表現するのは難しい。
 
 すでに結構複雑で大変ですね！ ~~（半分はJavaのせいです！）~~  
 いろいろ書きましたがここで特に大事なところは「**`then`というメソッドを実装しなければならない**」の一点です！  
@@ -57,7 +59,7 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
 
 ## Monad則って？
 
-上記の通り`Monad`インターフェースは、`then`メソッドと`MonadFactory`の`doNothingReturning`,
+上記の通り`Monad`インターフェースは、`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド,
 合わせて2つのメソッドを実装しなければなりません。  
 加えて、これらのメソッドは「Monad則」というある一定の規則を満たさなければならないよう決まっています。  
 ここではこの「Monad則」についてもJavaに置き換えて紹介します。
@@ -109,10 +111,10 @@ Monadはそもそも圏論という数学の一分野で定義されたものな
 下記の通りです。
 
 ```java
-// 任意の型Xの値をx, y, zとします。
-X x = ...;
-Y y = ...;
-Z z = ...;
+// 任意の型X, Y, Zの値をx, y, zとします。
+X x;
+Y y;
+Z z;
 
 // それに対するMonadFactoryをfx, fyとします(fzは不要)
 MonadFactory<X> fx = new MonadFactory<>;
@@ -122,6 +124,8 @@ MonadFactory<Y> fy = new MonadFactory<>;
 Function<X, Monad<Y>> ax = (x) -> ... ;
 Function<Y, Monad<Z>> ay = (y) -> ... ;
 Function<Z, Monad<A>> az = (z) -> ... ;
+
+/ TODO: .equalsで書き換えるか他の表現方法を試す。
 
 // 下記の式が**常にtrueを返す**doNothingReturningとthenを
 // 実装している時、Monad則が成立します。
@@ -149,7 +153,7 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 それから(`then`)、更にMonadを返す関数`ax`を実行するということは、
 単に`ax`を1回実行するのと同じことだ --- つまり、
 `doNothingReturning`をどんな`ax`の**前**に実行しても、
-`ax`を実行するのと同じ、だから`doNothingReturning`は
+`ax`を実行するのと同じ、なので`doNothingReturning`は
 **なにもしない**のと同等だ --- ということです。
 
 (A')についても同様です。  
@@ -157,13 +161,13 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、
 単に`ax`を1回実行するのと同じことだ --- つまり、
 `doNothingReturning`をどんな`ax`の**後**に実行しても、
-`ax`を実行するのと同じ、だから`doNothingReturning`は
+`ax`を実行するのと同じ、なので`doNothingReturning`は
 **なにもしない**のと同等だ --- ということです。
 
 いずれにおいても、`doNothingReturning`は
 **Monadの値を作って返すだけで、実質なにもしない**、という点を覚えておいてください。  
-「そんなの何の役に立つの？」と思われるかもしれません。  
-とりあえずは「定義上そう決まっているのでそういうものだ」とご理解してください。
+「そんなの役に立つの？」と思われるかもしれません。  
+とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。
 余力があったら後でよい例を紹介しましょう。
 
 ### (B)について
@@ -176,20 +180,65 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 == ax.apply(x).then(       ay        ).then(az)
 ```
 
-意図的にスペースを挟んで調整したので、勘のいいかたはお気づきかもしれません。  
+意図的にスペースを挟んで調整したので、勘のいい方はお気づきかもしれません。  
 要するにこう↓いうことです。
 
 hoge
 
-上記の通り、1つめの`then`に渡す「Monadの値を返す関数」における `then(az)`の部分が、
+上記の通り、1つめの`then`に渡す「Monadの値を返す関数」における`then(az)`の部分が、
 一つめの`then`、つまり`ax.apply(x).then`の引数から、
 **括り出せるようになっていなければならない**、ということです。
 
-これは、もうちょっとくだけた日本語に言い換えると、
+これをもうちょっとくだけた日本語に言い換えると、
 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
-常に同じ意味でないといけない、という意味です。
+常に同じ意味でないといけない、と解釈できます。  
+この解釈だと「そんなの当たり前じゃないの？」と感じられるかもしれません。  
+それぐらい直感的な仕様を守ってくださいね、というのが「Monad則」の正体だ、と考えていただければしっくりくるでしょうか？  
+`Comparable`な`x`が常に`x.compareTo(x) == 0`であってほしいのと同じことです。
+
+## ここまでのまとめ
+
+さて、ここまでのまとめです。
+
+- MonadをJavaで表現すると、`then`というメソッドを持ったインターフェースと、それに対応する、`doNothingReturning`というメソッドを持ったファクトリークラスのインターフェースで表現することができる。
+- それらのインターフェースを実装するクラスは、下記の「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
+    - (A), (A') `doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはならない。
+        ```java
+               fx.doNothingReturning(x).then(ax) == ax.apply(x)
+        ax.apply(x).then(fy::doNothingReturning) == ax.apply(x)
+        ```
+    - (B) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
+        ```java
+           ax.apply(x).then((y) -> ay.apply(y).then(az))
+        == ax.apply(x).then(       ay        ).then(az)
+        ```
+
+一点重要な注意事項。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
+Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
+
+# 具体的な実装を見てみましょう
+
+それではMonadについてもうちょっと具体的なイメージを持っていただくために、
+前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`)インターフェースを実装したクラスの例を紹介しましょう。
+
+```java
+class Maybe<T1> implements Monad<T2> {
+    Maybe(T1 x){
+    }
+
+    <T2> Monad<T2> then(Function<T1, Monad<T2>>){
+    }
+}
+class MaybeFactory<T> implements Monad<T> {
+    Monad<T> doNothingReturning(T){
+    }
+}
+```
+
+# do記法
 
 # 参考
 
 [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
+[hoge](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
