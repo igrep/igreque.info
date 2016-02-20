@@ -8,3 +8,26 @@
     - NO RELATION WITH "igrep.el"!
 - Elm Lover & Hobby Haskeller.
 - Holding [workshop of Haskell (Japanese)](http://connpass.com/series/754/) per month.
+
+# Topic
+
+- My impression of Elm so far.
+- What kind of people I think is good to recommend Elm to.
+- スライドは英語ですが、日本語でしゃべります。
+- Feel free to tell me if my English is wrong!
+
+# How do you like Elm?
+
+# For Me...
+
+- Very easy to make webapps.
+    - Make instantly runnable apps just by following the Elm Architecture (and with a little device).
+- Very very easy to make the webapps robust and maintainable.
+    - I love types!
+- Very very very simple language specification.
+    - Even simpler than the previous version!
+
+# For Me...
+
+- 
+- Still a little buggy.
