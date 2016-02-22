@@ -7,13 +7,18 @@
 - [Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
     - NO RELATION WITH "igrep.el"!
 - Elm Lover & Hobby Haskeller.
+    - Using Elm for about 3 months.
+    - Elm歴: 3ヶ月ぐらい
 - Holding [workshop of Haskell (Japanese)](http://connpass.com/series/754/) per month.
+- Haskellの勉強会を毎月開いてます！ 
 
 # Topic
 
 - My impression of Elm so far.
+- ここまでElmを使ってきた印象
 - What kind of people I think is good to recommend Elm to.
-- スライドは英語ですが、日本語でしゃべります。
+- どんな人にElmをすすめるのがよさそうか。
+
 - Feel free to tell me if my English is wrong!
 
 # How do you like Elm?
@@ -21,13 +26,29 @@
 # For Me...
 
 - Very easy to make webapps.
+- 超簡単にWebアプリが作れる！
     - Make instantly runnable apps just by following the Elm Architecture (and with a little device).
-- Very very easy to make the webapps robust and maintainable.
-    - I love types!
-- Very very very simple language specification.
-    - Even simpler than the previous version!
+    - Elm Architectureに従えば、ちょっとの工夫でさくっと動くアプリが作れる！
 
 # For Me...
 
-- 
+- Very very easy to make the webapps robust and maintainable thanks to types!
+- 超簡単にWebアプリの安定性、保守性を高められる！
+
+# For Me...
+
+- Very very very simple language specification!
+- 超超超シンプルな言語仕様!
+    - Even simpler than the previous version!
+    - 前のバージョンより更にシンプルになった!
+
+# For Me...
+
+- Too few features comparing with Haskell.
+    - At the sacrifice of the simplicity.
+    - Type classes
+    - Existential types
+    - do syntax
+    - GADTs
+    - etc...
 - Still a little buggy.
