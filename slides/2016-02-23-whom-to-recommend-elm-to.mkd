@@ -1,11 +1,15 @@
-% 誰にElmを勧めるか？ - Whom to Recommend Elm to?
+% Whom to Recommend Elm to?
 % 山本悠滋 Yuji Yamamoto
 % 2016-02-23 ELM Meetup #1
 
 # Nice to meet you!
 
-- [Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
-    - NO RELATION WITH "igrep.el"!
+[Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
+
+山本悠滋 @igrep 26歳。
+
+- NO RELATION WITH "igrep.el"!
+- 「igrep.el」なるEmacsプラグインとはなんの関係もありません！
 
 # Nice to meet you!
 
@@ -18,13 +22,13 @@
 # Nice to meet you!
 
 - Holding [workshop of Haskell (Japanese)](http://connpass.com/series/754/) per month.
-- Haskellの勉強会を毎月開いてます！ 
+- Haskellの勉強会を毎月開いてます！
 
 # Topic
 
 - My impression of Elm so far.
-- ここまでElmを使ってきた印象
 - What kind of people I think is good to recommend Elm to.
+- ここまでElmを使ってきた印象
 - どんな人にElmをすすめるのがよさそうか。
 
 - Feel free to tell me if my English is wrong!
@@ -63,15 +67,30 @@ How do you like Elm?
     - Existential types
     - GADTs
     - etc...
+    - (I don't mean all of these features should be implemented.)
 - Still a little buggy.
+
+# For Me...
+
+- Haskellに比べて機能が少なすぎる。
+    - シンプルさを重んじているのはわかりますが...。
+    - 型クラス
+    - do記法
+    - 存在量型
+    - GADTs
+    - などなど
+    - （私がこれらの機能をほしがっているというつもりではありません）
+- まだちょっとバグりがち。
 
 # So then,
 
 <div class="takahashiLike">
 Whom to recommend?
+
+じゃあ誰に勧めよう？
 </div>
 
-# Steal potential Haskelers.
+# Steal potential Haskellers.
 
 - 未来のHaskellerをパクる
     - Who read [LYHG](http://learnyouahaskell.com/), but have no idea about the next.
@@ -81,10 +100,10 @@ Whom to recommend?
 - Show how easily Elm can build webapps with Haskell knowledge!
 - Haskellの知識で動くものをすぐ作れることを示しましょう！
 
-# Steal potential Haskelers.
+# Steal potential Haskellers.
 
-By contrast, avoid Haskell enthusiasts who need many Haskell features even for AltJS.
-逆に、AltJSにすらあらゆるHaskellの機能を求めるような~~変~~人は避けましょう。
+- By contrast, avoid Haskell enthusiasts who need many Haskell features even for AltJS.
+- 逆に、AltJSにすらあらゆるHaskellの機能を求めるような~~変~~人は避けましょう。
 
 # Any JavaScripters!
 
@@ -96,7 +115,7 @@ By contrast, avoid Haskell enthusiasts who need many Haskell features even for A
 # Summary
 
 - Elm can easily build **runnable** and maintainable webapps!
-- Recommend Elm to potential Haskelers who want to make **runnable** apps!
+- Recommend Elm to potential Haskellers who want to make **runnable** apps!
 - Or JavaScripters who don't know the **value of types**!
 
 # まとめ
