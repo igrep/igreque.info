@@ -6,9 +6,17 @@
 
 - [Yuji Yamamoto](https://plus.google.com/u/0/+YujiYamamoto_igrep/about)([\@igrep](https://twitter.com/igrep)) age 26.
     - NO RELATION WITH "igrep.el"!
+
+# Nice to meet you!
+
 - Elm Lover & Hobby Haskeller.
     - Using Elm for about 3 months.
     - Elm歴: 3ヶ月ぐらい
+    - Follow [elm-discuss](https://groups.google.com/forum/#!forum/elm-discuss) everyday, but rarely post.
+    - [elm-discuss](https://groups.google.com/forum/#!forum/elm-discuss)は毎日覗いてますが、発言することは稀。
+
+# Nice to meet you!
+
 - Holding [workshop of Haskell (Japanese)](http://connpass.com/series/754/) per month.
 - Haskellの勉強会を毎月開いてます！ 
 
@@ -21,7 +29,11 @@
 
 - Feel free to tell me if my English is wrong!
 
-# How do you like Elm?
+# First of all,
+
+<div class="takahashiLike">
+How do you like Elm?
+</div>
 
 # For Me...
 
@@ -47,8 +59,48 @@
 - Too few features comparing with Haskell.
     - At the sacrifice of the simplicity.
     - Type classes
-    - Existential types
     - do syntax
+    - Existential types
     - GADTs
     - etc...
 - Still a little buggy.
+
+# So then,
+
+<div class="takahashiLike">
+Whom to recommend?
+</div>
+
+# Steal potential Haskelers.
+
+- 未来のHaskellerをパクる
+    - Who read [LYHG](http://learnyouahaskell.com/), but have no idea about the next.
+    - すごいH本とかを読んだけど、次何作るかわからない人。
+    - Who are interested in Functional Programming.
+    - 関数型プログラミングに興味がある人。
+- Show how easily Elm can build webapps with Haskell knowledge!
+- Haskellの知識で動くものをすぐ作れることを示しましょう！
+
+# Steal potential Haskelers.
+
+By contrast, avoid Haskell enthusiasts who need many Haskell features even for AltJS.
+逆に、AltJSにすらあらゆるHaskellの機能を求めるような~~変~~人は避けましょう。
+
+# Any JavaScripters!
+
+- Any JavaScripters (Who don't know the value of types and design with types!)
+- 型と、型で設計する素晴らしさがわからない全てのJSerに。
+- Especially for those who don't like things everyone likes.
+- 特にみんなが好きなものを逆に嫌いになるような人を狙いましょう。
+
+# Summary
+
+- Elm can easily build **runnable** and maintainable webapps!
+- Recommend Elm to potential Haskelers who want to make **runnable** apps!
+- Or JavaScripters who don't know the **value of types**!
+
+# まとめ
+
+- Elmを使えば簡単に**動く**、保守性の高いウェブアプリを作れます。
+- **動く**ものを作りたい未来のHaskellerにぴったりです。
+- 型の素晴らしさを知らないあらゆるJSerにも広めましょう。
