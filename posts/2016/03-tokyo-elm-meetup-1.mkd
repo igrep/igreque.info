@@ -1,0 +1,37 @@
+---
+title: 日本初のElm Meetupに参加・発表してきました。
+author: Yuji Yamamoto
+date: February 25, 2016
+tags: Elm
+...
+---
+
+（多分）日本初のElmの勉強会、「[Tokyo Elm Programming Meetup](http://www.meetup.com/Tokyo-Elm-Programming-Meetup/events/228097244/)」に参加しました！  
+企画していただいたWyatt, 会場を貸していただいた[Casley Consulting](http://www.casleyconsulting.co.jp/)さん、ありがとうございました！
+
+せっかくなんで軽めのネタで発表して参りました。  
+半ば飛び込みなところを受け付けて頂きありがとうございました！  
+以下が資料です。
+
+[Whom to Recommend Elm to?](http://the.igreque.info/slides/2016-02-24-whom-to-recommend-elm-to.html)
+
+一応Slideshareにも挙げましょう。
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/o12XpxTgMYqHF3" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/igrep/whom-to-recommend-elm-to" title="Whom to Recommend Elm to?" target="_blank">Whom to Recommend Elm to?</a> </strong> from <strong><a target="_blank" href="//www.slideshare.net/igrep">悠滋 山本</a></strong> </div>
+
+ついでに、「何かElmで作ったものないの？」と質問され、
+昨年の[Elm Advent Calendarで作成したラブリーコミューン](/posts/2015/3-lovely-commune.html)も意図せず紹介することになり、楽しい発表となりました。  
+ちょっと緊張したけど割りと受けたようで安心です。
+
+懇親会では結構Haskellとの違いに関する話題が多かったようです。  
+Haskell-likeなAltJSとして意識して参加された方が割りと目立ちました。  
+現状Elmは徹底的なシンプル路線を辿っているのでそのへんの人に勧めにくいのが悩ましいですね。  
+個人的には、逆に、Haskellの難しいところや歴史的におかしくなってしまった点を根本的に改められるという点に大きな魅力を感じているので、
+「ない」良さをどう伝えていくのか、という点は課題に感じますね。
+
+あとFRPの話も結構盛り上がりましたね。  
+自分はあまりFRPは詳しくないですが、
+今のElm, そこまでFRPを強調しているわけでもないので、その点Elmが出た当初のイメージがまだ強いのかなぁという印象です。  
+僕自身は比較的最近使い出した人間なのであまり使っていて実感することはないですが、聞く限り結構ピボットしてるんですね...。
+
+何はともあれ、いろいろ課題はありますが、今後も盛り上げていきましょう！
