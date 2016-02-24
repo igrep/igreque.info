@@ -224,17 +224,30 @@ Haskellや数学の世界でどう呼んでいるかは各自調べてくださ�
 
 ```java
 class Maybe<T1> implements Monad<T2> {
+    private final T1 x;
+
     Maybe(T1 x){
+        this.x = x;
     }
 
-    <T2> Monad<T2> then(Function<T1, Monad<T2>>){
+    <T2> Monad<T2> then(Function<T1, Monad<T2>> nextAction){
+        if (x != null){
+            return nextAction.apply(x);
+        } else {
+            return new Maybe(null);
+        }
     }
 }
 class MaybeFactory<T> implements Monad<T> {
-    Monad<T> doNothingReturning(T){
+    Monad<T> doNothingReturning(T x){
+        return new Maybe<T>(x);
     }
 }
 ```
+
+上記は`then`においてhoge
+事実、[open-jdk](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)のソースと見比べてみると、
+上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります。
 
 # do記法
 
