@@ -222,6 +222,8 @@ Haskellや数学の世界でどう呼んでいるかは各自調べてくださ�
 それではMonadについてもうちょっと具体的なイメージを持っていただくために、
 前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`)インターフェースを実装したクラスの例を紹介しましょう。
 
+## その1 Maybe
+
 ```java
 class Maybe<T1> implements Monad<T2> {
     private final T1 x;
@@ -238,6 +240,7 @@ class Maybe<T1> implements Monad<T2> {
         }
     }
 }
+
 class MaybeFactory<T> implements Monad<T> {
     Monad<T> doNothingReturning(T x){
         return new Maybe<T>(x);
@@ -245,11 +248,29 @@ class MaybeFactory<T> implements Monad<T> {
 }
 ```
 
-上記は`then`においてhoge
+上記は`then`において、持っている値(`x`)が`null`かどうかあらかじめ確認し、
+`null`でなければ引数として渡した関数(`nextAction`)を実行します。  
+次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの`then`の役割です。  
+Monad則のところで触れたように、
+「Monadの値を作って返すだけで、それ以外のことはしない」のが`doNothingReturning`のお約束なので、
+Monadインターフェースを実装するクラスをより明確に特徴付けるのは、`then`メソッドの方です。  
+そのため繰り返しになりますが、
+次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
+
+ところで、最近のJavaを使いなれた方は、`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
+`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当します。
 事実、[open-jdk](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)のソースと見比べてみると、
-上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります。
+上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
+
+[^haskell-maybe]: Haskellの`Maybe`とはちょっと異なる振る舞いをします。
+Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すことはないからです。
+`null`と`Nothing`は実際には大きく異なるものなので単純に比較できませんが。詳しくはHaskell勉強してみて確かめましょう！
+
+`Optional`と同じようなものなので特に目新しい部分はないかもしれませんが、上記の`Maybe`の使用例を示しましょう。
 
 # do記法
+
+# fmapなどのユーティリティ
 
 # 参考
 
