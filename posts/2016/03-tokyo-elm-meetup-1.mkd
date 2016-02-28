@@ -1,11 +1,12 @@
 ---
 title: 日本初のElm Meetupに参加・発表してきました。
 author: Yuji Yamamoto
-date: February 25, 2016
+date: February 29, 2016
 tags: Elm
 ...
 ---
 
+報告が遅くなってしまいましたが、  
 （多分）日本初のElmの勉強会、「[Tokyo Elm Programming Meetup](http://www.meetup.com/Tokyo-Elm-Programming-Meetup/events/228097244/)」に参加しました！  
 企画していただいたWyatt, 会場を貸していただいた[Casley Consulting](http://www.casleyconsulting.co.jp/)さん、ありがとうございました！
 
