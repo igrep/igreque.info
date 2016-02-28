@@ -217,12 +217,10 @@ hoge
 一点重要な注意事項。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
 Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
 
-# 具体的な実装を見てみましょう
+## 具体的な実装その1 Maybe
 
 それではMonadについてもうちょっと具体的なイメージを持っていただくために、
 前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`)インターフェースを実装したクラスの例を紹介しましょう。
-
-## その1 Maybe
 
 ```java
 class Maybe<T1> implements Monad<T2> {
@@ -259,14 +257,41 @@ Monadインターフェースを実装するクラスをより明確に特徴付
 
 ところで、最近のJavaを使いなれた方は、`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
 `Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当します。
-事実、[open-jdk](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)のソースと見比べてみると、
+事実、その前提で[open-jdk](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)のソースと見比べてみると、
 上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
 
-[^haskell-maybe]: Haskellの`Maybe`とはちょっと異なる振る舞いをします。
+[^haskell-maybe]: ちなみに、Haskellの`Maybe`とはちょっと異なる振る舞いをします。
 Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すことはないからです。
 `null`と`Nothing`は実際には大きく異なるものなので単純に比較できませんが。詳しくはHaskell勉強してみて確かめましょう！
 
 `Optional`と同じようなものなので特に目新しい部分はないかもしれませんが、上記の`Maybe`の使用例を示しましょう。
+
+```java
+Foo maybeFoo1 = someMap.get(key1);
+MaybeFactory<Foo> f = new MaybeFactory<Foo>();
+Maybe<Bar> bar =
+    f.doNothingReturning(maybeFoo1).then((foo1) -> {
+        Foo maybeFoo2 = someMap.get(key2);
+        f.doNothingReturning(maybeFoo2).then((foo2) -> {
+            Foo maybeFoo3 = someMap.get(key3);
+            f.doNothingReturning(maybeFoo3).then((foo3) -> {
+                f.doNothingReturning(foo1.doSomething(foo2, foo3));
+            });
+        });
+    });
+```
+
+上記のように、`null`を返すかもしれないメソッドがたくさん使うとき、
+`Maybe`を使えば、`then`に`null`チェックをお任せすることができます。  
+これでぬるぽともお別れだー！やったね！(^\_-)
+
+...と、言いたいところですが、
+
+## その2 State
+
+## その3 Promise
+
+Java 8のCompletableFutureとおんなじ。
 
 # do記法
 
