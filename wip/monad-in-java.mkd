@@ -144,7 +144,7 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 
 各変数の定義まで書いてしまったので長ったらしくなってしまいましたが、一つずつ解説しましょう。
 
-### (A), (A')について
+#### (A), (A')について
 
 最初の2つは、どちらかというと`doNothingReturning`が守るべき性質についての式です。
 
@@ -170,7 +170,7 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。
 余力があったら後でよい例を紹介しましょう。
 
-### (B)について
+#### (B)について
 
 (B)はちょっと複雑ですね。  
 集中するために該当の部分だけ持ってきましょう。
@@ -197,7 +197,7 @@ hoge
 それぐらい直感的な仕様を守ってくださいね、というのが「Monad則」の正体だ、と考えていただければしっくりくるでしょうか？  
 `Comparable`な`x`が常に`x.compareTo(x) == 0`であってほしいのと同じことです。
 
-## ここまでのまとめ
+# ここまでのまとめ
 
 さて、ここまでのまとめです。
 
@@ -217,7 +217,7 @@ hoge
 一点重要な注意事項。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
 Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
 
-## 具体的な実装その1 Maybe
+# 具体的な実装その1 Maybe
 
 それではMonadについてもうちょっと具体的なイメージを持っていただくために、
 前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`)インターフェースを実装したクラスの例を紹介しましょう。
@@ -272,9 +272,9 @@ MaybeFactory<Foo> f = new MaybeFactory<Foo>();
 Maybe<Bar> bar =
     f.doNothingReturning(maybeFoo1).then((foo1) -> {
         Foo maybeFoo2 = someMap.get(key2);
-        f.doNothingReturning(maybeFoo2).then((foo2) -> {
+        return f.doNothingReturning(maybeFoo2).then((foo2) -> {
             Foo maybeFoo3 = someMap.get(key3);
-            f.doNothingReturning(maybeFoo3).then((foo3) -> {
+            return f.doNothingReturning(maybeFoo3).then((foo3) -> {
                 f.doNothingReturning(foo1.doSomething(foo2, foo3));
             });
         });
@@ -285,15 +285,29 @@ Maybe<Bar> bar =
 `Maybe`を使えば、`then`に`null`チェックをお任せすることができます。  
 これでぬるぽともお別れだー！やったね！(^\_-)
 
-...と、言いたいところですが、
+...と、言いたいところですが、元ネタの`Optional.flatMap`使った場合と同様、ネストが深くって嫌ですねー。  
+これでは普通にif文を書いた方がまだ読みやすそうです。`f.doNothingReturning`なんて書く分タイプ数も多いですし。
 
-## その2 State
+`f.doNothingReturning`や`MaybeFactory<Foo> f = new MaybeFactory<Foo>();`
+の部分が長いのは単なる名付け方の名前だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、
+結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
 
-## その3 Promise
+この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
+残念ながらこの問題は、現在のJavaではどうしようもありません。
 
-Java 8のCompletableFutureとおんなじ。
+```java
+   ax.apply(x).then((y) -> ay.apply(y).then(az))
+== ax.apply(x).then(       ay        ).then(az)
+```
+
 
 # do記法
+
+# 具体的な実装 その2 State
+
+# 具体的な実装 その3 Promise
+
+Java 8のCompletableFutureとおんなじ。
 
 # fmapなどのユーティリティ
 
