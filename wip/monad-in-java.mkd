@@ -186,8 +186,9 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 hoge
 
 上記の通り、1つめの`then`に渡す「Monadの値を返す関数」における`then(az)`の部分が、
-一つめの`then`、つまり`ax.apply(x).then`の引数から、
-**括り出せるようになっていなければならない**、ということです。
+一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、
+**括り出せるようになっていなければならない**、ということです。  
+後にも触れますが、これによって、ネストを一段平たくできたりします。
 
 これをもうちょっとくだけた日本語に言い換えると、
 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
@@ -214,7 +215,7 @@ hoge
         == ax.apply(x).then(       ay        ).then(az)
         ```
 
-一点重要な注意事項。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
+一点重要な注意事項を捕捉します。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
 Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
 
 # 具体的な実装その1 Maybe
@@ -293,12 +294,41 @@ Maybe<Bar> bar =
 結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
 
 この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
-残念ながらこの問題は、現在のJavaではどうしようもありません。
 
 ```java
    ax.apply(x).then((y) -> ay.apply(y).then(az))
 == ax.apply(x).then(       ay        ).then(az)
 ```
+
+hoge
+
+この規則は、上の図のように、2つめの`then`を1つめの`then`に渡したラムダ式から取り出すことで、
+ネストを一段平たくすることができる、というものでした。  
+おっ。ということは今回のケースにも適用できるかもしれませんよ！やってみましょう！
+
+```java
+Foo maybeFoo1;
+Foo foo1, Foo foo2, Foo foo3;
+MaybeFactory<Foo> f = new MaybeFactory<Foo>();
+
+maybeFoo1 = someMap.get(key1);
+Maybe<Bar> bar =
+    f.doNothingReturning(maybeFoo1).then((foo1Arg) -> {
+        foo1 = foo1Arg;
+        return f.doNothingReturning(someMap.get(key2));
+    }).then((foo2Arg) -> {
+        foo2 = foo2Arg;
+        return f.doNothingReturning(someMap.get(key3));
+    }).then((foo3Arg) -> {
+        foo3 = foo3Arg;
+        return f.doNothingReturning(foo1.doSomething(foo2, foo3));
+    });
+```
+
+よし、これならうまく行けそう... と、思いきや、今度はコンパイルエラーです... (&gt;\_&lt;)  
+Java 8のラムダ式は、ラムダ式の中でローカル変数を書き換えることができないのでしたorz
+
+残念ながらこの問題は、現在のJavaではどうしようもありません。
 
 
 # do記法
