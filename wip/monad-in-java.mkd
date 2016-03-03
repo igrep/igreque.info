@@ -270,13 +270,14 @@ Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すこと�
 ```java
 Foo maybeFoo1 = someMap.get(key1);
 MaybeFactory<Foo> f = new MaybeFactory<Foo>();
+MaybeFactory<Bar> b = new MaybeFactory<Bar>();
 Maybe<Bar> bar =
     f.doNothingReturning(maybeFoo1).then((foo1) -> {
         Foo maybeFoo2 = someMap.get(key2);
         return f.doNothingReturning(maybeFoo2).then((foo2) -> {
             Foo maybeFoo3 = someMap.get(key3);
             return f.doNothingReturning(maybeFoo3).then((foo3) -> {
-                f.doNothingReturning(foo1.doSomething(foo2, foo3));
+                b.doNothingReturning(foo1.doSomething(foo2, foo3));
             });
         });
     });
@@ -310,6 +311,7 @@ hoge
 Foo maybeFoo1;
 Foo foo1, Foo foo2, Foo foo3;
 MaybeFactory<Foo> f = new MaybeFactory<Foo>();
+MaybeFactory<Bar> b = new MaybeFactory<Bar>();
 
 maybeFoo1 = someMap.get(key1);
 Maybe<Bar> bar =
@@ -321,7 +323,7 @@ Maybe<Bar> bar =
         return f.doNothingReturning(someMap.get(key3));
     }).then((foo3Arg) -> {
         foo3 = foo3Arg;
-        return f.doNothingReturning(foo1.doSomething(foo2, foo3));
+        return b.doNothingReturning(foo1.doSomething(foo2, foo3));
     });
 ```
 
@@ -330,9 +332,27 @@ Java 8のラムダ式は、ラムダ式の中でローカル変数を書き換�
 残念ながらこの問題は、現在のJavaではどうしようもありません。  
 しかもいずれにしてもいちいち`foo1 = foo1Arg`みたいな代入が必要だったりで、結局面倒くさいですよね。
 
-Haskellであれば
+実はHaskellであれば、上記のような書き換えを自動で行い、
+自然な見た目にしてくれるシンタックスシュガー（構文糖）があります。  
+それが次に示す「do記法」と呼ばれるものです。
 
 # do記法
+
+本記事はあくまでもJavaでMonadを説明する記事ですので、
+ここではその「do記法」を仮にJavaに導入した場合を想像して、
+先程の例がどのように書き換えられるか示しましょう。
+
+```java
+MaybeFactory<Foo> f = new MaybeFactory<Foo>();
+MaybeFactory<Bar> b = new MaybeFactory<Bar>();
+
+Maybe<Bar> bar = do {
+    Foo foo1 <- f.doNothingReturning(someMap.get(key1));
+    Foo foo2 <- f.doNothingReturning(someMap.get(key2));
+    Foo foo3 <- f.doNothingReturning(someMap.get(key3));
+    b.doNothingReturning(foo1.doSomething(foo2, foo3));
+};
+```
 
 # 具体的な実装 その2 State
 
