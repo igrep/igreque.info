@@ -33,11 +33,11 @@ interface Monad<T1> {
     <T2> Monad<T2> then(Function<T1, Monad<T2>>);
 
 }
-interface MonadFactory<T> {
+interface MonadFactory {
     // Haskellで言うところのreturnに相当します。
     // 本当は1個のinterfaceにまとめたいけど
     // Javaのinterfaceでは無理っぽいorz.
-    Monad<T> doNothingReturning(T);
+    <T> Monad<T> doNothingReturning(T);
 }
 ```
 
@@ -116,9 +116,8 @@ X x;
 Y y;
 Z z;
 
-// それに対するMonadFactoryをfx, fyとします(fzは不要)
-MonadFactory<X> fx = new MonadFactory<>;
-MonadFactory<Y> fy = new MonadFactory<>;
+// MonadFactoryをfとします
+MonadFactory<X> f = new MonadFactory<>;
 
 // それから、Xを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
 Function<X, Monad<Y>> ax = (x) -> ... ;
@@ -129,8 +128,8 @@ Function<Z, Monad<A>> az = (z) -> ... ;
 
 // 下記の式が**常にtrueを返す**doNothingReturningとthenを
 // 実装している時、Monad則が成立します。
-/* (A ) */ fx.doNothingReturning(x).then(ax) == ax.apply(x)
-/* (A') */ ax.apply(x).then(fy::doNothingReturning) == ax.apply(x)
+/* (A ) */ f.doNothingReturning(x).then(ax) == ax.apply(x)
+/* (A') */ ax.apply(x).then(f::doNothingReturning) == ax.apply(x)
 /* (B ) */
      ax.apply(x).then((y) -> ay.apply(y).then(az))
   == ax.apply(x).then(       ay        ).then(az)
@@ -206,8 +205,8 @@ hoge
 - それらのインターフェースを実装するクラスは、下記の「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
     - (A), (A') `doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはならない。
         ```java
-               fx.doNothingReturning(x).then(ax) == ax.apply(x)
-        ax.apply(x).then(fy::doNothingReturning) == ax.apply(x)
+               f.doNothingReturning(x).then(ax) == ax.apply(x)
+        ax.apply(x).then(f::doNothingReturning) == ax.apply(x)
         ```
     - (B) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
         ```java
@@ -240,8 +239,8 @@ class Maybe<T1> implements Monad<T2> {
     }
 }
 
-class MaybeFactory<T> implements Monad<T> {
-    Monad<T> doNothingReturning(T x){
+class MaybeFactory implements MonadFactory {
+    <T> Maybe<T> doNothingReturning(T x){
         return new Maybe<T>(x);
     }
 }
@@ -257,7 +256,7 @@ Monadインターフェースを実装するクラスをより明確に特徴付
 次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
 
 ところで、最近のJavaを使いなれた方は、`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
-`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当します。
+`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当すると考えると、確かに！  
 事実、その前提で[open-jdk](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)のソースと見比べてみると、
 上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
 
@@ -357,7 +356,7 @@ Maybe<Bar> bar = do {
 おお、`doNothingReturning`という長ったらしい名前さえどうにかなれば、
 もはや普通のJavaと区別がつかないくらい自然じゃありませんか！  
 どこがどう構文糖で簡略化されたのか申しますと、
-この場合、元のコードの`then`メソッドの呼び出しが、細い矢印`<-`の箇所に置き換わったと考えると分かりやすいでしょう。  
+この場合、元のコードの`then`メソッドの呼び出しが、細い矢印 `<-` の箇所に置き換わったと考えると分かりやすいでしょう。  
 `then`メソッドが「引数として渡された関数」に渡す引数(上記の場合`foo1`, `foo2`, `foo3`)について`null`かどうか確認していたのを、
 do記法では細い矢印 `<-` で`foo1`, `foo2`, `foo3`に代入する前に`null`かどうか確認するようになったのです。
 
