@@ -230,7 +230,7 @@ class Maybe<T1> implements Monad<T1> {
         this.x = x;
     }
 
-    <T2> Monad<T2> then(Function<T1, Monad<T2>> nextAction){
+    <T2> Maybe<T2> then(Function<T1, Maybe<T2>> nextAction){
         if (x != null){
             return nextAction.apply(x);
         } else {
@@ -479,45 +479,58 @@ Monadの別の例を紹介しましょう。
 ちょっとMonadじゃないクラスがいくつか出てきますが、Stateモナドが依存しているので、どうかご了承下さい。
 
 ```java
-// 対象の状態を書き換えた結果を表すValue Object
-class MutationResult<S, T1> {
+// 状態を書き換えた結果を表すValue Object
+class MutationResult<S, T> {
     public final S newState;
-    public final T1 result;
+    public final T value;
 
-    MutationResult(S newState, T1 result){
+    MutationResult(S newState, T value){
         this.newState = newState;
-        this.result = result;
+        this.value = value;
     }
 }
 
 // 状態の書き換えをシミュレートするための関数オブジェクト
 @FunctionalInterface
-interface StateMutator<T1, S> {
-    MutationResult<T1, S> run();
+interface StateMutator<T, S> {
+    MutationResult<T, S> mutate(S oldState);
 }
 
+// Stateモナドの実装
 class State<S, T1> implements Monad<T1> {
-    private final T1 x;
+    private final StateMutator<T1, S> mutator;
 
-    Maybe(T1 x){
-        this.x = x;
+    State(StateMutator<T1, S> mutator){
+        this.mutator = mutator;
     }
 
-    <T2> Monad<T2> then(Function<T1, Monad<T2>> nextAction){
-        if (x != null){
-            return nextAction.apply(x);
-        } else {
-            return new Maybe(null);
+    <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
+        StateMutator<S, T2> composedMutator = (s) -> {
+            MutationResult<S, T1> result = this.mutator.mutate(s);
+            State<S, T2> other = nextAction.apply(result.value);
+            return other.mutator.mutate(result.newState);
         }
+        return new State(composedMutator);
     }
 }
 
-class MaybeFactory implements MonadFactory {
-    <T> Maybe<T> doNothingReturning(T x){
-        return new Maybe<T>(x);
+class StateFactory<S> implements MonadFactory {
+    <T> State<S, T> doNothingReturning(T value){
+        return new State<S, T>(
+            (nonMutatedState) -> new MutationResult(nonMutatedState, value)
+        );
     }
 }
 ```
+
+<!--
+```haskell
+(>>=) :: State s a -> (a -> State s b) -> State s b
+pr >>= k = state $ \ st ->
+   let (x, st') = runState pr st
+   in runState (k x) st'
+```
+-->
 
 # 具体的な実装 その3 Promise
 
