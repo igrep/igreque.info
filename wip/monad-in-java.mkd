@@ -223,7 +223,7 @@ Haskellや数学の世界でどう呼んでいるかは各自調べてくださ�
 前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`)インターフェースを実装したクラスの例を紹介しましょう。
 
 ```java
-class Maybe<T1> implements Monad<T2> {
+class Maybe<T1> implements Monad<T1> {
     private final T1 x;
 
     Maybe(T1 x){
@@ -475,6 +475,49 @@ Monad則(B)を満たして、入れ子を関係を気にしなくてもいいよ
 Monadの別の例を紹介しましょう。  
 今度はJavaではあまり役に立たないとは思いますが、
 **純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように**見せる、魔法のようなMonadです。
+
+ちょっとMonadじゃないクラスがいくつか出てきますが、Stateモナドが依存しているので、どうかご了承下さい。
+
+```java
+// 対象の状態を書き換えた結果を表すValue Object
+class MutationResult<S, T1> {
+    public final S newState;
+    public final T1 result;
+
+    MutationResult(S newState, T1 result){
+        this.newState = newState;
+        this.result = result;
+    }
+}
+
+// 状態の書き換えをシミュレートするための関数オブジェクト
+@FunctionalInterface
+interface StateMutator<T1, S> {
+    MutationResult<T1, S> run();
+}
+
+class State<S, T1> implements Monad<T1> {
+    private final T1 x;
+
+    Maybe(T1 x){
+        this.x = x;
+    }
+
+    <T2> Monad<T2> then(Function<T1, Monad<T2>> nextAction){
+        if (x != null){
+            return nextAction.apply(x);
+        } else {
+            return new Maybe(null);
+        }
+    }
+}
+
+class MaybeFactory implements MonadFactory {
+    <T> Maybe<T> doNothingReturning(T x){
+        return new Maybe<T>(x);
+    }
+}
+```
 
 # 具体的な実装 その3 Promise
 
