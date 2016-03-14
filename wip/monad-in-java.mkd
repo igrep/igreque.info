@@ -512,6 +512,20 @@ class State<S, T1> implements Monad<T1> {
         }
         return new State(composedMutator);
     }
+
+    // ないと困る、ユーティリティメソッド。引数で与えた状態に書き換える
+    public static <S> State<S, Object> put(S newState){
+        return new State(
+            (ignoredState) -> new MutationResult(newState, null)
+        );
+    }
+
+    // ないと困る、ユーティリティメソッド。現在の状態を取得する
+    public static <S> State<S, S> get{
+        return new State(
+            (currentState) -> new MutationResult(currentState, currentState)
+        );
+    }
 }
 
 class StateFactory<S> implements MonadFactory {
@@ -523,14 +537,12 @@ class StateFactory<S> implements MonadFactory {
 }
 ```
 
-<!--
-```haskell
-(>>=) :: State s a -> (a -> State s b) -> State s b
-pr >>= k = state $ \ st ->
-   let (x, st') = runState pr st
-   in runState (k x) st'
-```
--->
+うーん、肝心のStateクラス以外のものが多く、結構複雑ですね。  
+これだけでは何のこっちゃ、と感じられる方も多いと思うので、1つずつ解説しましょう。
+
+## そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？
+
+## MutationResult
 
 # 具体的な実装 その3 Promise
 
