@@ -30,14 +30,14 @@ hoge
 ```java
 interface Monad<T1> {
     // Haskellで言うところの >>= (bind)に該当します。
-    <T2> Monad<T2> then(Function<T1, Monad<T2>>);
+    <T2> Monad<T2> then(Function<T1, Monad<T2>> action);
 
 }
 interface MonadFactory {
     // Haskellで言うところのreturnに相当します。
     // 本当は1個のinterfaceにまとめたいけど
     // Javaのinterfaceでは無理っぽいorz.
-    <T> Monad<T> doNothingReturning(T);
+    <T> Monad<T> doNothingReturning(T value);
 }
 ```
 
@@ -117,22 +117,21 @@ Y y;
 Z z;
 
 // MonadFactoryをfとします
-MonadFactory<X> f = new MonadFactory<>;
+MonadFactory<X> f = new SomeMonadFactory<>;
 
 // それから、Xを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
 Function<X, Monad<Y>> ax = (x) -> ... ;
 Function<Y, Monad<Z>> ay = (y) -> ... ;
 Function<Z, Monad<A>> az = (z) -> ... ;
 
-/ TODO: .equalsで書き換えるか他の表現方法を試す。
-
-// 下記の式が**常にtrueを返す**doNothingReturningとthenを
+// 下記の3組の式が**常に同じ意味となる**doNothingReturningとthenを
 // 実装している時、Monad則が成立します。
-/* (A ) */ f.doNothingReturning(x).then(ax) == ax.apply(x)
-/* (A') */ ax.apply(x).then(f::doNothingReturning) == ax.apply(x)
-/* (B ) */
-     ax.apply(x).then((y) -> ay.apply(y).then(az))
-  == ax.apply(x).then(       ay        ).then(az)
+/* (A ) */ f.doNothingReturning(x).then(ax)
+           ax.apply(x)
+/* (A') */ ax.apply(x).then(f::doNothingReturning)
+           ax.apply(x)
+/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then(az))
+           ax.apply(x).then(       ay        ).then(az)
 ```
 
 <!--
@@ -583,9 +582,28 @@ interface StateMutator<T, S> {
 「新しい状態」と「状態を書き換えたと同時に出てきた、別の値」とのペアを表すオブジェクト
 `MutationResult`を作りました。`StateMutator`は古い状態を受け取って、それを返すだけです。
 
+## `State`のコンストラクターがやっていること
+
 ## `State.then`でやっていること
 
-それでは、
+それでは本題、Monadインターフェースにとって最も重要なメソッド、`then`の`State`の詳細を解説しましょう。  
+こちらも改めて抜粋して載せますね。 ↓
+
+``java
+class State<S, T1> implements Monad<T1> {
+    private final StateMutator<T1, S> mutator;
+    // ...
+    <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
+        StateMutator<S, T2> composedMutator = (s) -> {
+            MutationResult<S, T1> result = this.mutator.mutate(s);
+            State<S, T2> other = nextAction.apply(result.value);
+            return other.mutator.mutate(result.newState);
+        }
+        return new State(composedMutator);
+    }
+    // ...
+}
+```
 
 # 具体的な実装 その3 Promise
 
