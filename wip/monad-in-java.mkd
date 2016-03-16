@@ -476,7 +476,8 @@ Monadの別の例を紹介しましょう。
 今度はJavaではあまり役に立たないとは思いますが、
 **純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように**見せる、魔法のようなMonadです。
 
-ちょっとMonadじゃないクラスがいくつか出てきますが、Stateモナドが依存しているので、どうかご了承下さい。
+ちょっとMonadじゃないクラスがいくつか出てきますが、Stateモナドが依存しているので、どうかご了承下さい。  
+もちろん後で解説しますので...。
 
 ```java
 // 状態を書き換えた結果を表すValue Object
@@ -537,12 +538,54 @@ class StateFactory<S> implements MonadFactory {
 }
 ```
 
-うーん、肝心のStateクラス以外のものが多く、結構複雑ですね。  
-これだけでは何のこっちゃ、と感じられる方も多いと思うので、1つずつ解説しましょう。
+うーん、肝心のStateクラス以外のものが多く、結構複雑ですね...`(^-^;`  
+これだけでは何のこっちゃ、と感じられる方も多いと思うので、ちょっとずつ解説しましょう。
 
 ## そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？
 
-## MutationResult
+ここで言う、「命令型スタイル」というのが「状態を書き換えることで結果を作る」プログラミングスタイルだとして、
+関数型プログラミング、つまり純粋な関数のみを使用したスタイルでは、どうやって状態の書き換えを表現するのでしょう？  
+純粋な関数は、戻り値を使用しない限り、関数の外部へ影響を与えることができません。  
+ということで、素直に「古い状態を受け取って、新しい状態を返す」関数として表現してみましょう。  
+Javaのインターフェースで言うと↓のような感じ。
+
+```java
+@FunctionalInterface
+interface StateMutator0<S> {
+    S mutate(S oldState);
+}
+```
+
+しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
+と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
+↓にもう一度載せておきます。
+
+```java
+// 状態を書き換えた結果を表すValue Object
+class MutationResult<S, T> {
+    public final S newState;
+    public final T value;
+
+    MutationResult(S newState, T value){
+        this.newState = newState;
+        this.value = value;
+    }
+}
+
+// 状態の書き換えをシミュレートするための関数オブジェクト
+@FunctionalInterface
+interface StateMutator<T, S> {
+    MutationResult<T, S> mutate(S oldState);
+}
+```
+
+「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、
+「新しい状態」と「状態を書き換えたと同時に出てきた、別の値」とのペアを表すオブジェクト
+`MutationResult`を作りました。`StateMutator`は古い状態を受け取って、それを返すだけです。
+
+## `State.then`でやっていること
+
+それでは、
 
 # 具体的な実装 その3 Promise
 
