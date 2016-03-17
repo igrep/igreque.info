@@ -584,6 +584,24 @@ interface StateMutator<T, S> {
 
 ## `State`のコンストラクターがやっていること
 
+```java
+class State<S, T1> implements Monad<T1> {
+    private final StateMutator<T1, S> mutator;
+
+    State(StateMutator<T1, S> mutator){
+        this.mutator = mutator;
+    }
+    // ...
+}
+```
+
+コンストラクターでやっていることは単に引数をインスタンス変数にいれるだけのボイラープレートなコードです。  
+ここで注目していただきたいのは、`State<S, T1>`は、
+`StateMutator<T1, S>`, すなわち
+「`S`という型の古い状態を受け取って、同じく`S`という型の**更新した状態と、一緒に出てきた`T1`という型の値を返す**関数」
+をラップしただけのクラスであることです。  
+`State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
+
 ## `State.then`でやっていること
 
 それでは本題、Monadインターフェースにとって最も重要なメソッド、`then`の`State`の詳細を解説しましょう。  
