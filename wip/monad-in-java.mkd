@@ -10,7 +10,7 @@ date: February 25, 2016
 プログラマー向けにMonadを説明した記事は
 サンプルがHaskellで書かれていることが多いので辛いですよね。
 
-と、いうわけで上記の記事を引用しつつ、
+と、いうわけで上記の記事を参考にしつつ、
 HaskellよりもSwiftよりももっともっと広まっているであろう、
 JavaでMonadを定義して説明してみたいと思います。  
 これを通して、
@@ -49,7 +49,7 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
 - `Monad<T1>`というクラスのインスタンスがあったとき、`then`は次の値を受け取り、返す。
     - 「`T1`を受け取り、別の型引数`T2`の`Monad`, `Monad<T2>`を返す関数」を受け取って、
     - `Monad<T2>`の値を返す。
-- `Monad`を実装したクラスを実装したとき、任意のクラス値に対して、そのインスタンスを返すためのファクトリークラス（`MonadFactory`インターフェースを実装したクラス）も実装しなければならない [^refval]。
+- `Monad`を実装したクラスを実装したとき、任意のクラスの値に対して、そのインスタンスを返すためのファクトリークラス（`MonadFactory`インターフェースを実装したクラス）も実装しなければならない [^refval]。
 
 [refval]: 参照型と値型の区別はこの際お見逃しください。やっぱりJavaで厳密にMonadを表現するのは難しい。
 
@@ -127,10 +127,15 @@ Function<Z, Monad<A>> az = (z) -> ... ;
 // 下記の3組の式が**常に同じ意味となる**doNothingReturningとthenを
 // 実装している時、Monad則が成立します。
 /* (A ) */ f.doNothingReturning(x).then(ax)
+           /* ↑と↓の意味が同じになること。以下同様。 */
            ax.apply(x)
+
 /* (A') */ ax.apply(x).then(f::doNothingReturning)
+           /* ↑と↓の意味が同じになること */
            ax.apply(x)
+
 /* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then(az))
+           /* ↑と↓の意味が同じになること */
            ax.apply(x).then(       ay        ).then(az)
 ```
 
@@ -175,7 +180,8 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 
 ```java
    ax.apply(x).then((y) -> ay.apply(y).then(az))
-== ax.apply(x).then(       ay        ).then(az)
+        /* ↑と↓の意味が同じになること */
+   ax.apply(x).then(       ay        ).then(az)
 ```
 
 意図的にスペースを挟んで調整したので、勘のいい方はお気づきかもしれません。  
@@ -204,13 +210,16 @@ hoge
 - それらのインターフェースを実装するクラスは、下記の「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
     - (A), (A') `doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはならない。
         ```java
-               f.doNothingReturning(x).then(ax) == ax.apply(x)
-        ax.apply(x).then(f::doNothingReturning) == ax.apply(x)
+        /* ↓3行の意味が同じになること */
+        f.doNothingReturning(x).then(ax)
+        ax.apply(x).then(f::doNothingReturning)
+        ax.apply(x)
         ```
     - (B) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
         ```java
            ax.apply(x).then((y) -> ay.apply(y).then(az))
-        == ax.apply(x).then(       ay        ).then(az)
+            /* ↑と↓の意味が同じになること */
+           ax.apply(x).then(       ay        ).then(az)
         ```
 
 一点重要な注意事項を捕捉します。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
@@ -256,7 +265,7 @@ Monadインターフェースを実装するクラスをより明確に特徴付
 
 ところで、最近のJavaを使いなれた方は、`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
 `Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当すると考えると、確かに！  
-事実、その前提で[open-jdk](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)のソースと見比べてみると、
+事実、その前提で[open-jdkの`Optional.java`](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)と見比べてみると、
 上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
 
 [^haskell-maybe]: ちなみに、Haskellの`Maybe`とはちょっと異なる振る舞いをします。
@@ -295,8 +304,10 @@ Maybe<Bar> bar =
 この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
 
 ```java
-   ax.apply(x).then((y) -> ay.apply(y).then(az))
-== ax.apply(x).then(       ay        ).then(az)
+/* (B ) */
+    ax.apply(x).then((y) -> ay.apply(y).then(az))
+        /* ↑と↓の意味が同じになること */
+    ax.apply(x).then(       ay        ).then(az)
 ```
 
 hoge
@@ -363,12 +374,13 @@ do記法では細い矢印`<-`で`foo1`, `foo2`, `foo3`に代入する前に`nul
 ## do記法とMonad則 (B)
 
 ついでに、この「do記法」とMonad則(B)ののっぴきならない関係を示すことで、Monad則(B)を守ることの重要性についてもお話ししましょう。  
-復習のために↓に持ってきました。
+復習のためにもう一度↓に持ってきました。
 
 ```java
 /* (B ) */
-     ax.apply(x).then((y) -> ay.apply(y).then(az))
-  == ax.apply(x).then(       ay        ).then(az)
+    ax.apply(x).then((y) -> ay.apply(y).then(az))
+        /* ↑と↓の意味が同じになること */
+    ax.apply(x).then(       ay        ).then(az)
 ```
 
 上記の通りMonad則(B)は、
@@ -521,7 +533,7 @@ class State<S, T1> implements Monad<T1> {
     }
 
     // ないと困る、ユーティリティメソッド。現在の状態を取得する
-    public static <S> State<S, S> get{
+    public static <S> State<S, S> get() {
         return new State(
             (currentState) -> new MutationResult(currentState, currentState)
         );
@@ -605,23 +617,35 @@ class State<S, T1> implements Monad<T1> {
 ## `State.then`でやっていること
 
 それでは本題、Monadインターフェースにとって最も重要なメソッド、`then`の`State`の詳細を解説しましょう。  
-こちらも改めて抜粋して載せますね。 ↓
+こちらは説明のために番号をコメントにふって載せますね。 ↓
 
 ``java
 class State<S, T1> implements Monad<T1> {
     private final StateMutator<T1, S> mutator;
     // ...
     <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-        StateMutator<S, T2> composedMutator = (s) -> {
-            MutationResult<S, T1> result = this.mutator.mutate(s);
+        // (1) 新しいStateMutatorを作って、
+        StateMutator<S, T2> composedMutator = (oldState) -> {
+            // (2) 古い状態を書き換え、結果を受けとる
+            MutationResult<S, T1> result = this.mutator.mutate(oldState);
+            // (3) (2)で状態を書き換えた結果の値を、次のState Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
+            // (4) (2)で状態を書き換えた状態を処理する
             return other.mutator.mutate(result.newState);
         }
+        // (1) また別の`State` Monadとしてくるみなおす。
         return new State(composedMutator);
     }
     // ...
 }
 ```
+
+まずは`(1)`を着けた**2ヶ所**に注目してください。
+コメントに書いた通りですが、`State.then`メソッドでは`StateMutator`を作って、また`State`オブジェクトとしてくるみなおしています。  
+後半の、`State`オブジェクトとしてくるみなおす部分は、型を合わせるためだけのものですので、
+`State` Monadの`then`は(そしてその構文糖である`do`も)、
+「**`StateMutator`をいい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
+
 
 # 具体的な実装 その3 Promise
 
