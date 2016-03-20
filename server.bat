@@ -1,1 +1,1 @@
-.\dist\build\hakyll\hakyll server
+stack exec haykyll server
