@@ -25,7 +25,7 @@ main = hakyll $ do
   tags <- buildTags postsPattern (fromCapture "tags/*.html")
   cssRules              -- Compressed CSS
   idRules "fonts/*"     -- Fonts
-  idRules "imgs/*"      -- Images
+  idRules "imgs/**"     -- Images
   postRules tags        -- Render posts
   postsListRules        -- Render posts list
   indexRules tags       -- Index
