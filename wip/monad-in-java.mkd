@@ -650,6 +650,7 @@ class State<S, T1> implements Monad<T1> {
 結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返した値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
 
 `(3)`では、`(2)`で手に入れた情報のうち、「一緒に返した値」を利用して、新しい`State` Monadを作ります。  
+
 <!--
 `result.value`を渡している`nextAction`の型を振り返ってみていただくと分かるのですが、
 `nextAction`は「`Function<T1, State<S, T2>>`」と宣言されている通り、`T1`を受け取って、`State` Monadを返す関数となっているからです。
@@ -661,7 +662,17 @@ class State<S, T1> implements Monad<T1> {
 
 さて、`(1)`～`(4)`まで色々やりましたが、`State.then`は全体として何をしているのでしょうか。
 あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
-それは、
+それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、
+ただそれだけです。  
+ややこしいのは途中で`MutationResult`を「更新した状態」と「一緒に返した値」に分解しているところです。  
+上記のコードの`state`を処理している箇所のみに注目してみてください。  
+`oldState`を`this.mutator.mutate`した結果を`other.mutator.mutate`しているだけ、ということにお気づきでしょうか？
+
+<!--
+他の手続き型プログラミング言語がそうであるように、状態を書き換えた際の「一緒に返す値」は実際にはない(`void`な)場合もあることですし。
+-->
+
+更に簡潔にまとめますと、`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
 
 # 具体的な実装 その3 Promise
 
