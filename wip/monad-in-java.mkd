@@ -510,7 +510,7 @@ interface StateMutator<T, S> {
 
 // Stateモナドの実装
 class State<S, T1> implements Monad<T1> {
-    private final StateMutator<T1, S> mutator;
+    public final StateMutator<T1, S> mutator;
 
     State(StateMutator<T1, S> mutator){
         this.mutator = mutator;
@@ -672,7 +672,40 @@ class State<S, T1> implements Monad<T1> {
 他の手続き型プログラミング言語がそうであるように、状態を書き換えた際の「一緒に返す値」は実際にはない(`void`な)場合もあることですし。
 -->
 
-更に簡潔にまとめますと、`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
+更に簡潔にまとめますと、
+`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
+
+## 具体的な使い方
+
+説明が長くなってしまいましたが、いよいよ`State` Monadの使用例を示しましょう。  
+`State` Monadは実用上、下記のように`State.put`メソッドや、`State.get`メソッドなどのユーティリティメソッドのみを組み合わせて使用した方が、
+直感的で使いやすいかと思います。
+
+```java
+
+```
+
+<!--
+```java
+public int sum(int[] integers) {
+    int result = 0;
+    for (int i : integers) {
+        result += i;
+    }
+    return result;
+}
+```
+
+```haskell
+sum :: [Int] -> Int
+sum integers =
+  (flip execState) 0 $ do
+    forM_ integers $ \i -> do
+      modify (+ i)
+```
+-->
+
+## 何が嬉しいの？
 
 # 具体的な実装 その3 Promise
 
