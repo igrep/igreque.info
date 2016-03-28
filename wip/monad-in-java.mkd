@@ -682,7 +682,11 @@ class State<S, T1> implements Monad<T1> {
 直感的で使いやすいかと思います。
 
 ```java
+public int sum(int[] integers) {
+State.put(0)
+    .then((_null) -> )
 
+}
 ```
 
 <!--
