@@ -678,15 +678,33 @@ class State<S, T1> implements Monad<T1> {
 ## 具体的な使い方
 
 説明が長くなってしまいましたが、いよいよ`State` Monadの使用例を示しましょう。  
-`State` Monadは実用上、下記のように`State.put`メソッドや、`State.get`メソッドなどのユーティリティメソッドのみを組み合わせて使用した方が、
-直感的で使いやすいかと思います。
+ひとまず先ほど挙げたユーティリティメソッドを組み合わせて、
+更に別のユーティリティメソッドを作ってみましょう。
 
 ```java
-public int sum(int[] integers) {
-State.put(0)
-    .then((_null) -> )
+class State<S, T1> implements Monad<T1> {
+    /* ... * /
 
+    // あると便利な、ユーティリティメソッド。
+    // 現在の状態に対して関数を適用し、適用した結果に書き換える
+    public static <S> State<S, Object> modify(Function<S, S> simpleMutator){
+        return State
+            .get()
+            .then((S currentState) -> {
+                S newState = simpleMutator.apply(currentState);
+                return State.put(newState);
+            });
+    }
+    /* ... * /
 }
+```
+
+`State` Monadは実用上、ここまで紹介した`State.put`, `State.get`, `State.modify`などのユーティリティメソッドを中心に利用した方が、直感的で使いやすいかと思います。  
+と、いうわけで上記の`State.modifyを利用して、`StringBuilder`を真似したような例を紹介しましょう。
+
+```java
+State<String, Object> builder =
+    State.modify((str) -> str + )
 ```
 
 <!--
