@@ -449,7 +449,7 @@ public SomeMonad<Z> extractedMethod(X x){
     do {
         y <- ax.apply(x);
         ay.apply(y);
-    }
+    };
 }
 
 do {
@@ -466,7 +466,7 @@ public SomeMonad<Bar> extractedMethod(Y y){
     do {
         z <- ax.apply(y);
         az.apply(z);
-    }
+    };
 }
 
 do {
@@ -688,12 +688,11 @@ class State<S, T1> implements Monad<T1> {
     // あると便利な、ユーティリティメソッド。
     // 現在の状態に対して関数を適用し、適用した結果に書き換える
     public static <S> State<S, Object> modify(Function<S, S> simpleMutator){
-        return State
-            .get()
-            .then((S currentState) -> {
-                S newState = simpleMutator.apply(currentState);
-                return State.put(newState);
-            });
+        return State.get()
+                    .then((S currentState) -> {
+                        S newState = simpleMutator.apply(currentState);
+                        return State.put(newState);
+                    });
     }
     /* ... * /
 }
@@ -704,30 +703,28 @@ class State<S, T1> implements Monad<T1> {
 
 ```java
 State<String, Object> builder =
-    State.modify((str) -> str + )
-```
+    State.modify((str) -> str + "one! ")
+         .then((_null) -> State.modify((str) -> str + "two! "))
+         .then((_null) -> State.modify((str) -> str + "three!"));
 
-<!--
-```java
-public int sum(int[] integers) {
-    int result = 0;
-    for (int i : integers) {
-        result += i;
-    }
-    return result;
-}
+System.out.println(
+    /* 初期値を渡すことで、初期値からmodifyした結果が得られる */
+    /* この場合 "zero! one! two! three!" と出力される */
+    builder.mutator.mutate("zero! ").newState
+);
 ```
-
-```haskell
-sum :: [Int] -> Int
-sum integers =
-  (flip execState) 0 $ do
-    forM_ integers $ \i -> do
-      modify (+ i)
-```
--->
 
 ## 何が嬉しいの？
+
+さて、ここまで長々と`State` Monadについて説明しましたが、いったいこんなものを作って何が嬉しいのでしょう？  
+この章の冒頭でも触れた通り、正直に言って、少なくともJavaではあまり役に立たないでしょう。  
+特に上記の例で言えば、普通に`StringBuilder`を使って書いた方が、読みやすさの観点からも実行効率の観点からも、遥かに優れているに決まっています。  
+そもそもJavaでは
+
+Haskellでは型を
+
+今度はJavaではあまり役に立たないとは思いますが、
+**純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように**見せる、魔法のようなMonadです。
 
 # 具体的な実装 その3 Promise
 
