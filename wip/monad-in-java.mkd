@@ -769,7 +769,19 @@ do記法を使って書き換えると、よりそのことを実感できるで
 .then((_null) -> State.modify((str) -> str + "three!"));
 ```
 
-の`then`メソッドでは、
+の`then`メソッドでは、ラムダ式の第1引数(`_null`)が無視されていることにお気づきでしょうか？  
+これは、`State.modify`メソッドが「状態を書き換えたと同時に出てきた、別の値」として、
+`null`を返しているため、役立たずなためです。  
+<!--
+`State.modify`はあくまでも状態を書き換えることしかしないんですね。
+
+`State` Monadに限らず、Monadは定義上`interface Monad<T1>`となっていることから分かるように、
+なにかしら「(`T1`にあたる)他の値」がくっついてくるものですが、
+このように、「実際には何もくっついてない」なんてことがよくあります。  
+-->
+そうしたケースをより簡単に書けるように、
+`then`メソッドに渡す関数の、第1引数にあたる箇所を省略できるようにしましょう。  
+その結果がこれ↓です。
 
 ```java
 State<String, Object> builder = do {
@@ -779,9 +791,14 @@ State<String, Object> builder = do {
 };
 ```
 
-この場合どこがどう構文糖で簡略化されたのか申しますと、この場合、元のコードの`then`メソッドの呼び出しが、
-細い矢印 `<-` の箇所に置き換わったと考えると分かりやすいでしょう。  
+さて、この場合どう構文糖で簡略化されたのでしょう？  
+元のコードの`then`メソッドの呼び出しが、セミコロン `;` に置き換わったと考えると分かりやすいでしょう。  
+`State.modify`が返した`State` Monadを、セミコロン `;` が`then`メソッドで処理しているのです。
 
+これは[Monadを「プログラマブルセミコロン」として例える主張](http://zacharyvoase.com/2014/04/30/monads/)とも、ぴったり一致します。  
+上記の主張を借りるならば、Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれるのです [^get]。
+
+[^get]: うん、いい言葉なんでまとめでも借りよう。
 
 # 具体的な実装 その3 Promise
 
@@ -791,7 +808,8 @@ Java 8のCompletableFutureとおんなじ。
 
 # 参考
 
-[モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
-[hoge](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
-[hoge](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
-[改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
+- [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
+- [hoge](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
+- [hoge](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
+- [hoge](http://zacharyvoase.com/2014/04/30/monads/)
+- [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
