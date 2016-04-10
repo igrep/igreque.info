@@ -535,7 +535,7 @@ class State<S, T1> implements Monad<T1> {
     }
 
     // ないと困る、ユーティリティメソッド。引数で与えた状態に書き換える
-    public static <S> State<S, Object> put(S newState){
+    public static <S> State<S, Void> put(S newState){
         return new State(
             (ignoredState) -> new MutationResult(newState, null)
         );
@@ -696,7 +696,7 @@ class State<S, T1> implements Monad<T1> {
 
     // あると便利な、ユーティリティメソッド。
     // 現在の状態に対して関数を適用し、適用した結果に書き換える
-    public static <S> State<S, Object> modify(Function<S, S> simpleMutator){
+    public static <S> State<S, Void> modify(Function<S, S> simpleMutator){
         return State.get()
                     .then((S currentState) -> {
                         S newState = simpleMutator.apply(currentState);
@@ -711,7 +711,7 @@ class State<S, T1> implements Monad<T1> {
 と、いうわけで上記の`State.modifyを利用して、`StringBuilder`を真似したような例を紹介しましょう。
 
 ```java
-State<String, Object> builder =
+State<String, Void> builder =
     State.modify((str) -> str + "one! ")
          .then((_null) -> State.modify((str) -> str + "two! "))
          .then((_null) -> State.modify((str) -> str + "three!"));
@@ -820,7 +820,11 @@ State<String, Object> builder = do {
 
 # 具体的な実装 その3 Promise
 
-Java 8のCompletableFutureとおんなじ。
+Javaで説明するMonadの最後の例として、非同期処理を楽にするMonadを紹介しましょう。  
+[Future](https://docs.oracle.com/javase/jp/6/api/java/util/concurrent/Future.html)の利用を楽にするためのもので、
+Java 8の[CompletableFuture](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html)とよく似た機能となっているはずです。
+
+
 
 # fmapなどのユーティリティ
 
