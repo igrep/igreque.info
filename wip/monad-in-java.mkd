@@ -822,7 +822,8 @@ State<String, Object> builder = do {
 
 Javaで説明するMonadの最後の例として、非同期処理を楽にするMonadを紹介しましょう。  
 [Future](https://docs.oracle.com/javase/jp/6/api/java/util/concurrent/Future.html)の利用を楽にするためのもので、
-Java 8の[CompletableFuture](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html)とよく似た機能となっているはずです。
+Java 8の[CompletableFuture](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html)とよく似た機能となっている**はず**です
+（と、思って[OpenJDKのCompletableFutureのソース](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/concurrent/CompletableFuture.java)を眺めてみたのですが、想像以上に複雑でパッと理解できませんでしたorz）。
 
 
 
