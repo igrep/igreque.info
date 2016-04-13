@@ -824,18 +824,31 @@ Javaで説明するMonadの最後の例として、非同期処理を楽にす�
 [Future](https://docs.oracle.com/javase/jp/6/api/java/util/concurrent/Future.html)の利用を楽にするためのもので、
 Java 8の[CompletableFuture](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html)とよく似た機能となっている**はず**です
 （と、思って[OpenJDKのCompletableFutureのソース](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/concurrent/CompletableFuture.java)を眺めてみたのですが、想像以上に複雑でパッと理解できませんでしたorz）。  
-名前は... そうですね、いい名前も思い付かないので、`MonadicFuture`にしましょう。
+名前は... そうですね、いい名前も思い付かないので、とりあえず`MonadicFuture`にしましょう。
 実装は↓の通りです。
 
 ```java
 class MonadicFuture<T1> implements Monad<T1> {
+    private final Future<T1> future;
+
+    MonadicFuture(Future<T1> future){
+        this.future = future;
+    }
+
     <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+        FutureTask<T2> newFuture = new FutureTask<>(() -> {
+            T1 result1 = this.future.get();
+            T2 result2 = nextAction.apply(result1).future.get();
+            return result2;
+        });
+        return new MonadicFuture<T2>(newFuture);
     }
 }
 
 class MonadicFutureFactory implements MonadFactory {
     <T> MonadicFuture<T> doNothingReturning(T x){
-        return new Maybe<T>(x);
+        FutureTask<T> future = new FutureTask<>(() -> x);
+        return new MonadicFuture<T>(future);
     }
 }
 ```
