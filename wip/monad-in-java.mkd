@@ -641,8 +641,13 @@ class StateFactory<S> implements MonadFactory {
 Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。
 このルールに加えて、先ほど説明した、
 「`State<S, T1>`は、**更新した状態と、一緒に出てきた値を返す関数**をラップしただけのクラスである」
-という事実を思い出してください。
-hoge
+という事実を思い出してください。  
+「更新した状態と、一緒に出てきた値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
+**状態を更新しないで、そのまま返す**、というのが正解です。  
+`StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult(nonMutatedState, value)`
+という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「一緒に出てきた値」として返すだけの関数を作っているのです。
+
+繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
 
 ## `State.then`でやっていること
 
@@ -911,7 +916,7 @@ class State<S, T1> implements Monad<T1> {
 # 参考
 
 - [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
-- [hoge](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
-- [hoge](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
-- [hoge](http://zacharyvoase.com/2014/04/30/monads/)
+- [java - How can I force a Constructor to be defined in all subclass of my abstract class - Stack Overflow](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
+- [Javaラムダ式メモ(Hishidama's Java8 Lambda Expression Memo)](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
+- [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
 - [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
