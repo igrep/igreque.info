@@ -608,7 +608,7 @@ interface StateMutator<T, S> {
 
 ```java
 class State<S, T1> implements Monad<T1> {
-    private final StateMutator<T1, S> mutator;
+    public final StateMutator<T1, S> mutator;
 
     State(StateMutator<T1, S> mutator){
         this.mutator = mutator;
@@ -656,7 +656,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ```java
 class State<S, T1> implements Monad<T1> {
-    private final StateMutator<T1, S> mutator;
+    public final StateMutator<T1, S> mutator;
     // ...
     <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
         // (1) 新しいStateMutatorを作って、
@@ -695,7 +695,7 @@ class State<S, T1> implements Monad<T1> {
 `(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態を、更に書き換えます。  
 そうして`(4)`で返された`MutationResult`が、`State.then`メソッド1回でできる最終的な状態の書き換えの結果となります。
 
-さて、`(1)`～`(4)`まで色々やりましたが、`State.then`は全体として何をしているのでしょうか。
+さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。
 あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
 それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、
 ただそれだけです。  
@@ -888,8 +888,24 @@ class MonadicFutureFactory implements MonadFactory {
 
 - `then`について
 
+`State.then`の時と同様に、`MonadicFuture.then`についても各行に注釈を入れて細かく解説しましょう。
+`State.then`とよく似た処理をしているはずです。
 
-## `MonadicFutureFactory`について
+```java
+class MonadicFuture<T1> implements Monad<T1> {
+    public final Future<T1> future;
+    // ..
+    <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+        FutureTask<T2> composedFuture = new FutureTask<>(() -> {
+            T1 result1 = this.future.get();
+            T2 result2 = nextAction.apply(result1).future.get();
+            return result2;
+        });
+        return new MonadicFuture<T2>(composedFuture);
+    }
+    // ..
+}
+```
 
 ```java
 class State<S, T1> implements Monad<T1> {
@@ -911,12 +927,14 @@ class State<S, T1> implements Monad<T1> {
 }
 ```
 
+- `MonadicFutureFactory`について
+
 # fmapなどのユーティリティ
 
 # 参考
 
 - [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
-- [java - How can I force a Constructor to be defined in all subclass of my abstract class - Stack Overflow](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
-- [Javaラムダ式メモ(Hishidama's Java8 Lambda Expression Memo)](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
-- [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
+- [hoge](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
+- [hoge](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
+- [hoge](http://zacharyvoase.com/2014/04/30/monads/)
 - [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
