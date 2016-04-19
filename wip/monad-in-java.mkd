@@ -663,9 +663,9 @@ class State<S, T1> implements Monad<T1> {
         StateMutator<S, T2> composedMutator = (oldState) -> {
             // (2) 古い状態を書き換え、結果を受けとる
             MutationResult<S, T1> result = this.mutator.mutate(oldState);
-            // (3) (2)で状態を書き換えた結果の値を、次のState Monadを作る関数へ渡す。
+            // (3) (2)で状態を書き換えた結果の値を、次の`State` Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
-            // (4) (2)で状態を書き換えた状態を処理する
+            // (4) (2)で状態を書き換えた状態をまた処理する
             return other.mutator.mutate(result.newState);
         }
         // (1) また別の`State` Monadとしてくるみなおす。
@@ -896,11 +896,16 @@ class MonadicFuture<T1> implements Monad<T1> {
     public final Future<T1> future;
     // ..
     <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+        // (1) 新しいFutureを作って、
         FutureTask<T2> composedFuture = new FutureTask<>(() -> {
+            // (2) ひとまず自分自身(`then`を呼び出したMonadicFuture)の完了を待ち、結果を受けとる。
             T1 result1 = this.future.get();
-            T2 result2 = nextAction.apply(result1).future.get();
-            return result2;
+            // (3) (2)で完了待ちした結果の値を、次の`MonadicFuture`を作る関数へ渡す。
+            MonadicFuture<T2> other = nextAction.apply(result1);
+            // (4) 更に(3)で得た`MonadicFuture`の完了を待ち、結果を返す。
+            return other.future.get();
         });
+        // (1) また別の`MonadicFuture`としてくるみなおす。
         return new MonadicFuture<T2>(composedFuture);
     }
     // ..
@@ -910,17 +915,18 @@ class MonadicFuture<T1> implements Monad<T1> {
 ```java
 class State<S, T1> implements Monad<T1> {
     public final StateMutator<T1, S> mutator;
-
-    State(StateMutator<T1, S> mutator){
-        this.mutator = mutator;
-    }
-
+    // ...
     <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-        StateMutator<S, T2> composedMutator = (s) -> {
-            MutationResult<S, T1> result = this.mutator.mutate(s);
+        // (1) 新しいStateMutatorを作って、
+        StateMutator<S, T2> composedMutator = (oldState) -> {
+            // (2) 古い状態を書き換え、結果を受けとる
+            MutationResult<S, T1> result = this.mutator.mutate(oldState);
+            // (3) (2)で状態を書き換えた結果の値を、次の`State` Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
+            // (4) (2)で状態を書き換えた状態をまた処理する
             return other.mutator.mutate(result.newState);
         }
+        // (1) また別の`State` Monadとしてくるみなおす。
         return new State(composedMutator);
     }
     // ...
@@ -934,7 +940,7 @@ class State<S, T1> implements Monad<T1> {
 # 参考
 
 - [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
-- [hoge](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
-- [hoge](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
-- [hoge](http://zacharyvoase.com/2014/04/30/monads/)
+- [java - How can I force a Constructor to be defined in all subclass of my abstract class - Stack Overflow](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
+- [Javaラムダ式メモ(Hishidama's Java8 Lambda Expression Memo)](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
+- [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
 - [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
