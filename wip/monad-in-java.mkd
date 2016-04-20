@@ -899,9 +899,9 @@ class MonadicFuture<T1> implements Monad<T1> {
         // (1) 新しいFutureを作って、
         FutureTask<T2> composedFuture = new FutureTask<>(() -> {
             // (2) ひとまず自分自身(`then`を呼び出したMonadicFuture)の完了を待ち、結果を受けとる。
-            T1 result1 = this.future.get();
+            T1 result = this.future.get();
             // (3) (2)で完了待ちした結果の値を、次の`MonadicFuture`を作る関数へ渡す。
-            MonadicFuture<T2> other = nextAction.apply(result1);
+            MonadicFuture<T2> other = nextAction.apply(result);
             // (4) 更に(3)で得た`MonadicFuture`の完了を待ち、結果を返す。
             return other.future.get();
         });
@@ -911,6 +911,23 @@ class MonadicFuture<T1> implements Monad<T1> {
     // ..
 }
 ```
+
+`(1)` --- 2ヶ所にマークしています --- では、
+新しく`Future`を作って、`MonadicFuture`としてくるみなおしています。  
+`MonadicFuture`は`Future`をラップしたクラスなので、`MonadicFuture`を新しく作って返すには、当然のごとく`Future`を新しく作る必要があります。  
+`State` Monadの`then`が`StateMutator`をいい感じに組み合わせるよう作られているのと同様に、
+`MonadicFuture`の`then`は(そしてその構文糖である`do`も)、
+「**`Future`をいい感じに組み合わせる**」ためにある、言う点を覚えておいてください。  
+つまりこれ以降の説明は、`Future`をどのように組み合わせているのか、という問題が中心となります。
+
+`(2)`は、1つめの`Future`の結果待ちです。`get`メソッドを呼び出して実行結果を待ち、
+`(3)`で2つめの`Future`を得るのに必要な値を取得します。
+
+`(3)`は、`(2)で取得した結果を`then`メソッドの引数`nextAction`に渡すことで、
+新しい`MonadicFuture`を作成します。  
+`nextAction`は引数を1個受け取って`MonadicFuture`を返す関数です。
+
+`(4)`
 
 ```java
 class State<S, T1> implements Monad<T1> {
