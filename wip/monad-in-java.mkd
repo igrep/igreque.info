@@ -841,7 +841,7 @@ State<String, Object> builder = do {
 
 - `State` Monadでは`then`メソッドが、状態を書き換える関数を、続けて実行するよう組み合わせる。
 - `State` Monadは純粋な関数だけの組み合わせで、命令型のようなスタイルで書けるようにすることができる。
-- `State` Monadは、「原則関数は全て純粋でないとならない」という(Haskellなどの)制約において、「抜け道」を作るのに役に立つ。
+- `State` Monadは、「関数は全て純粋でないとならない」という(Haskellなどの)制約において、「抜け道」を作るのに役に立つ。
 - Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
 
 # 具体的な実装 その3 Future
@@ -849,9 +849,12 @@ State<String, Object> builder = do {
 Javaで説明するMonadの最後の例として、非同期処理を楽にするMonadを紹介しましょう。  
 [Future](https://docs.oracle.com/javase/jp/6/api/java/util/concurrent/Future.html)の利用を楽にするためのもので、
 Java 8の[CompletableFuture](https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html)と似た機能となっている**はず**です
-（と、思って[OpenJDKのCompletableFutureのソース](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/concurrent/CompletableFuture.java)を眺めてみたのですが、想像以上に複雑でパッと理解できませんでしたorz）。  
+（と、思って[OpenJDKのCompletableFutureのソース](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/concurrent/CompletableFuture.java)を眺めてみたのですが、想像以上に複雑でパッと理解できませんでしたorz。間違ってたらすみません）。  
 名前は... そうですね、いい名前も思い付かないので、とりあえず`MonadicFuture`にしましょう。
-実装は↓の通りです。
+実装は↓の通りです [^promise]。
+
+[^promise]: Haskellで近いことをしている、
+[promise](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)というパッケージのソースを参考にしました。
 
 ```java
 class MonadicFuture<T1> implements Monad<T1> {
@@ -922,7 +925,7 @@ class MonadicFuture<T1> implements Monad<T1> {
 
 `(2)`は、1つめの`Future`の結果待ちです。`get`メソッドを呼び出して実行結果を待ち、`(3)`で2つめの`Future`を得るのに必要な値を取得します。
 
-`(3)`は、`(2)で取得した結果を`then`メソッドの引数`nextAction`に渡すことで、新しい`MonadicFuture`を作成します。  
+`(3)`は、`(2)`で取得した結果を`then`メソッドの引数`nextAction`に渡すことで、新しい`MonadicFuture`を作成します。  
 `nextAction`は引数を1個受け取って`MonadicFuture`を返す関数です。
 
 `(4)`では、今度は`(3)`で取得した`MonadicFuture`（がラップした`Future`）の完了を`get()`で待ち、
@@ -948,7 +951,20 @@ class MonadicFutureFactory implements MonadFactory {
 Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。  
 そして、型制約上、引数として受け取った値を必ず`MonadicFuture`に変換しなければなりません。  
 `MonadicFuture`にとっての「値を作って返すだけ」の処理は、
-引数として受け取った値を「返すだけ」の`FutureTask`を作る処理です。
+引数として受け取った値を「返すだけ」の`FutureTask`を作る処理です。  
+値を`FutureTask`に包むだけで、もはや並行処理ですらありませんよね。
+
+## 具体的な使用例
+
+具体例として、下記のようなよくありそうな処理を別スレッドでやる場合を想像してみましょう。
+
+- スレッドA
+    1. サーバーAにHTTPリクエストを投げる。
+    1. サーバーAからのレスポンスをリクエストパラメーターに乗せつつ、今度はサーバーBにHTTPリクエストを投げる。
+    1. サーバーBからのレスポンスをスレッドBに渡す。
+- スレッドB
+    1. スレッドAがサーバーBから結果を取得するまでの間、「Wait for a while...」と繰り返し表示する。
+    2. スレッドAから取得したサーバーBのレスポンスを表示する。
 
 # fmapなどのユーティリティ
 
@@ -959,3 +975,4 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 - [Javaラムダ式メモ(Hishidama's Java8 Lambda Expression Memo)](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
 - [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
 - [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
+- [hoge](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)
