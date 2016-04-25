@@ -872,6 +872,11 @@ class MonadicFuture<T1> implements Monad<T1> {
         });
         return new MonadicFuture<T2>(composedFuture);
     }
+
+    // あると便利なユーティリティ。FutureTaskを作る手間を省く。
+    public static <V> MonadicFuture<V> start(Callable<V> callable){
+        return new MonadicFuture<V>(new FutureTask<V>(callable));
+    }
 }
 
 class MonadicFutureFactory implements MonadFactory {
@@ -956,7 +961,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ## 具体的な使用例
 
-具体例として、下記のようなよくありそうな処理を別スレッドでやる場合を想像してみましょう。
+具体例として、下記のよくありそうな処理を別スレッドでやる場合を想像してみましょう。
 
 - スレッドA
     1. サーバーAにHTTPリクエストを投げる。
@@ -964,7 +969,32 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
     1. サーバーBからのレスポンスをスレッドBに渡す。
 - スレッドB
     1. スレッドAがサーバーBから結果を取得するまでの間、「Wait for a while...」と繰り返し表示する。
-    2. スレッドAから取得したサーバーBのレスポンスを表示する。
+    1. スレッドAから取得したサーバーBのレスポンスを表示する。
+
+`MonadicFuture`を使用すると、下記のように書くことができます。
+
+```java
+public class MonadicFutureSample {
+    public static String sendRequest(String hostName){
+        // スタブ用メソッド。
+    }
+    public static String sendRequest(String hostName, String requestBody){
+        // スタブ用メソッド。
+    }
+
+    public static void main(String[] args){
+        MonadicFuture<String> requester =
+            MonadicFuture.start(() -> 
+                sendRequest("server-a")
+            ).then((response) ->
+                sendRequest("server-b", response)
+            )
+        MonadicFuture<Void> idicator =
+            MonadicFuture.start(() -> 
+            )
+    }
+}
+```
 
 # fmapなどのユーティリティ
 
