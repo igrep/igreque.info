@@ -975,21 +975,25 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ```java
 public class MonadicFutureSample {
-    public static String sendRequest(String hostName){
+    public static MonadicFuture<String> sendRequest(String hostName){
         // スタブ用メソッド。ここでは割愛。
         // hoge
-        Thread.sleep(2000);
-        System.out.println(hostName + ": Accepted a GET request. Responding...");
-        Thread.sleep(1000);
-        return "response-from-" + hostName;
+        return new MonadicFuture.start(() -> {
+            Thread.sleep(2000);
+            System.out.println(hostName + ": Accepted a GET request. Responding...");
+            Thread.sleep(1000);
+            return "response-from-" + hostName;
+        });
     }
-    public static String sendRequest(String hostName, String requestBody){
+    public static MonadicFuture<String> sendRequest(String hostName, String requestBody){
         // スタブ用メソッド。ここでは割愛。
         // hoge
-        Thread.sleep(3000);
-        System.out.println(hostName + ": Accepted a POST request with request body. Responding...");
-        Thread.sleep(2000);
-        return "response-from-" + hostName + "-with-body:'" + requestBody + "'";
+        return new MonadicFuture.start(() -> {
+            Thread.sleep(3000);
+            System.out.println(hostName + ": Accepted a POST request with request body. Responding...");
+            Thread.sleep(2000);
+            return "response-from-" + hostName + "-with-body:'" + requestBody + "'";
+        });
     }
 
     public static void main(String[] args){
@@ -1014,6 +1018,11 @@ public class MonadicFutureSample {
         threadA.future.join();
     }
 }
+```
+
+比較のために、`MonadicFuture`を使わず、純粋に`Future`のみを使って書いた場合も紹介しましょう。
+
+```java
 ```
 
 # fmapなどのユーティリティ
