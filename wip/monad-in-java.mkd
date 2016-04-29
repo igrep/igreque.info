@@ -7,12 +7,11 @@ date: February 25, 2016
 ---
 
 「[モナドについてSwiftで説明してみた](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)」という記事などで指摘されているように、
-プログラマー向けにMonadを説明した記事は
-サンプルがHaskellで書かれていることが多いので辛いですよね。
+プログラマー向けにMonadを説明した記事はサンプルがHaskellで書かれていることが多いので辛いですよね。
 
 と、いうわけで上記の記事を参考にしつつ、
 HaskellよりもSwiftよりももっともっと広まっているであろう、
-JavaでMonadを定義して説明してみたいと思います。  
+Java (Java 8以降の知識を前提とします)でMonadを定義して説明してみたいと思います。  
 これを通して、
 
 - Monadの何が嬉しいのか
@@ -26,6 +25,8 @@ JavaでMonadを定義して説明してみたいと思います。
 hoge
 
 # 目次
+
+${toc}
 
 hoge
 
@@ -93,17 +94,12 @@ y.compareTo(x) // => 1
 z.compareTo(z) // => -1
 ```
 
-継承の仕方などによっては、
-`Comparable`を実装していたとしても、
-上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。
+継承の仕方などによっては、`Comparable`を実装していたとしても、上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。
 もちろん意図的にそうした実装を作ることも可能です。  
-このように不自然な`Comparable`を作らないためには、
-`Comparable`を**実装する側が意識**しなければなりません。
-コンパイラーが守ってくれないのです。
+このように不自然な`Comparable`を作らないためには、`Comparable`を**実装する側が意識**しなければなりません。コンパイラーが守ってくれないのです。
 
 Monad則もこれと同じようなものです。  
-Monadはそもそも圏論という数学の一分野で定義されたものなので、
-その定義に準拠したものであるためには、
+Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、
 単純に`Monad`というインターフェースを実装するだけでなく、
 それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
 そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！
@@ -978,7 +974,7 @@ public class MonadicFutureSample {
     public static MonadicFuture<String> sendRequest(String hostName){
         // スタブ用メソッド。ここでは割愛。
         // hoge
-        return new MonadicFuture.start(() -> {
+        return MonadicFuture.start(() -> {
             Thread.sleep(2000);
             System.out.println(hostName + ": Accepted a GET request. Responding...");
             Thread.sleep(1000);
@@ -988,7 +984,7 @@ public class MonadicFutureSample {
     public static MonadicFuture<String> sendRequest(String hostName, String requestBody){
         // スタブ用メソッド。ここでは割愛。
         // hoge
-        return new MonadicFuture.start(() -> {
+        return MonadicFuture.start(() -> {
             Thread.sleep(3000);
             System.out.println(hostName + ": Accepted a POST request with request body. Responding...");
             Thread.sleep(2000);
@@ -998,7 +994,7 @@ public class MonadicFutureSample {
 
     public static void main(String[] args){
         MonadicFuture<Void> threadA =
-            MonadicFuture.start(() -> 
+            MonadicFuture.start(() ->
                 sendRequest("server-a")
             ).then((response) ->
                 sendRequest("server-b", response)
@@ -1023,6 +1019,48 @@ public class MonadicFutureSample {
 比較のために、`MonadicFuture`を使わず、純粋に`Future`のみを使って書いた場合も紹介しましょう。
 
 ```java
+public class NonMonadicFutureSample {
+    public static FutureTask<String> sendRequest(String hostName){
+        // スタブ用メソッド。ここでは割愛。
+        // hoge
+        return new FutureTask(() -> {
+            Thread.sleep(2000);
+            System.out.println(hostName + ": Accepted a GET request. Responding...");
+            Thread.sleep(1000);
+            return "response-from-" + hostName;
+        });
+    }
+    public static FutureTask<String> sendRequest(String hostName, String requestBody){
+        // スタブ用メソッド。ここでは割愛。
+        // hoge
+        return new FutureTask(() -> {
+            Thread.sleep(3000);
+            System.out.println(hostName + ": Accepted a POST request with request body. Responding...");
+            Thread.sleep(2000);
+            return "response-from-" + hostName + "-with-body:'" + requestBody + "'";
+        });
+    }
+
+    public static void main(String[] args){
+        FutureTask<Void> threadA =
+            FutureTask.start(() ->
+                String responseA = sendRequest("server-a").get();
+                String responseB = sendRequest("server-b", responseA).get();
+                threadB.cancel();
+                System.out.println("ThreadA: Response from server-b: " + responseB);
+            });
+        FutureTask<Void> threadB =
+            new FutureTask<>(() -> {
+                while(true){
+                    System.out.println("ThreadB: Wait for a while...");
+                    Thread.sleep(1000);
+                }
+                return null;
+            });
+
+        threadA.future.join();
+    }
+}
 ```
 
 # fmapなどのユーティリティ
