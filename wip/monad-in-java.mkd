@@ -767,7 +767,7 @@ Java組み込みの`System.out.println`以外、**すべて純粋な関数のみ
 実際には「戻り値が引数によってのみ定まり、『戻り値を返す』以外になにもしない」「純粋な関数」なのです。
 
 ```java
-State<String, Object> builder =
+State<String, Void> builder =
     State.modify((str) -> str + "one! ")
          .then((_null) -> State.modify((str) -> str + "two! "))
          .then((_null) -> State.modify((str) -> str + "three!"));
@@ -809,7 +809,7 @@ do記法を使って書き換えると、よりそのことを実感できるで
 その結果がこれ↓です。
 
 ```java
-State<String, Object> builder = do {
+State<String, Void> builder = do {
     State.modify((str) -> str + "one! ");
     State.modify((str) -> str + "two! ");
     State.modify((str) -> str + "three!");
@@ -838,9 +838,11 @@ State<String, Object> builder = do {
 
 「セミコロンをオーバーライドする」ことをもっと捉えやすくするために、
 もうひとつMonadの具体的な実装例を示しましょう。
-今度は[Future](https://docs.oracle.com/javase/jp/6/api/java/util/concurrent/Future.html)をMonadに変えてみます。  
+今度は[Future](https://docs.oracle.com/javase/jp/6/api/java/util/concu適当に省略しよう。rrent/Future.html)をMonadに変えてみます。  
 名前は... そうですね、いい名前も思い付かないので、とりあえず`MonadicFuture`にしましょう。
 実装は↓の通りです [^promise]。
+
+hoge: 言いたいことは`Future.get`するのと変わらないじゃん！という話なので、もっと簡潔にするため、いろいろ省く。、
 
 [^promise]: Haskellで近いことをしている、
 [promise](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)というパッケージのソースを参考にしました。
@@ -994,6 +996,7 @@ public class MonadicFutureSample {
             ).then((response) -> {
                 threadB.cancel();
                 System.out.println("ThreadA: Response from server-b: " + response);
+                return new MonadicFutureFactory().doNothingReturning(null);
             });
         FutureTask<Void> threadB =
             new FutureTask<>(() -> {
@@ -1020,6 +1023,7 @@ public class MonadicFutureSample {
             responseB <- sendRequest("server-b", responseA);
             threadB.cancel();
             System.out.println("ThreadA: Response from server-b: " + response);
+            new MonadicFutureFactory().doNothingReturning(null);
         };
 
         FutureTask<Void> threadB =
@@ -1067,11 +1071,12 @@ public class NonMonadicFutureSample {
 
     public static void main(String[] args){
         FutureTask<Void> threadA =
-            FutureTask.start(() ->
+            FutureTask.start(() -> {
                 String responseA = sendRequest("server-a").get();
                 String responseB = sendRequest("server-b", responseA).get();
                 threadB.cancel();
                 System.out.println("ThreadA: Response from server-b: " + responseB);
+                return null;
             });
         FutureTask<Void> threadB =
             new FutureTask<>(() -> {
@@ -1087,6 +1092,10 @@ public class NonMonadicFutureSample {
 }
 ```
 
+｢(ﾟﾍﾟ)あれ？`Future`を使った場合とあんまり変わりませんね...。
+
+そう、変わらないのです。  
+なぜならdo記法の中で`MonadicFuture`がやっているのは「セミコロンを`Future.get`に変える」ことだからです。
 
 
 # 参考
