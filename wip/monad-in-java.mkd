@@ -1042,8 +1042,6 @@ public class MonadicFutureSample {
 }
 ```
 
-hoge
-
 比較のために、`MonadicFuture`を使わず、純粋に`Future`のみを使って書いた場合も紹介しましょう。
 
 ```java
@@ -1097,6 +1095,15 @@ public class NonMonadicFutureSample {
 そう、変わらないのです。  
 なぜならdo記法の中で`MonadicFuture`がやっているのは「セミコロンを`Future.get`に変える」ことだからです。
 
+もう少し正確に言いましょう。  
+`MonadicFuture`の`then`メソッドの解説で述べた、
+「呼び出しもと(`this`)の`Future`ともう一つの(`nextAction`が返した)`Future`を**続けて実行する**、新たな`Future`を作る」
+というのは、前の`Future`と後の`Future`を繋げる、
+セミコロンを、それぞれの「`Future.get`を続けて呼んで実行する、新たな`Future`を作る」ようオーバーライドする、ことだったのです。
+
+「セミコロンをオーバーライドする」ということの意味が分かっていただけたでしょうか？
+
+# 最後に
 
 # 参考
 
