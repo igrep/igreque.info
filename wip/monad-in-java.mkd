@@ -1,7 +1,7 @@
 ---
 title: JavaでMonadを説明してみる
 author: Yuji Yamamoto
-tags: JavaScript, Monad, Java
+tags: Monad, Java
 date: February 25, 2016
 ...
 ---
@@ -15,7 +15,8 @@ Java (Java 8以降の知識を前提とします)でMonadを定義して説明�
 これを通して、
 
 - Monadの何が嬉しいのか
-- なぜHaskellやScalaなど、一部の言語以外ではMonadがあんまり活用されないのか
+- よく聞く「Monad則」ってどんなやつなのか、何が嬉しいのか
+- Haskellのdo記法がどんなことをしているのか
 
 と言った点も説明したいと思います！
 僕自身Javaを勉強中なんで一石二鳥ですね！
@@ -31,6 +32,9 @@ ${toc}
 hoge
 
 # とりあえずJavaでの定義を。
+
+手始めに、HaskellでのMonadの定義を、Javaに翻訳してみましょう。  
+Haskellでの呼び方も、より分かりやすくなるようもっと具体的な名前に差し替えます。
 
 ```java
 interface Monad<T1> {
@@ -72,9 +76,8 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
 ### なんでそんなのがあるの？
 
 そもそも、なぜこんな規則があるのでしょう？  
-この法則を満たすことで、Monadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
-その代わり、ここではJavaで言うところの似たような「規則」を紹介することで、
-「Monad則」の「立ち位置」みたいなものを理解していただきたいと思います。
+この法則を満たすと、Monadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
+その代わり、ここではJavaで言うところの似たような「規則」を紹介することで、「Monad則」の「立ち位置」みたいなものをお伝えしたいと思います。
 
 お馴染み`Comparable`インターフェースを思い出してください。
 例えば下記のように振る舞う`Comparable`があったら嫌ですよね？
@@ -94,16 +97,14 @@ y.compareTo(x) // => 1
 z.compareTo(z) // => -1
 ```
 
-継承の仕方などによっては、`Comparable`を実装していたとしても、上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。
+継承の仕方などによっては、間違って上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。
 もちろん意図的にそうした実装を作ることも可能です。  
 このように不自然な`Comparable`を作らないためには、`Comparable`を**実装する側が意識**しなければなりません。コンパイラーが守ってくれないのです。
 
 Monad則もこれと同じようなものです。  
 Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、
-単純に`Monad`というインターフェースを実装するだけでなく、
-それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
-そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！
-（詳細は後述！）
+単純に`Monad`というインターフェースを実装するだけでなく、それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
+そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！（詳細は後述！）
 
 ### で、Monad則ってどんなのさ？
 
@@ -117,7 +118,7 @@ Y y;
 Z z;
 
 // MonadFactoryをfとします
-MonadFactory<X> f = new SomeMonadFactory<>;
+MonadFactory<X> f = new SomeMonadFactory<>();
 
 // それから、Xを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
 Function<X, Monad<Y>> ax = (x) -> ... ;
@@ -153,8 +154,9 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 
 第一に(A)では、
 `x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、
-それから(`then`)、更にMonadを返す関数`ax`を実行するということは、単に`ax`を1回実行するのと同じことだ
---- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行するのと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
+それから(`then`)、更にMonadを返す関数`ax`を実行する(`ax.apply`)ということは、単に`ax`を1回実行するのと同じことだ
+--- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行する(`ax.apply(x)`)のと同じ、
+なので`doNothingReturning`は**なにもしない**のと同等だ ---
 ということです。
 
 (A')についても同様です。  
@@ -216,7 +218,8 @@ hoge
            ax.apply(x).then(       ay        ).then(az)
         ```
 
-一点重要な注意事項を捕捉します。`then`や`doNothingReturning`などの**名前は私が勝手につけたもの**です。  
+一点重要な注意事項を捕捉します。  
+冒頭でも触れましたが、`then`や`doNothingReturning`などの名前は、分かりやすさのために**私が勝手につけたもの**です。  
 Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
 
 # 具体的な実装その1 Maybe
@@ -258,7 +261,7 @@ Monadインターフェースを実装するクラスをより明確に特徴付
 次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
 
 ところで、最近のJavaを使いなれた方は、`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
-`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当すると考えると、確かに！  
+`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当する、と考えると、確かに！  
 事実、その前提で[open-jdkの`Optional.java`](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)と見比べてみると、
 上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
 
@@ -1098,12 +1101,12 @@ public class NonMonadicFutureSample {
 もう少し正確に言いましょう。  
 `MonadicFuture`の`then`メソッドの解説で述べた、
 「呼び出しもと(`this`)の`Future`ともう一つの(`nextAction`が返した)`Future`を**続けて実行する**、新たな`Future`を作る」
-というのは、前の`Future`と後の`Future`を繋げる、
-セミコロンを、それぞれの「`Future.get`を続けて呼んで実行する、新たな`Future`を作る」ようオーバーライドする、ことだったのです。
-
-「セミコロンをオーバーライドする」ということの意味が分かっていただけたでしょうか？
+というのは、前の`Future`と後の`Future`を繋げるセミコロンを、
+それぞれの「`Future.get`メソッドで繋げる、新たな`Future`を作る」ようオーバーライドする、ことだったのです。
 
 # 最後に
+
+「セミコロンをオーバーライドする」ということの意味が分かっていただけたでしょうか？
 
 # 参考
 
