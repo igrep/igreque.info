@@ -65,7 +65,7 @@ Haskellでは関数の型にそうした「権限」を明記し、制限する�
 先ほどの`stateFunction`の`b`にくっついた`State s`ような、
 「**権限を表すラベル**」がくっついた型の値(`stateFunction`で言えば`State s b`)を、Haskellでは「アクション」だとか「Monadの値」と呼ぶ。  
 そして`stateFunction`のような型の関数が返す値(`State s b`という型の値)を「`State` Monadのアクション」と呼ぶ。  
-Haskellの型で一般化すると次のようになる（まだ会社の勉強会でやっていない、型クラスが出てしまっているので、詳しく補足します）。
+Haskellの型で一般化すると次のようになる。
 
 ```haskell
 action :: Monad m => m b
@@ -153,19 +153,64 @@ readFile :: String -> IO String
 ```haskell
 do
   line <- getLine
-  readFile "data.txt"
+  readFile line
 ```
 
 `do`と書かれた行からインデントを一段下げた行までを「`do`ブロック」と言う。
 
-`do`ブロック
+`do`ブロックはその中で実行しているアクションの型の値を返す。
+`do`ブロックは値を返すので、当然ながら変数に代入することができる。  
+したがって下記の`largerAction`の型は`IO String`となる。
 
 ```haskell
 largerAction :: IO String
 largerAction = do
   line <- getLine
-  readFile "data.txt"
+  readFile line
 ```
+
+`do`ブロックが返す値は、`do`ブロックの中に列挙したアクションを「続けて実行する」アクションとなる。  
+なので上記の`do`ブロックは、「`getLine`してから`readFile`する」アクションを返す。
+
+`do`ブロックの中では、`<-`という記号を利用して、アクションの「結果」を変数に代入することができる。  
+アクションの「結果」とは、アクションを「実際に実行した結果」を表す。  
+そしてその型はアクションから「**権限を表すラベル**」を剥がした型となる。  
+上記の例で言うと、`line <- getLine`という行が該当する。  
+`line`には`getLine`を実行した結果、すなわち「標準入力から文字列を一行読みだした結果の文字列」が代入され、
+その型は`IO String`から`IO`を剥がした型`String`となる。
+
+`<-`で代入した変数は、もちろん`do`ブロックの中で他の関数に渡すことができる。
+なので当然ながら上記の`readFile`は`line`を引数として受け取ることができる。
+
+`do`ブロックの最後の行に書かれたアクションの実行結果が、`do`ブロック全体の最終的な実行結果となる。  
+やはりその型は最後の行に書かれたアクションの型がそのまま引き継がれる。  
+上記の例で言うと`readFile :: String -> IO String`に引数を一つ適用した結果、つまり`IO String`となる。
+
+まとめると上記のアクションは、「`getLine`した結果を`readFile`して、その結果を返す」アクション、
+日本語に訳すと「標準入力から一行分読んだ文字列をファイル名として、その中身を読んで返す」アクションである。
+
+`do`ブロックの中で、アクションでない値、すなわち「値を受け取って、返すことしかできない」、
+純粋な関数で作った値を作りたくなる場合も、当然あるだろう。  
+そのような場合は、`let`を使う。
+
+例として、先程まで使った例を少し改造しよう。  
+ファイル名を`getLine`で受け取ってから、
+[MissingHというパッケージのData.String.Utilsモジュールにある、strip関数](https://hackage.haskell.org/package/MissingH-1.3.0.1/docs/Data-String-Utils.html)を使用して、
+ファイル名の前後に含まれてしまった空白文字を取り除き、更に
+
+```haskell
+largerAction :: IO String
+largerAction = do
+  line <- getLine
+  let path = strip line
+  readFile path
+```
+
+上記の通り`let`で代入した変数は後続のアクション
+
+## `do`ブロックの中でやってはいけない（できない）こと
+
+`do`
 
 # Monadの使用例つまみ食い
 
