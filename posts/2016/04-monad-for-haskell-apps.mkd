@@ -174,7 +174,7 @@ largerAction = do
 
 `do`ブロックの中では、`<-`という記号を利用して、アクションの「結果」を変数に代入することができる。  
 アクションの「結果」とは、アクションを「実際に実行した結果」を表す。  
-そしてその型はアクションから「**権限を表すラベル**」を剥がした型となる。  
+そしてその型はアクションから「権限を表すラベル」を**剥がした**型となる。  
 上記の例で言うと、`line <- getLine`という行が該当する。  
 `line`には`getLine`を実行した結果、すなわち「標準入力から文字列を一行読みだした結果の文字列」が代入され、
 その型は`IO String`から`IO`を剥がした型`String`となる。
@@ -196,14 +196,15 @@ largerAction = do
 例として、先程まで使った例を少し改造しよう。  
 ファイル名を`getLine`で受け取ってから、
 [MissingHというパッケージのData.String.Utilsモジュールにある、strip関数](https://hackage.haskell.org/package/MissingH-1.3.0.1/docs/Data-String-Utils.html)を使用して、
-ファイル名の前後に含まれてしまった空白文字を取り除き、更に
+ファイル名の前後に含まれてしまった空白文字を取り除き、更に拡張子を加えてみよう。
 
 ```haskell
 largerAction :: IO String
 largerAction = do
   line <- getLine
   let path = strip line
-  readFile path
+      withExt = path ++ ".dat"
+  readFile withExt
 ```
 
 上記の通り`let`で代入した変数は後続のアクション
