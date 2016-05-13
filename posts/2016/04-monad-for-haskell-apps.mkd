@@ -26,7 +26,7 @@ Monadの使い方やその実用的な役割にフォーカスした概要を、
 - do記法やMonadの細かい仕組み
 - などなど
 
-# 予めお断り
+# 予めおことわり
 
 あくまでも使い方や役割を**感じ取ってもらう**ためのものなので、Monadの定義や実際の構造と照らしあわせていささか不正確な点があることをご了承願いたい。  
 幸い、そうした誤解によって間違えたとしても、恐らくコンパイルエラーだけで済むだろうから。
@@ -203,11 +203,12 @@ largerAction :: IO String
 largerAction = do
   line <- getLine
   let path = strip line
-      withExt = path ++ ".dat"
-  readFile withExt
+      prefixedPath = path ++ ".dat"
+      -- 通常のHaskellのletと異なり "in" は省略できる点に注意。
+  readFile prefixedPath
 ```
 
-上記の通り`let`で代入した変数は後続のアクション
+上記の通り`let`で代入した変数は後続のアクションや、`let`式の中で利用することができる。
 
 ## `do`ブロックの中でやってはいけない（できない）こと
 
