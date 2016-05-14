@@ -189,9 +189,9 @@ largerAction = do
 まとめると上記のアクションは、「`getLine`した結果を`readFile`して、その結果を返す」アクション、
 日本語に訳すと「標準入力から一行分読んだ文字列をファイル名として、その中身を読んで返す」アクションである。
 
-`do`ブロックの中で、アクションでない値、すなわち「値を受け取って、返すことしかできない」、
+`do`ブロックの中でアクションでない値、すなわち「値を受け取って、返すことしかできない」、
 純粋な関数で作った値を作りたくなる場合も、当然あるだろう。  
-そのような場合は、`let`を使う。
+そのような場合は`let`を使う。
 
 例として、先程まで使った例を少し改造しよう。  
 ファイル名を`getLine`で受け取ってから、
@@ -199,6 +199,8 @@ largerAction = do
 ファイル名の前後に含まれてしまった空白文字を取り除き、更に拡張子を加えてみよう。
 
 ```haskell
+import Data.String.Utils (strip)
+
 largerAction :: IO String
 largerAction = do
   line <- getLine
@@ -208,11 +210,104 @@ largerAction = do
   readFile prefixedPath
 ```
 
-上記の通り`let`で代入した変数は後続のアクションや、`let`式の中で利用することができる。
+<!--
+```haskell
+main :: IO ()
+main = largerAction >>= print
+```
+-->
+
+上記の通り`let`で代入した変数は後続のアクションや、`let`式の中で参照することができる。
 
 ## `do`ブロックの中でやってはいけない（できない）こと
 
-`do`
+`do`ブロックのなかで以下のことを行うと、コンパイルエラーになる。  
+重要なものから順番に列挙しよう。
+
+その1: 同じ`do`ブロックで列挙するアクションの「権限を表すラベル」は、必ず一貫していなければならない。
+
+例1: 下記の`largerAction`は、`IO String`という型なので、「権限を表すラベル」は`IO`である。  
+一方、[lookup関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)（連想配列 `Map`から指定したキーの値を取り出す関数）は、
+下記の場合`Maybe [Char]`返すので、「権限を表すラベル」は`Maybe`である。  
+したがって`IO`であることと一貫せず、コンパイルエラーとなる。
+
+```haskell
+import Prelude hiding (lookup)
+import Data.Map (lookup, fromList)
+
+countryCurrency =
+  fromList [("USA", "Dollar"), ("France", "Euro")]
+
+largerAction :: IO String
+largerAction = do
+  -- ↓でコンパイルエラー
+  currency <- lookup "USA" countryCurrency
+  readFile currency
+```
+
+エラー内容:
+
+```haskell
+    Couldn't match expected type ‘IO FilePath’
+                with actual type ‘Maybe [Char]’
+    In a stmt of a 'do' block: currency <- lookup "USA" countryCurrency
+    In the expression:
+      do { currency <- lookup "USA" countryCurrency;
+           readFile currency }
+```
+
+例2: 同様に、下記の`largerAction`は、`IO String`という型なので、「権限を表すラベル」は`IO`である。  
+一方、[`Control.Monad.Writer`の、`tell`関数](http://haddock.stackage.org/lts-5.16/mtl-2.2.1/Control-Monad-Writer-Lazy.html#v:tell)（[`mtl`](https://www.stackage.org/lts-5.16/package/mtl-2.2.1)というパッケージに入っている）は、
+下記の場合`Writer String ()`を返すので、「権限を表すラベル」は`Writer String`である [^monadWriter]。  
+したがって`IO`であることと一貫せず、コンパイルエラーとなる。
+
+[^monadWriter]: 実際には型クラスで抽象化されているので、厳密に言うと`MonadWriter w String`となる。
+
+```haskell
+import Control.Monad.Writer
+
+largerAction :: IO String
+largerAction = do
+  -- ↓でコンパイルエラー
+  tell "log"
+  readFile "log"
+```
+
+エラー内容:
+
+```haskell
+    No instance for (MonadWriter [Char] IO)
+      arising from a use of ‘tell’
+    In a stmt of a 'do' block: tell "log"
+    In the expression:
+      do { tell "log";
+           readFile "log" }
+    In an equation for ‘largerAction’:
+        largerAction
+          = do { tell "log";
+                 readFile "log" }
+```
+
+少しややこしいのだが、一点重要な補足を。  
+同じ`do`ブロックの中では同じMonadしか使ってはいけない。これは事実なのだが、これを回避する方法がある。
+`do`ブロック以外の方法で「権限を表すラベル」を剥がせばよいのだ。
+先ほどの例1で言えば、例えば[fromMaybe](https://hackage.haskell.org/package/base-4.8.2.0/docs/Data-Maybe.html#v:fromMaybe)関数を利用すると、
+`Maybe [Char]`の「権限を表すラベル」を剥がすことができる。
+
+```haskell
+import Prelude hiding (lookup)
+import Data.Map (lookup, fromList)
+import Data.Maybe (fromMaybe)
+
+countryCurrency =
+  fromList [("USA", "Dollar"), ("France", "Euro")]
+
+largerAction :: IO String
+largerAction = do
+  --                       ↓はデフォルト値。lookupがNothingを返した時に使う。
+  let currency = fromMaybe "JPY" $ lookup "USA" countryCurrency
+  readFile currency
+```
 
 # Monadの使用例つまみ食い
 
