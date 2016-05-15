@@ -398,6 +398,142 @@ largerAction = do
   readFile line
 ```
 
-# Monadの使用例つまみ食い
+# 各種Monadの使い方つまみ食い
 
+## IO Monad (★★★):
+
+Haskellでアプリケーションを作る上で最も重要なMonadは`IO`である。  
+というか、これを使わなければHaskellでアプリケーションを書くことは絶対にできない。  
+これは「純粋な関数だけじゃプログラムが書けないんじゃないの？」というよくある疑念が実は真実であることと理由は同じだ。  
+一応、理論的には`IO`のアクション（を返す関数）はあくまでも「アクション」を返しているだけなので純粋なのであるが、
+少なくとも見かけ上、`IO`を使ったコードは手続き型スタイルに見えて仕方がないだろうし、そう捉えたほうが説明しやすいときのほうが多い。
+
+前置きが長くなったが、とは言え、純粋に使うだけであれば`IO`は単純だ。  
+普通のMonadと同じように、`do`ブロックの中に`IO`のアクションを返す関数を列挙していけば良い。
+
+```haskell
+greet :: IO ()
+greet = do
+  putStr "What's your name? "
+  name <- getLine
+  putStrLn $ "Hello, " ++ name ++ "!"
+```
+
+上記のように作られた`IO`のアクションは、`main`関数という大きな`IO`アクションの中で評価されて、初めて実際に実行される。  
+`main`関数はC言語などでお馴染みの`main`関数と同じようなものだ。
+
+```haskell
+main :: IO ()
+main = do
+  if True
+    then greet
+    else putStrLn "I don't wanna greet at you!"
+```
+
+上記の場合、`if`式の条件部が`True`となっているので、
+当然`then`節のみ`greet`のみが必ず実行され、`"I don't wanna greet at you!"`と表示されることはない。  
+他の言語でも同じように振る舞うだろうし、特に違和感を感じることもないんじゃないかと思う。
+
+アプリケーションを作る上で最も重要なMonadであるとともに、HaskellのMonadの中で最も変わった性質を持っているのも`IO`である。  
+`IO`のアクションは他のMonadと異なり、「権限を表すラベル」を「純粋な関数」の中で剥がすことができないようになっているのである  
+（ただし、[`unsafePerformIO`](http://haddock.stackage.org/lts-5.17/base-4.8.2.0/System-IO-Unsafe.html#v:unsafePerformIO)という、デバッグ用に作られた例外はある）。  
+この性質は、「純粋な関数」と`IO`（入出力とか例外を投げるとか）を明確に区別するのに非常に役に立つ。コンパイラがそれを保証してくれるからだ。
+
+## Maybe Monad (★★):
+
+`Maybe` Monadはいわゆる「nullチェック」の煩わしさを劇的に緩和する。  
+`Maybe`をMonadとして、すなわち`do`ブロックの中で使用した場合、
+`do`ブロックの各行に並べたアクションが、1つでも失敗したら(`Nothing`を返したら)`do`ブロックから抜け出すことができる。
+
+典型的な使用例は、複数の連想配列 `Map`から[lookup関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)で値を取り出したいが、
+そのうち一度でも値が見つからなかった場合は(`Nothing`を返して)関数の実行を終了させたい、なんて場合だろう。
+
+```haskell
+-- http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup に書いてあった例から拝借。
+
+import Prelude hiding (lookup)
+import Data.Map (lookup, fromList)
+
+-- 従業員の氏名をキーに、所属する部署名を持つMap
+employeeDept =
+  fromList [("John", "Sales"), ("Bob", "IT")]
+
+-- 部署名をキーに、部署がある国名を持つMap
+deptCountry =
+  fromList [("IT", "USA"), ("Sales", "France")]
+
+-- 国名をキーに、通貨の名前を持つMap
+countryCurrency =
+  fromList [("USA", "Dollar"), ("France", "Euro")]
+
+-- 氏名から、（恐らく、給料を支払う際の）通過を調べる関数
+employeeCurrency :: String -> Maybe String
+employeeCurrency name = do
+  -- ↓ここか、
+  dept <- lookup name employeeDept
+  -- ↓ここか、
+  country <- lookup dept deptCountry
+  -- ↓ ここのうち一つでもNothingを返したら、
+  --    employeeCurrencyの実行は終了。Nothingが返る。
+  lookup country countryCurrency
+```
+
+上記を愚直に`case`式を使ってチェックすると、次のようにやけにネストの深いコードとなってしまう。  
+コメントを除けば行数が2倍以上になっているのにもお気づきだろうか？
+
+```haskell
+employeeCurrency name =
+  case lookup name employeeDept of
+    Just dept ->
+      case lookup dept deptCountry of
+        Just country ->
+          lookup country countryCurrency
+        Nothing -> Nothing
+    Nothing -> Nothing
+```
+
+## Either Monad (★★):
+
+`Either` Monadは`Maybe` Monadと同様に、アクションが失敗した際（`Nothing`と異なりアクションが`Left`を返した場合）に`do`ブロックから即座に抜け出す機能を持つ。  
+`Either` Monadはそれに加えて、アクションが失敗した理由を`Left <エラーの理由を表す値>`として返すことができる。
+
+「失敗した理由を加える事ができる」ということで、`Maybe` Monadの例に手を加えてみよう。  
+[errorsというパッケージにある、`note`という関数](http://haddock.stackage.org/lts-5.17/errors-2.1.2/Control-Error-Util.html#v:note)を使えば、
+Maybe Monadのアクションが失敗した時(`Nothing`を返した時)、付け加えたエラーメッセージに変換することができる。
+
+```haskell
+import Control.Error.Util (note)
+
+employeeCurrency :: String -> Either String String
+employeeCurrency name = do
+  dept <- note "Department not found!" $ lookup name employeeDept
+  country <- note "Country not found!" $ lookup dept deptCountry
+  note "Currency not found!" $ lookup country countryCurrency
+```
+
+失敗した場合は、例えば次のようなエラーを返す。
+
+```haskell
+> employeeCurrency "Yuji"
+Left "Currency not found!"
+```
+
+## Writer Monad (★★):
+
+`Writer` Monadを正しく理解するには`Monoid`を理解する必要があるのだが、ここでは思い切って単純化して、
+「`do`ブロックの中で共有している、**リストに追記**する」ものとして説明しよう（実際には`Monoid`型クラスさえ実装していれば、リスト以外でも良い）。  
+`do`ブロックの中で`tell :: [a] -> Writer w a`という関数を使用することによって、
+対象の`do`ブロックで共有しているリストに追記することができる。
+
+## Monad Transformerと呼ばれるもの (★★):
+
+## Reader Monad (★):
+
+## State Monad (★):
+
+## Reader Monad (★):
+
+## List Monad (★):
+
+## Monad\*という名前がついた型クラスに属する各種Monad (★):
 
