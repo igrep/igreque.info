@@ -258,10 +258,10 @@ largerAction = do
 
 例2: 同様に、下記の`largerAction`は、`IO String`という型なので、「権限を表すラベル」は`IO`である。  
 一方、[`Control.Monad.Writer`の、`tell`関数](http://haddock.stackage.org/lts-5.16/mtl-2.2.1/Control-Monad-Writer-Lazy.html#v:tell)（[`mtl`](https://www.stackage.org/lts-5.16/package/mtl-2.2.1)というパッケージに入っている）は、
-下記の場合`Writer String ()`を返すので、「権限を表すラベル」は`Writer String`である [^monadWriter]。  
+下記の場合`Writer String ()`を返すので、「権限を表すラベル」は`Writer [Char]`である [^monadWriter]。  
 したがって`IO`であることと一貫せず、コンパイルエラーとなる。
 
-[^monadWriter]: 実際には型クラスで抽象化されているので、厳密に言うと`MonadWriter w String`となる。
+[^monadWriter]: 実際には型クラスで抽象化されているので、厳密に言うと`(Monad m) => MonadWriter [Char] m`となる。
 
 ```haskell
 import Control.Monad.Writer
@@ -307,6 +307,93 @@ largerAction = do
   --                       ↓はデフォルト値。lookupがNothingを返した時に使う。
   let currency = fromMaybe "JPY" $ lookup "USA" countryCurrency
   readFile currency
+```
+
+その2: `do`ブロックの最後の行の値は、アクション（「権限を表すラベル」がくっついた型の値）でなければならない。
+
+例1: 何度も同じ例からで恐縮だが、下記の`largerAction`は、`IO String`という型なので、
+`do`ブロックの最後の行が返す値は、`IO String`でなければならない。  
+しかし、下記では最後の行(`strip line`)が返す値は`String`と、権限を表すラベル(`IO`)がつけられた値ではない。
+したがって`IO`であることと一貫せず、コンパイルエラーとなる。
+
+```haskell
+import Data.String.Utils (strip)
+
+largerAction :: IO String
+largerAction = do
+  line <- getLine
+  -- ↓でコンパイルエラー
+  strip line
+```
+
+エラー内容:
+
+```haskell
+    Couldn't match type ‘[Char]’ with ‘IO String’
+    Expected type: IO String
+      Actual type: String
+    In a stmt of a 'do' block: strip line
+    In the expression:
+      do { line <- getLine;
+           strip line }
+```
+
+直すには、`return`という、全てのMonadで使える「権限を表すラベルを**貼り付けるだけで何もしない**関数」を使う。
+
+```haskell
+import Data.String.Utils (strip)
+
+largerAction :: IO String
+largerAction = do
+  line <- getLine
+  return $ strip line
+```
+
+あるいは、全てのMonadが`Functor`のインスタンスであることを利用して、次のように`<$>`を使っても良い。
+
+```haskell
+import Data.String.Utils (strip)
+
+largerAction :: IO String
+largerAction = do
+  strip <$> getLine
+```
+
+このように書くと、`line`という一時的な変数を作らなくて済むので、より簡潔に書くことができる。  
+Monadを使うだけでは必要ではないが、このスタイルに興味がある場合[Applicativeのススメ](http://d.hatena.ne.jp/kazu-yamamoto/20101211/1292021817)をご一読願いたい。  
+ちなみにありがたいことに、GHCのバージョンが7.10となった今では、この記事で言うところの「理想化された世界」になっている。
+
+その3: `do`ブロックの最後の行では、`<-`を使った代入をしてはならない。
+
+その2と関連した間違いとして、下記のような間違いをしてしまうかもしれない。
+
+例:
+
+```haskell
+largerAction :: IO String
+largerAction = do
+  line <- getLine
+  -- ↓でコンパイルエラー
+  content <- readFile line
+```
+
+エラー内容:
+
+```haskell
+    The last statement in a 'do' block must be an expression
+      content <- readFile line
+```
+
+特別深い理由はないのだが、上記のような状況では変数`content`を使うはずもないので、
+おかしな`do`ブロックとみなされ、エラーになる。
+
+直すには当然のごとく`content <-`の部分を消し、代入文でなくせば良い。
+
+```haskell
+largerAction :: IO String
+largerAction = do
+  line <- getLine
+  readFile line
 ```
 
 # Monadの使用例つまみ食い
