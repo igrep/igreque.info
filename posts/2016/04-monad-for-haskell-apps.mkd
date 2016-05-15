@@ -522,8 +522,45 @@ Left "Currency not found!"
 
 `Writer` Monadを正しく理解するには`Monoid`を理解する必要があるのだが、ここでは思い切って単純化して、
 「`do`ブロックの中で共有している、**リストに追記**する」ものとして説明しよう（実際には`Monoid`型クラスさえ実装していれば、リスト以外でも良い）。  
-`do`ブロックの中で`tell :: [a] -> Writer w a`という関数を使用することによって、
-対象の`do`ブロックで共有しているリストに追記することができる。
+`do`ブロックの中で`tell :: [w] -> Writer [w] ()`という関数を使用することによって、対象の`do`ブロックで共有しているリストに追記することができる。
+
+例としては、`Either`ではエラーが起きた際に**直ちに`do`ブロックをぬけ出す**ものであったものに対して、
+`Writer`では**エラーを記録するだけで、実行をやめない**例にしよう。  
+フォームのバリデーションなどがそうしたケースに該当する。
+
+```haskell
+import Control.Monad.Writer
+import qualified Data.Text as T
+import Data.Char (isDigit)
+
+data UserInput =
+  UserInput
+    { name :: String
+    , emailAddress :: String
+    , annualIncome :: String
+    }
+
+validateInput :: UserInput -> Writer [String] ()
+validateInput input = do
+
+mustBePresent :: String -> Writer [String] ()
+mustBePresent text = do
+  if T.null text
+    then tell ["入力してください。"]
+    else return ()
+
+mustContainAtSign :: String -> Writer [String] ()
+mustContainAtSign text = do
+  if T.any (\c -> c == '@') text
+    then return ()
+    else tell ["メールアドレスの形式が正しくありません"]
+
+mustBePositiveInteger :: String -> Writer [String] ()
+mustBePositiveInteger text = do
+  if T.all isDigit
+    then return ()
+    else tell [""]
+```
 
 ## Monad Transformerと呼ばれるもの (★★):
 
