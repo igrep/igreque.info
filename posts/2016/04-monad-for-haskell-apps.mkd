@@ -530,7 +530,6 @@ Left "Currency not found!"
 
 ```haskell
 import Control.Monad.Writer
-import qualified Data.Text as T
 import Data.Char (isDigit)
 
 data UserInput =
@@ -566,7 +565,11 @@ mustBePositiveInteger name text = do
 ```
 
 上記の例では、各種`must*`な関数において、入力された値が正しい値かどうかを確認し、そうでなければ`tell`でエラーメッセージを追記する。
-さて、
+さて、`tell`で追記したエラーメッセージは、どのようにして取り出すのだろうか。  
+方法はいくつかあるが、最もオーソドックスな方法は、`runWriter`という関数を使うことだろう。  
+`runWriter`の型は(この場合)`runWriter :: Writer [String] () -> ((), [String])`である。  
+`Writer`の1つ目の型引数、すなわち`do`ブロックの中で共有している`[String]`を、「権限を表すラベル」を剥がした値として取り出すことができる。  
+上の例の場合、例えば下記のような結果となる。
 
 ## Monad Transformerと呼ばれるもの (★★):
 
