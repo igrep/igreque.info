@@ -542,25 +542,31 @@ data UserInput =
 
 validateInput :: UserInput -> Writer [String] ()
 validateInput input = do
+  mustBePresent "氏名" $ name input
+  mustContainAtSign "メールアドレス" $ emailAddress input
+  mustBePositiveInteger "年収" $ annualIncome input
 
-mustBePresent :: String -> Writer [String] ()
-mustBePresent text = do
+mustBePresent :: String -> String -> Writer [String] ()
+mustBePresent name text = do
   if T.null text
-    then tell ["入力してください。"]
+    then tell [name ++ "は必須入力項目です。"]
     else return ()
 
-mustContainAtSign :: String -> Writer [String] ()
-mustContainAtSign text = do
+mustContainAtSign :: String -> String -> Writer [String] ()
+mustContainAtSign name text = do
   if T.any (\c -> c == '@') text
     then return ()
-    else tell ["メールアドレスの形式が正しくありません"]
+    else tell [name ++ "の形式が正しくありません。"]
 
-mustBePositiveInteger :: String -> Writer [String] ()
-mustBePositiveInteger text = do
+mustBePositiveInteger :: String -> String -> Writer [String] ()
+mustBePositiveInteger name text = do
   if T.all isDigit
     then return ()
-    else tell [""]
+    else tell [name ++ "は整数で入力してください。"]
 ```
+
+上記の例では、各種`must*`な関数において、入力された値が正しい値かどうかを確認し、そうでなければ`tell`でエラーメッセージを追記する。
+さて、
 
 ## Monad Transformerと呼ばれるもの (★★):
 
