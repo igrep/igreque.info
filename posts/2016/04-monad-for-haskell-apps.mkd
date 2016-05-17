@@ -547,19 +547,19 @@ validateInput input = do
 
 mustBePresent :: String -> String -> Writer [String] ()
 mustBePresent name text = do
-  if T.null text
+  if null text
     then tell [name ++ "は必須入力項目です。"]
     else return ()
 
 mustContainAtSign :: String -> String -> Writer [String] ()
 mustContainAtSign name text = do
-  if T.any (\c -> c == '@') text
+  if elem '@' text
     then return ()
     else tell [name ++ "の形式が正しくありません。"]
 
 mustBePositiveInteger :: String -> String -> Writer [String] ()
 mustBePositiveInteger name text = do
-  if T.all isDigit
+  if all isDigit
     then return ()
     else tell [name ++ "は整数で入力してください。"]
 ```

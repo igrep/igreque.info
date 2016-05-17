@@ -28,3 +28,4 @@ executable hakyll
     , url >= 2.1
     , hakyll >= 4.5
     , pandoc >= 1.13
+    , mtl
