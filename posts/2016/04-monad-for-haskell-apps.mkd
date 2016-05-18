@@ -529,7 +529,7 @@ Left "Currency not found!"
 フォームのバリデーションなどがそうしたケースに該当する。
 
 ```haskell
-import Control.Monad.Writer
+import Control.Monad.Writer (Writer, tell, runWriter)
 import Data.Char (isDigit)
 
 data UserInput =
@@ -570,6 +570,20 @@ mustBePositiveInteger name text = do
 `runWriter`の型は(この場合)`runWriter :: Writer [String] () -> ((), [String])`である。  
 `Writer`の1つ目の型引数、すなわち`do`ブロックの中で共有している`[String]`を、「権限を表すラベル」を剥がした値として取り出すことができる。  
 上の例の場合、例えば下記のような結果となる。
+
+```haskell
+> let input = UserInput "" "a" "nondigit"
+> runWriter $ validateInput input
+ (),["\27663\21517\12399\24517\38920\20837\21147\38917\30446\12391\12377\12290","\12513\12540\12523\12450\12489\12524\12473\12398\24418\24335\12364\27491\12375\12367\12354\12426\12414\12379\12435\12290","\24180\21454\12399\25972\25968\12391\20837\21147\12375\12390\12367\12384\12373\12356\12290"])
+```
+
+おっと、日本語がエスケープ文字列に置き換えられてしまった。こういう時は[unicode-show](https://hackage.haskell.org/package/unicode-show)というパッケージを使おう。
+
+```haskell
+> import Text.Show.Unicode (uprint)
+> uprint $ runWriter $ validateInput input
+((),["氏名は必須入力項目です。","メールアドレスの形式が正しくありません。","年収は整数で入力してください。"])
+```
 
 ## Monad Transformerと呼ばれるもの (★★):
 

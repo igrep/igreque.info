@@ -1,5 +1,6 @@
-import Control.Monad.Writer
+import Control.Monad.Writer (Writer, tell, runWriter)
 import Data.Char (isDigit)
+import Text.Show.Unicode (uprint)
 
 data UserInput =
   UserInput
@@ -28,11 +29,11 @@ mustContainAtSign name text = do
 
 mustBePositiveInteger :: String -> String -> Writer [String] ()
 mustBePositiveInteger name text = do
-  if all isDigit
+  if all isDigit text
     then return ()
     else tell [name ++ "は整数で入力してください。"]
 
 main :: IO ()
 main = do
   let input = UserInput "" "a" "nondigit"
-  print $ runWriter $ validateInput input
+  uprint $ runWriter $ validateInput input
