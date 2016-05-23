@@ -518,6 +518,29 @@ employeeCurrency name = do
 Left "Currency not found!"
 ```
 
+それから、`Either` Monadには他の言語にもよくある`throw`や`catch`のようなユーティリティ関数も用意されている。  
+（使用するには[`mtl`パッケージに入っている`Control.Monad.Except`などのmodule](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)が必要）
+
+```haskell
+> import Control.Monad.Except (throwError, catchError)
+
+--                    残念ながら型注釈がないとエラーになる。
+> throwError "Error!" :: Either String a
+Left "Error!"
+```
+
+`catchError`は、バッククォートで2引数関数を中置演算子として使える機能を利用することで、
+より他の言語の`catch`らしく使えるようになっている。
+
+```haskell
+> let errorCode = -1
+
+> throwError "Error!" `catchError` (\_error -> return errorCode) :: Either String Int
+Right (-1)
+```
+
+これらは後述するMonad Transformerの一部として使用すると、特にありがたみが感じられるだろう。
+
 ## Writer Monad (★★):
 
 `Writer` Monadを正しく理解するには`Monoid`を理解する必要があるのだが、ここでは思い切って単純化して、
