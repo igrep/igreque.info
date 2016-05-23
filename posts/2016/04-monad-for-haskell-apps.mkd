@@ -96,7 +96,7 @@ action :: Monad m => m b
     - 他の言語でよく使う、「`return null;`などして関数の実行を途中で切り上げるイディオム」のベターな代わりとして使ったりする。
 - **Either Monad** (★★):
     - 関数の実行が失敗した場合に、囲っている`do`ブロックから脱出するとともに、失敗した理由を伝える。
-    - `throw`を使って、囲っている`try`ブロックを中断する機能の代わりに使う。その特徴から、Error Monadと呼んでもよい。
+    - `throw`を使って、囲っている`try`ブロックを中断する機能の代わりに使う。
 - List Monad (★):
     - 関数が返した複数の結果を、`do`ブロックの中で総当りで実行する。
     - 例えば他の言語でリストに対する`for`文がたくさんネストしてしまうケースにおいて、ネストをなくすのに使えたりする。
@@ -130,8 +130,9 @@ action :: Monad m => m b
     - 「値を受け取って、返す以外に、hogehogeができるMonad」の「hogehoge」ごとに型クラスとして抽象化している。
 - その他
     - これまでに挙げた様々なMonadを、各アプリケーションやライブラリ専用に組み合わせたものが多い。
+        - あるいは、実装は独自だが本質的に他のMonadと似たものか。
     - 後はSTMやEvalなど、並列処理や並行処理用に作られたやつか。
-        - 詳しくは<a href="http://www.amazon.co.jp/gp/product/4873116899/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4873116899&amp;linkCode=as2&amp;tag=poe02-22">Haskellによる並列・並行プログラミング</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4873116899" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を参照されたし。
+        - こちらについて詳しくは<a href="http://www.amazon.co.jp/gp/product/4873116899/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4873116899&amp;linkCode=as2&amp;tag=poe02-22">Haskellによる並列・並行プログラミング</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4873116899" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を参照されたし。
 
 # Monadの一般的な使い方
 
@@ -229,7 +230,7 @@ main = largerAction >>= print
 ### その1: 同じ`do`ブロックで列挙するアクションの「権限を表すラベル」は、必ず一貫していなければならない。
 
 例1: 下記の`largerAction`は、`IO String`という型なので、「権限を表すラベル」は`IO`である。  
-一方、[lookup関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)（連想配列 `Map`から指定したキーの値を取り出す関数）は、
+一方、[`lookup`関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)（連想配列 `Map`から指定したキーの値を取り出す関数）は、
 下記の場合`Maybe [Char]`返すので、「権限を表すラベル」は`Maybe`である。  
 したがって`IO`であることと一貫せず、コンパイルエラーとなる。
 
@@ -597,7 +598,7 @@ mustBePositiveInteger name text = do
 ```haskell
 > let input = UserInput "" "a" "nondigit"
 > runWriter $ validateInput input
- (),["\27663\21517\12399\24517\38920\20837\21147\38917\30446\12391\12377\12290","\12513\12540\12523\12450\12489\12524\12473\12398\24418\24335\12364\27491\12375\12367\12354\12426\12414\12379\12435\12290","\24180\21454\12399\25972\25968\12391\20837\21147\12375\12390\12367\12384\12373\12356\12290"])
+((),["\27663\21517\12399\24517\38920\20837\21147\38917\30446\12391\12377\12290","\12513\12540\12523\12450\12489\12524\12473\12398\24418\24335\12364\27491\12375\12367\12354\12426\12414\12379\12435\12290","\24180\21454\12399\25972\25968\12391\20837\21147\12375\12390\12367\12384\12373\12356\12290"])
 ```
 
 おっと、日本語がエスケープ文字列に置き換えられてしまった。こういう時は[unicode-show](https://hackage.haskell.org/package/unicode-show)というパッケージを使おう。
@@ -610,6 +611,29 @@ mustBePositiveInteger name text = do
 
 ## Monad Transformerと呼ばれるもの (★★):
 
+これまでに述べたように、Monadはその種類（型）によって、「値を受け取って、返す以外にできること」が大きく異なる。  
+そのため「値を受け取って、返す以外にできること」を、**同じ`do`ブロックの中で、複数同時に使いたい**場合も当然あるだろう。  
+例えば`Maybe`によって「関数が失敗したら囲っている`do`ブロックから脱出」しつつ、`Writer`でログの追記も行いたいといった場合だ。  
+Monad Transformerはそうしたニーズを満たすために存在する。
+
+例のごとく詳しい仕組みは割愛するが、ここでは[お馴染みstack](http://docs.haskellstack.org/en/stable/README/)のソースを参考にしつつ、
+よくありそうなCLIアプリをMonad Transformerで作る例を紹介しよう（実際のstackのMonad Transformerよりはかなり単純化する）。  
+Monad Transformerを実装したパッケージはいくつか存在するが、ここでは一番有名な[mtl](https://hackage.haskell.org/package/mtl-2.2.1)を使用する。
+
+最初に`Writer` Monadを使用して、ユーザーの入力から、成績をカウントするMonadを紹介しよう。
+
+```haskell
+```
+
+http://qiita.com/7shi/items/4408b76624067c17e933
+http://bicycle1885.hatenablog.com/entry/2012/12/08/165236
+https://karczmarczuk.users.greyc.fr/matrs/Fuprog/Doc/transformers.pdf
+
+## Monad\*という名前がついた型クラスに属する各種Monad (★):
+
+Monad Transformerと関連が深い。
+
+
 ## Reader Monad (★):
 
 ## State Monad (★):
@@ -617,6 +641,3 @@ mustBePositiveInteger name text = do
 ## Reader Monad (★):
 
 ## List Monad (★):
-
-## Monad\*という名前がついた型クラスに属する各種Monad (★):
-
