@@ -500,7 +500,7 @@ employeeCurrency name =
 
 「失敗した理由を加える事ができる」ということで、`Maybe` Monadの例に手を加えてみよう。  
 [errorsというパッケージにある、`note`という関数](http://haddock.stackage.org/lts-5.17/errors-2.1.2/Control-Error-Util.html#v:note)を使えば、
-Maybe Monadのアクションが失敗した時(`Nothing`を返した時)、付け加えたエラーメッセージに変換することができる。
+Maybe Monadのアクションが失敗した時(`Nothing`を返した時)、`Left <付け加えたエラーメッセージ>`を返すよう変換することができる。
 
 ```haskell
 import Control.Error.Util (note)
@@ -545,8 +545,10 @@ Right (-1)
 ## Writer Monad (★★):
 
 `Writer` Monadを正しく理解するには`Monoid`を理解する必要があるのだが、ここでは思い切って単純化して、
-「`do`ブロックの中で共有している、**リストに追記**する」ものとして説明しよう（実際には`Monoid`型クラスさえ実装していれば、リスト以外でも良い）。  
+「`do`ブロックの中で共有している、**リストに追記**する」ものとして説明しよう（実際には`Monoid`型クラスさえ実装していれば、リスト以外でも良い）[^diffList]。  
 `do`ブロックの中で`tell :: [w] -> Writer [w] ()`という関数を使用することによって、対象の`do`ブロックで共有しているリストに追記することができる。
+
+[^diffList]: もう一つ付け加えると、リストではなく[差分リスト](https://hackage.haskell.org/package/dlist-0.7.1.2/docs/Data-DList.html)を使ったほうが通常は効率が良いだろう。
 
 例としては、`Either`ではエラーが起きた際に**直ちに`do`ブロックをぬけ出す**ものであったものに対して、
 `Writer`では**エラーを記録するだけで、実行をやめない**例にしよう。  
@@ -623,7 +625,39 @@ Monad Transformerを実装したパッケージはいくつか存在するが、
 最初に`Writer` Monadを使用して、ユーザーの入力から、成績をカウントするMonadを紹介しよう。
 
 ```haskell
+import Control.Monad.Writer (Writer, tell, execWriter)
+
+-- とある人のテストの成績
+data Scores =
+  Scores
+    { test1 :: Int
+    , test2 :: Int
+    , test3 :: Int
+    }
+
+countScore :: Int -> Writer [Int] ()
+countScore int =
+  tell [int]
+
+runTests :: Scores -> Int
+runTests scores =
+  -- execWriter は runWriter した結果にsndを適用する関数。
+  -- tellして貯めていった結果**のみ**に関心がある場合に使う。
+  let points = execWriter $ do
+        countScore $ test1 scores
+        countScore $ test2 scores
+        countScore $ test3 scores
+  in
+    sum points
+
+main :: IO ()
+main = do
+  let input = Scores 30 50 100
+  print $ runTests input
 ```
+
+ここまで単純な例であれば、わざわざWriter Monadを使うまでもないだろうが、ご容赦願いたい。  
+今度はこの例に、「テストの点数のうち一つでも50点未満のものがあればエラーを返す」という機能を加えてみよう。
 
 http://qiita.com/7shi/items/4408b76624067c17e933
 http://bicycle1885.hatenablog.com/entry/2012/12/08/165236
