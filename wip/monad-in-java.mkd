@@ -33,7 +33,7 @@ hoge
 
 # とりあえずJavaでの定義を。
 
-手始めに、HaskellでのMonadの定義を、Javaに翻訳してみましょう。  
+手始めに、HaskellでのMonadの定義をJavaに翻訳してみましょう。  
 Haskellでの呼び方も、より分かりやすくなるようもっと具体的な名前に差し替えます。
 
 ```java
@@ -120,7 +120,7 @@ Z z;
 // MonadFactoryをfとします
 MonadFactory<X> f = new SomeMonadFactory<>();
 
-// それから、Xを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
+// それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
 Function<X, Monad<Y>> ax = (x) -> ... ;
 Function<Y, Monad<Z>> ay = (y) -> ... ;
 Function<Z, Monad<A>> az = (z) -> ... ;
@@ -186,7 +186,7 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 
 hoge
 
-上記の通り、1つめの`then`に渡す「Monadの値を返す関数」における`then(az)`の部分が、
+上記の通り、二つめの`then`、すなわち`ay.apply.then`に渡す`then(az)`の部分が、
 一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。  
 後にも触れますが、これによって、ネストを一段平たくできたりします。
 
@@ -224,8 +224,14 @@ Haskellや数学の世界でどう呼んでいるかは各自調べてくださ�
 
 # 具体的な実装その1 Maybe
 
-それではMonadについてもうちょっと具体的なイメージを持っていただくために、
-前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`)インターフェースを実装したクラスの例を紹介しましょう。
+**重要な注意事項**: 次の例を含め、この記事で紹介する`Monad`インターフェースを実装したクラスは、
+残念ながら全てコンパイルが通りません。Javaのインターフェースの仕様上仕方ないのです。
+あくまでも**説明のためのコード**だということでご了承下さい。  
+ダウンキャストを駆使して無理矢理コンパイルを通したソースがhogeにあります。  
+また、もっとちゃんとしたMonadのJavaによる実装に興味がある方は[highj](https://github.com/DanielGronau/highj)をご覧下さい。  
+
+さて、それではMonadについてもうちょっと具体的なイメージを持っていただくために、
+前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`インターフェース)を実装したクラスの例を紹介しましょう。
 
 ```java
 class Maybe<T1> implements Monad<T1> {
@@ -260,7 +266,7 @@ Monadインターフェースを実装するクラスをより明確に特徴付
 そのため繰り返しになりますが、
 次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
 
-ところで、最近のJavaを使いなれた方は、`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
+ところで、最近のJavaを使い慣れた方は`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
 `Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当する、と考えると、確かに！  
 事実、その前提で[open-jdkの`Optional.java`](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)と見比べてみると、
 上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
@@ -273,21 +279,20 @@ Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すこと�
 
 ```java
 Foo maybeFoo1 = someMap.get(key1);
-MaybeFactory<Foo> f = new MaybeFactory<Foo>();
-MaybeFactory<Bar> b = new MaybeFactory<Bar>();
+MaybeFactory f = new MaybeFactory();
 Maybe<Bar> bar =
     f.doNothingReturning(maybeFoo1).then((foo1) -> {
         Foo maybeFoo2 = someMap.get(key2);
         return f.doNothingReturning(maybeFoo2).then((foo2) -> {
             Foo maybeFoo3 = someMap.get(key3);
             return f.doNothingReturning(maybeFoo3).then((foo3) -> {
-                b.doNothingReturning(foo1.doSomething(foo2, foo3));
+                f.doNothingReturning(foo1.doSomething(foo2, foo3));
             });
         });
     });
 ```
 
-上記のように、`null`を返すかもしれないメソッドがたくさん使うとき、
+上記のように、`null`を返すかもしれないメソッドをたくさん使うとき、
 `Maybe`を使えば、`then`に`null`チェックをお任せすることができます。  
 これでぬるぽともお別れだー！やったね！(^\_-)
 
@@ -316,20 +321,19 @@ hoge
 ```java
 Foo maybeFoo1;
 Foo foo1, Foo foo2, Foo foo3;
-MaybeFactory<Foo> f = new MaybeFactory<Foo>();
-MaybeFactory<Bar> b = new MaybeFactory<Bar>();
+MaybeFactory f = new MaybeFactory();
 
 maybeFoo1 = someMap.get(key1);
 Maybe<Bar> bar =
     f.doNothingReturning(maybeFoo1).then((foo1Arg) -> {
         foo1 = foo1Arg;
         return f.doNothingReturning(someMap.get(key2));
-    }).then((foo2Arg) -> {
+    }).then((foo2Arg) -> { // <- このラムダ式と、
         foo2 = foo2Arg;
         return f.doNothingReturning(someMap.get(key3));
-    }).then((foo3Arg) -> {
+    }).then((foo3Arg) -> { // <- このラムダ式がくくりだされた。
         foo3 = foo3Arg;
-        return b.doNothingReturning(foo1.doSomething(foo2, foo3));
+        return f.doNothingReturning(foo1.doSomething(foo2, foo3));
     });
 ```
 
@@ -476,11 +480,14 @@ do {
 と書きたくなるかもしれません。
 
 このように、do記法のどんなところから切り出しを行っても意味が変わらないようにするには、
-Monad則(B)を満たして、入れ子を関係を気にしなくてもいいようにすることが、必要不可欠なのです。
+Monad則(B)を満たして、**入れ子を関係を気にしなくてもいいようにする**ことが、必要不可欠なのです。
 
 # ここまでのまとめ
 
-hoge
+- Monadインターフェースを実装するクラスの振る舞いをより明確に特徴付けるのは、`MonadFactory.doNothingReturning`ではなく`then`メソッドです。  
+- `Maybe`の`then`は、「次の関数を実行する前に値が`null`でないか確認」します。
+- do記法があるおかげで、HaskellではMonadが思いの外役に立ちます。
+- do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスが、Monad則(B)を守る必要があります。
 
 # 具体的な実装 その2 State
 
@@ -551,12 +558,12 @@ class StateFactory<S> implements MonadFactory {
 }
 ```
 
-うーん、肝心のStateクラス以外のものが多く、結構複雑ですね...`(^-^;`  
+うーん、肝心のStateクラス以外のものが多く、結構煩雑ですね...`(^-^;`  
 これだけでは何のこっちゃ、と感じられる方も多いと思うので、ちょっとずつ解説しましょう。
 
 ## そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？
 
-ここで言う、「命令型スタイル」というのが「状態を書き換えることで結果を作る」プログラミングスタイルだとして、
+ここで言う「命令型スタイル」というのが、「状態を書き換えることで結果を作る」プログラミングスタイルだとして、
 関数型プログラミング、つまり純粋な関数のみを使用したスタイルでは、どうやって状態の書き換えを表現するのでしょう？
 
 純粋な関数は、戻り値を使用しない限り、関数の外部へ影響を与えることができません。  
@@ -571,6 +578,7 @@ interface StateMutator0<S> {
 ```
 
 しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
+例えば、hoge
 と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
 ↓にもう一度載せておきます。
 
