@@ -533,20 +533,6 @@ class State<S, T1> implements Monad<T1> {
         }
         return new State(composedMutator);
     }
-
-    // ないと困る、ユーティリティメソッド。引数で与えた状態に書き換える
-    public static <S> State<S, Void> put(S newState){
-        return new State(
-            (ignoredState) -> new MutationResult(newState, null)
-        );
-    }
-
-    // ないと困る、ユーティリティメソッド。現在の状態を取得する
-    public static <S> State<S, S> get() {
-        return new State(
-            (currentState) -> new MutationResult(currentState, currentState)
-        );
-    }
 }
 
 class StateFactory<S> implements MonadFactory {
@@ -578,12 +564,16 @@ interface StateMutator0<S> {
 ```
 
 しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
-例えば、hoge
+例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove(java.lang.Object)は、
+呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
+そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、
+「新しい状態と、書き換えた結果」も返す必要があるのです。
+
 と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
 ↓にもう一度載せておきます。
 
 ```java
-// 状態を書き換えた結果を表すValue Object
+// 状態を書き換えた結果を表すObject
 class MutationResult<S, T> {
     public final S newState;
     public final T value;
@@ -597,13 +587,14 @@ class MutationResult<S, T> {
 // 状態の書き換えをシミュレートするための関数オブジェクト
 @FunctionalInterface
 interface StateMutator<T, S> {
+    // Sという型の新しい状態とともに、Tという型の書き換えた結果も返す
     MutationResult<T, S> mutate(S oldState);
 }
 ```
 
 「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、
-「新しい状態」と「状態を書き換えたと同時に出てきた、別の値」とのペアを表すオブジェクト
-`MutationResult`を作りました。`StateMutator`は古い状態を受け取って、それを返すだけです。
+「新しい状態」と「状態を書き換えた結果」とのペアを表すオブジェクト`MutationResult`を作りました。
+`StateMutator`は古い状態を受け取って、それを返すだけです。
 
 ## `State`のコンストラクターがやっていること
 
@@ -620,9 +611,8 @@ class State<S, T1> implements Monad<T1> {
 
 コンストラクターでやっていることは単に引数をインスタンス変数にいれるだけのボイラープレートなコードです。  
 ここで注目していただきたいのは、`State<S, T1>`は、
-`StateMutator<T1, S>`, すなわち
-「`S`という型の古い状態を受け取って、同じく`S`という型の**更新した状態と、一緒に出てきた`T1`という型の値を返す**関数」
-をラップしただけのクラスであることです。  
+`StateMutator<T1, S>`,
+すなわち「`S`という型の古い状態を受け取って、同じく`S`という型の**更新した状態と、一緒に出てきた`T1`という型の値を返す**関数」をラップしただけのクラスであることです。  
 `State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
 
 ## `StateFactory.doNothingReturning`がやっていること
@@ -678,9 +668,9 @@ class State<S, T1> implements Monad<T1> {
 
 まずは`(1)`を着けた**2ヶ所**に注目してください。
 コメントに書いた通りですが、`State.then`メソッドでは`StateMutator`を作って、また`State`オブジェクトとしてくるみなおしています。  
-後半の、`State`オブジェクトとしてくるみなおす部分は、型を合わせるためだけのものですので、
-`State` Monadの`then`は(そしてその構文糖である`do`も)、
-「**`StateMutator`をいい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
+後半の、`State`オブジェクトとしてくるみなおす部分は、型を合わせるためだけのものです。  
+なので`State` Monadの`then`は(そしてその構文糖である`do`も)、
+「**`StateMutator`を新しく作ることで、いい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
 
 `(2)`は最初の状態書き換えです。
 結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返した値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
@@ -693,13 +683,12 @@ class State<S, T1> implements Monad<T1> {
 ちょっとややこしいですね。
 -->
 
-`(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態を、更に書き換えます。  
+`(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態を更に書き換えます。  
 そうして`(4)`で返された`MutationResult`が、`State.then`メソッド1回でできる最終的な状態の書き換えの結果となります。
 
 さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。
 あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
-それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、
-ただそれだけです。  
+それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、ただそれだけです。  
 ややこしいのは途中で`MutationResult`を「更新した状態」と「一緒に返した値」に分解しているところです。  
 上記のコードの`state`を処理している箇所のみに注目してみてください。  
 `oldState`を`this.mutator.mutate`した結果を`other.mutator.mutate`しているだけ、ということにお気づきでしょうか？
@@ -714,8 +703,30 @@ class State<S, T1> implements Monad<T1> {
 ## 具体的な使い方
 
 説明が長くなってしまいましたが、いよいよ`State` Monadの使用例を示しましょう。  
-ひとまず先ほど挙げたユーティリティメソッドを組み合わせて、
-更に別のユーティリティメソッドを作ってみましょう。
+ひとまずここまで挙げたメソッドを組み合わせて、実用上ないと困る、ユーティリティメソッドを作ってみます。
+
+```java
+class State<S, T1> implements Monad<T1> {
+    /* ... * /
+
+    // ないと困る、ユーティリティメソッド。引数で与えた状態に書き換える
+    public static <S> State<S, Void> put(S newState){
+        return new State(
+            (ignoredState) -> new MutationResult(newState, null)
+        );
+    }
+
+    // ないと困る、ユーティリティメソッド。現在の状態を取得する
+    public static <S> State<S, S> get() {
+        return new State(
+            (currentState) -> new MutationResult(currentState, currentState)
+        );
+    }
+    /* ... * /
+}
+```
+
+hoge
 
 ```java
 class State<S, T1> implements Monad<T1> {
