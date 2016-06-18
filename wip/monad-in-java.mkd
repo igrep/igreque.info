@@ -552,7 +552,7 @@ class StateFactory<S> implements MonadFactory {
 ここで言う「命令型スタイル」というのが、「状態を書き換えることで結果を作る」プログラミングスタイルだとして、
 関数型プログラミング、つまり純粋な関数のみを使用したスタイルでは、どうやって状態の書き換えを表現するのでしょう？
 
-純粋な関数は、戻り値を使用しない限り、関数の外部へ影響を与えることができません。  
+純粋な関数は、関数が返した値を使用しない限り、関数の外部へ影響を与えることができません。  
 ということで、素直に「古い状態を受け取って、新しい状態を返す」関数として表現してみましょう。  
 Javaのインターフェースで言うと↓のような感じ。
 
@@ -567,7 +567,7 @@ interface StateMutator0<S> {
 例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove(java.lang.Object)は、
 呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
 そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、
-「新しい状態と、書き換えた結果」も返す必要があるのです。
+「書き換えた結果として、一緒に返す値」も返せるようにする必要があるのです。
 
 と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
 ↓にもう一度載せておきます。
@@ -575,8 +575,8 @@ interface StateMutator0<S> {
 ```java
 // 状態を書き換えた結果を表すObject
 class MutationResult<S, T> {
-    public final S newState;
-    public final T value;
+    public final S newState; // 新しい状態
+    public final T value;    // 一緒に返す値
 
     MutationResult(S newState, T value){
         this.newState = newState;
@@ -593,7 +593,7 @@ interface StateMutator<T, S> {
 ```
 
 「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、
-「新しい状態」と「状態を書き換えた結果」とのペアを表すオブジェクト`MutationResult`を作りました。
+「新しい状態」と「書き換えた結果の値」とのペアを表すオブジェクト`MutationResult`を作りました。
 `StateMutator`は古い状態を受け取って、それを返すだけです。
 
 ## `State`のコンストラクターがやっていること
@@ -612,7 +612,8 @@ class State<S, T1> implements Monad<T1> {
 コンストラクターでやっていることは単に引数をインスタンス変数にいれるだけのボイラープレートなコードです。  
 ここで注目していただきたいのは、`State<S, T1>`は、
 `StateMutator<T1, S>`,
-すなわち「`S`という型の古い状態を受け取って、同じく`S`という型の**更新した状態と、一緒に出てきた`T1`という型の値を返す**関数」をラップしただけのクラスであることです。  
+すなわち「`S`という型の古い状態を受け取って、同じく`S`という型の**書き換えた状態と**、
+`T1`という型の**書き換えた結果の値を返す関数**」を**ラップしただけ**のクラスであることです。  
 `State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
 
 ## `StateFactory.doNothingReturning`がやっていること
@@ -631,12 +632,12 @@ class StateFactory<S> implements MonadFactory {
 
 Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。
 このルールに加えて、先ほど説明した、
-「`State<S, T1>`は、**更新した状態と、一緒に出てきた値を返す関数**をラップしただけのクラスである」
+「`State<S, T1>`は、**書き換えた状態と、書き換えた結果の値を返す関数**をラップしただけのクラスである」
 という事実を思い出してください。  
-「更新した状態と、一緒に出てきた値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
-**状態を更新しないで、そのまま返す**、というのが正解です。  
+「書き換えた状態と、書き換えた結果の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
+**状態を書き換えないで、そのまま返す**、というのが正解です。  
 `StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult(nonMutatedState, value)`
-という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「一緒に出てきた値」として返すだけの関数を作っているのです。
+という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「書き換えた結果の値」として返すだけの関数を作っているのです。
 
 繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
 
@@ -673,9 +674,9 @@ class State<S, T1> implements Monad<T1> {
 「**`StateMutator`を新しく作ることで、いい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
 
 `(2)`は最初の状態書き換えです。
-結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返した値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
+結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返す値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
 
-`(3)`では、`(2)`で手に入れた情報のうち、「一緒に返した値」を利用して、新しい`State` Monadを作ります。  
+`(3)`では、`(2)`で手に入れた情報のうち、「一緒に返す値」を利用して、新しい`State` Monadを作ります。  
 
 <!--
 `result.value`を渡している`nextAction`の型を振り返ってみていただくと分かるのですが、
@@ -689,7 +690,7 @@ class State<S, T1> implements Monad<T1> {
 さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。
 あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
 それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、ただそれだけです。  
-ややこしいのは途中で`MutationResult`を「更新した状態」と「一緒に返した値」に分解しているところです。  
+ややこしいのは途中で`MutationResult`を「書き換えた状態」と「一緒に返す値」に分解しているところです。  
 上記のコードの`state`を処理している箇所のみに注目してみてください。  
 `oldState`を`this.mutator.mutate`した結果を`other.mutator.mutate`しているだけ、ということにお気づきでしょうか？
 
@@ -732,10 +733,13 @@ class State<S, T1> implements Monad<T1> {
 ```
 
 まずは`Static.put`について。  
-`Static.put`は新しい状態(`newState)を引数として受け取り、前の状態(`ignoredState`)を使わず、
+`Static.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、
 そのまま新しい状態(`newState`)で書き換える`StateMutator`を返します。  
-`new MutationResult()`の第一引数が「更新した新しい状態」で、第二引数が「一緒に返した値」であることを思い出してください。  
-`Static.put`メソッドでは、
+`new MutationResult()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
+`Static.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、
+「一緒に返す値」として`null`、すなわち「一緒に返す値」がないものとしています。  
+これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。  
+戻り値の型引数が`State<S, Void>`になっている通りです。
 
 hoge
 
