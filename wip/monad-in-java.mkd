@@ -732,19 +732,37 @@ class State<S, T1> implements Monad<T1> {
 }
 ```
 
-まずは`Static.put`について。  
-`Static.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、
+まずは`State.put`について。  
+`State.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、
 そのまま新しい状態(`newState`)で書き換える`StateMutator`を返します。  
 `new MutationResult()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
-`Static.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、
+`State.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、
 「一緒に返す値」として`null`、すなわち「一緒に返す値」がないものとしています。  
 これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。  
 戻り値の型引数が`State<S, Void>`になっている通りです。
 
+続いて`State.get`について。  
+`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult()`の第一引数として渡している通り、状態を一切書き換えません。
+あくまでも`get`するだけですからね。  
+そして状態を書き換えた際に「一緒に返す値」である`new MutationResult()`の第二引数にも、`currentState`をそのまま渡しています。  
+これにより、`State.get()`を使うと、現在の状態をそのまま取得することができます。
+
+最後に`State.modify`について。  
+`State.put`と同様に、
 hoge
 
 `State` Monadは実用上、ここまで紹介した`State.put`, `State.get`, `State.modify`といったユーティリティメソッドを中心に利用した方が、直感的で使いやすいかと思います。  
-と、いうわけで上記の`State.modifyを利用して、`StringBuilder`を真似したような例を紹介しましょう。
+と、いうわけで上記の`State.get`と`State.put`を利用して、`StringBuilder`を真似したような例を紹介しましょう。
+
+```java
+State<String, Void> builder =
+    State.get()
+         .then((str) -> State.put(str + "one!"))
+         .then((_null) -> State.get())
+         .then((str) -> State.put(str + "one!"))
+```
+
+あるいは、`State.modify`を利用して次のように書くこともできます。
 
 ```java
 State<String, Void> builder =
