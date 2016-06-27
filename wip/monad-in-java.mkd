@@ -1,0 +1,1162 @@
+---
+title: JavaでMonadを説明してみる
+author: Yuji Yamamoto
+tags: Monad, Java
+date: February 25, 2016
+...
+---
+
+「[モナドについてSwiftで説明してみた](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)」という記事などで指摘されているように、
+プログラマー向けにMonadを説明した記事はサンプルがHaskellで書かれていることが多いので辛いですよね。
+
+と、いうわけで上記の記事を参考にしつつ、
+HaskellよりもSwiftよりももっともっと広まっているであろう、
+Java (Java 8以降の知識を前提とします)でMonadを定義して説明してみたいと思います。  
+これを通して、
+
+- Monadの何が嬉しいのか
+- よく聞く「Monad則」ってどんなやつなのか、何が嬉しいのか
+- Haskellのdo記法がどんなことをしているのか
+
+と言った点も説明したいと思います！
+僕自身Javaを勉強中なんで一石二鳥ですね！
+
+# TL;DR (ここ以降がよくわかんなくてもとりあえず知ってもらいたいこと）
+
+hoge
+
+# 目次
+
+${toc}
+
+hoge
+
+# とりあえずJavaでの定義を。
+
+手始めに、HaskellでのMonadの定義をJavaに翻訳してみましょう。  
+Haskellでの呼び方も、より分かりやすくなるようもっと具体的な名前に差し替えます。
+
+```java
+interface Monad<T1> {
+    // Haskellで言うところの >>= (bind)に該当します。
+    <T2> Monad<T2> then(Function<T1, Monad<T2>> action);
+
+}
+interface MonadFactory {
+    // Haskellで言うところのreturnに相当します。
+    // 本当は1個のinterfaceにまとめたいけど
+    // Javaのinterfaceでは無理っぽいorz.
+    <T> Monad<T> doNothingReturning(T value);
+}
+```
+
+Java 8がある程度普及した現在、関数を受けとる関数を表現するのがらくちんになりましたね！  
+上記の通りMonadをJavaで表現すると、次のような日本語に言い換えることができます。
+
+- 型変数を1つ受けとるinterfaceである。
+- **`then`というメソッドを実装しなければならない。**
+- `Monad<T1>`というクラスのインスタンスがあったとき、`then`は次の値を受け取り、返す。
+    - 「`T1`を受け取り、別の型引数`T2`の`Monad`, `Monad<T2>`を返す関数」を受け取って、
+    - `Monad<T2>`の値を返す。
+- `Monad`を実装したクラスを実装したとき、任意のクラスの値に対して、そのインスタンスを返すためのファクトリークラス（`MonadFactory`インターフェースを実装したクラス）も実装しなければならない [^refval]。
+
+[refval]: 参照型と値型の区別はこの際お見逃しください。やっぱりJavaで厳密にMonadを表現するのは難しい。
+
+すでに結構複雑で大変ですね！ ~~（半分はJavaのせいです！）~~  
+いろいろ書きましたがここで特に大事なところは「**`then`というメソッドを実装しなければならない**」の一点です！  
+`MonadFactory`は補助的なものだと思っていただいて差し支えありません！
+
+## Monad則って？
+
+上記の通り`Monad`インターフェースは、`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド,
+合わせて2つのメソッドを実装しなければなりません。  
+加えて、これらのメソッドは「Monad則」というある一定の規則を満たさなければならないよう決まっています。  
+ここではこの「Monad則」についてもJavaに置き換えて紹介します。
+
+### なんでそんなのがあるの？
+
+そもそも、なぜこんな規則があるのでしょう？  
+この法則を満たすと、Monadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
+その代わり、ここではJavaで言うところの似たような「規則」を紹介することで、「Monad則」の「立ち位置」みたいなものをお伝えしたいと思います。
+
+お馴染み`Comparable`インターフェースを思い出してください。
+例えば下記のように振る舞う`Comparable`があったら嫌ですよね？
+
+```java
+/**
+ * 引数とレシーバーを逆にしても1（より大きい）が返る！
+ * どっちが本当に大きいの？
+ */
+x.compareTo(y) // => 1
+y.compareTo(x) // => 1
+
+/**
+ * 自分自身と比較しても-1（より小さい）が返る！
+ * どうやったら等しくなるんだ！？
+ */
+z.compareTo(z) // => -1
+```
+
+継承の仕方などによっては、間違って上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。
+もちろん意図的にそうした実装を作ることも可能です。  
+このように不自然な`Comparable`を作らないためには、`Comparable`を**実装する側が意識**しなければなりません。コンパイラーが守ってくれないのです。
+
+Monad則もこれと同じようなものです。  
+Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、
+単純に`Monad`というインターフェースを実装するだけでなく、それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
+そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！（詳細は後述！）
+
+### で、Monad則ってどんなのさ？
+
+前置きが長くなってしまいましたが、いよいよ「Monad則」をJavaで紹介しましょう！  
+下記の通りです。
+
+```java
+// 任意の型X, Y, Zの値をx, y, zとします。
+X x;
+Y y;
+Z z;
+
+// MonadFactoryをfとします
+MonadFactory<X> f = new SomeMonadFactory<>();
+
+// それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
+Function<X, Monad<Y>> ax = (x) -> ... ;
+Function<Y, Monad<Z>> ay = (y) -> ... ;
+Function<Z, Monad<A>> az = (z) -> ... ;
+
+// 下記の3組の式が**常に同じ意味となる**doNothingReturningとthenを
+// 実装している時、Monad則が成立します。
+/* (A ) */ f.doNothingReturning(x).then(ax)
+           /* ↑と↓の意味が同じになること。以下同様。 */
+           ax.apply(x)
+
+/* (A') */ ax.apply(x).then(f::doNothingReturning)
+           /* ↑と↓の意味が同じになること */
+           ax.apply(x)
+
+/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then(az))
+           /* ↑と↓の意味が同じになること */
+           ax.apply(x).then(       ay        ).then(az)
+```
+
+<!--
+return a >>= k  =  k a
+m >>= return    =  m
+m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
+-->
+
+各変数の定義まで書いてしまったので長ったらしくなってしまいましたが、一つずつ解説しましょう。
+
+#### (A), (A')について
+
+最初の2つは、どちらかというと`doNothingReturning`が守るべき性質についての式です。
+
+第一に(A)では、
+`x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、
+それから(`then`)、更にMonadを返す関数`ax`を実行する(`ax.apply`)ということは、単に`ax`を1回実行するのと同じことだ
+--- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行する(`ax.apply(x)`)のと同じ、
+なので`doNothingReturning`は**なにもしない**のと同等だ ---
+ということです。
+
+(A')についても同様です。  
+`x`を受け取ってMonadを返す関数`ax`を実行(`ax.apply(x)`)して、
+それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、単に`ax`を1回実行するのと同じことだ
+--- つまり、`doNothingReturning`をどんな`ax`の**後**に実行しても、`ax`を実行するのと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
+ということです。
+
+いずれにおいても、`doNothingReturning`は**Monadの値を作って返すだけで、実質なにもしない**という点が、ここでは重要です。
+「そんなの役に立つの？」と思われるかもしれません。  
+とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。
+ここから先の例で伝われば幸いです。
+
+#### (B)について
+
+(B)はちょっと複雑ですね。  
+集中するために該当の部分だけ持ってきましょう。
+
+```java
+   ax.apply(x).then((y) -> ay.apply(y).then(az))
+        /* ↑と↓の意味が同じになること */
+   ax.apply(x).then(       ay        ).then(az)
+```
+
+意図的にスペースを挟んで調整したので、勘のいい方はお気づきかもしれません。  
+要するにこう↓いうことです。
+
+hoge
+
+上記の通り、二つめの`then`、すなわち`ay.apply.then`に渡す`then(az)`の部分が、
+一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。  
+後にも触れますが、これによって、ネストを一段平たくできたりします。
+
+これをもうちょっとくだけた日本語に言い換えると、
+「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
+「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
+常に同じ意味でないといけない、と解釈できます。  
+この解釈だと「そんなの当たり前じゃないの？」と感じられるかもしれません。  
+それぐらい直感的な仕様を守ってくださいね、というのが「Monad則」の正体だ、と考えていただければしっくりくるでしょうか？  
+`Comparable`な`x`が常に`x.compareTo(x) == 0`であってほしいのと同じことです。
+
+# ここまでのまとめ
+
+さて、ここまでのまとめです。
+
+- MonadをJavaで表現すると、`then`というメソッドを持ったインターフェースと、それに対応する、`doNothingReturning`というメソッドを持ったファクトリークラスのインターフェースで表現することができる。
+- それらのインターフェースを実装するクラスは、下記の「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
+    - (A), (A') `doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはならない。
+        ```java
+        /* ↓3行の意味が同じになること */
+        f.doNothingReturning(x).then(ax)
+        ax.apply(x).then(f::doNothingReturning)
+        ax.apply(x)
+        ```
+    - (B) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
+        ```java
+           ax.apply(x).then((y) -> ay.apply(y).then(az))
+            /* ↑と↓の意味が同じになること */
+           ax.apply(x).then(       ay        ).then(az)
+        ```
+
+一点重要な注意事項を捕捉します。  
+冒頭でも触れましたが、`then`や`doNothingReturning`などの名前は、分かりやすさのために**私が勝手につけたもの**です。  
+Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
+
+# 具体的な実装その1 Maybe
+
+**重要な注意事項**: 次の例を含め、この記事で紹介する`Monad`インターフェースを実装したクラスは、
+残念ながら全てコンパイルが通りません。Javaのインターフェースの仕様上仕方ないのです。
+あくまでも**説明のためのコード**だということでご了承下さい。  
+ダウンキャストを駆使して無理矢理コンパイルを通したソースがhogeにあります。  
+また、もっとちゃんとしたMonadのJavaによる実装に興味がある方は[highj](https://github.com/DanielGronau/highj)をご覧下さい。  
+
+さて、それではMonadについてもうちょっと具体的なイメージを持っていただくために、
+前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`インターフェース)を実装したクラスの例を紹介しましょう。
+
+```java
+class Maybe<T1> implements Monad<T1> {
+    private final T1 x;
+
+    Maybe(T1 x){
+        this.x = x;
+    }
+
+    <T2> Maybe<T2> then(Function<T1, Maybe<T2>> nextAction){
+        if (x != null){
+            return nextAction.apply(x);
+        } else {
+            return new Maybe(null);
+        }
+    }
+}
+
+class MaybeFactory implements MonadFactory {
+    <T> Maybe<T> doNothingReturning(T x){
+        return new Maybe<T>(x);
+    }
+}
+```
+
+上記は`then`において、持っている値(`x`)が`null`かどうかあらかじめ確認し、
+`null`でなければ引数として渡した関数(`nextAction`)を実行します。  
+次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの`then`の役割です。  
+Monad則のところで触れたように、
+「Monadの値を作って返すだけで、それ以外のことはしない」のが`doNothingReturning`のお約束なので、
+Monadインターフェースを実装するクラスをより明確に特徴付けるのは、`then`メソッドの方です。  
+そのため繰り返しになりますが、
+次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
+
+ところで、最近のJavaを使い慣れた方は`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
+`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当する、と考えると、確かに！  
+事実、その前提で[open-jdkの`Optional.java`](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)と見比べてみると、
+上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
+
+[^haskell-maybe]: ちなみに、Haskellの`Maybe`とはちょっと異なる振る舞いをします。
+Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すことはないからです。
+`null`と`Nothing`は実際には大きく異なるものなので単純に比較できませんが。詳しくはHaskell勉強してみて確かめましょう！
+
+`Optional`と同じようなものなので特に目新しい部分はないかもしれませんが、上記の`Maybe`の使用例を示しましょう。
+
+```java
+Foo maybeFoo1 = someMap.get(key1);
+MaybeFactory f = new MaybeFactory();
+Maybe<Bar> bar =
+    f.doNothingReturning(maybeFoo1).then((foo1) -> {
+        Foo maybeFoo2 = someMap.get(key2);
+        return f.doNothingReturning(maybeFoo2).then((foo2) -> {
+            Foo maybeFoo3 = someMap.get(key3);
+            return f.doNothingReturning(maybeFoo3).then((foo3) -> {
+                f.doNothingReturning(foo1.doSomething(foo2, foo3));
+            });
+        });
+    });
+```
+
+上記のように、`null`を返すかもしれないメソッドをたくさん使うとき、
+`Maybe`を使えば、`then`に`null`チェックをお任せすることができます。  
+これでぬるぽともお別れだー！やったね！(^\_-)
+
+...と、言いたいところですが、元ネタの`Optional.flatMap`使った場合と同様、ネストが深くって嫌ですねー。  
+これでは普通にif文を書いた方がまだ読みやすそうです。`f.doNothingReturning`なんて書く分タイプ数も多いですし。
+
+`f.doNothingReturning`や`MaybeFactory<Foo> f = new MaybeFactory<Foo>();`
+の部分が長いのは単なる名付け方の名前だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、
+結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
+
+この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
+
+```java
+/* (B ) */
+    ax.apply(x).then((y) -> ay.apply(y).then(az))
+        /* ↑と↓の意味が同じになること */
+    ax.apply(x).then(       ay        ).then(az)
+```
+
+hoge
+
+この規則は、上の図のように、2つめの`then`(hoge色の箇所)を1つめの`then`(hoge色の箇所)に渡したラムダ式から取り出すことで、
+ネストを一段平たくすることができる、というものでした。  
+おっ。ということは今回のケースにも適用できるかもしれませんよ！やってみましょう！
+
+```java
+Foo maybeFoo1;
+Foo foo1, Foo foo2, Foo foo3;
+MaybeFactory f = new MaybeFactory();
+
+maybeFoo1 = someMap.get(key1);
+Maybe<Bar> bar =
+    f.doNothingReturning(maybeFoo1).then((foo1Arg) -> {
+        foo1 = foo1Arg;
+        return f.doNothingReturning(someMap.get(key2));
+    }).then((foo2Arg) -> { // <- このラムダ式と、
+        foo2 = foo2Arg;
+        return f.doNothingReturning(someMap.get(key3));
+    }).then((foo3Arg) -> { // <- このラムダ式がくくりだされた。
+        foo3 = foo3Arg;
+        return f.doNothingReturning(foo1.doSomething(foo2, foo3));
+    });
+```
+
+よし、これならネストが減ってちょっと見やすくなった...? と、思いきや、今度はコンパイルエラーです... (&gt;\_&lt;)  
+Java 8のラムダ式は、ラムダ式の中でローカル変数を書き換えることができないのでしたorz  
+残念ながらこの問題は、現在のJavaではどうしようもありません。  
+しかもいずれにしてもいちいち`foo1 = foo1Arg`みたいな代入が必要だったりで、結局面倒くさいですよね。
+
+実はHaskellであれば、上記のような書き換えを自動で行い、
+自然な見た目にしてくれるシンタックスシュガー（構文糖）があります。  
+それが次に示す「do記法」と呼ばれるものです。
+
+# do記法
+
+本記事はあくまでもJavaでMonadを説明する記事ですので、
+ここではその「do記法」を**仮に**Javaに導入した場合を想像して、
+先程の例がどのように書き換えられるか示しましょう。
+
+```java
+MaybeFactory f = new MaybeFactory<Foo>();
+
+Maybe<Bar> bar = do {
+    Foo foo1 <- f.doNothingReturning(someMap.get(key1));
+    Foo foo2 <- f.doNothingReturning(someMap.get(key2));
+    Foo foo3 <- f.doNothingReturning(someMap.get(key3));
+    f.doNothingReturning(foo1.doSomething(foo2, foo3));
+};
+```
+
+おお、`doNothingReturning`という長ったらしい名前さえどうにかなれば、
+もはや普通のJavaと区別がつかないくらい自然じゃありませんか！
+
+「一体どこがどう構文糖で簡略化されたんだ？」という疑問にお答えしましょう。  
+この場合、元のコードの`then`メソッドの呼び出しが、細い矢印 `<-` の箇所に置き換わったと考えると分かりやすいでしょう。  
+`then`メソッドが「引数として渡された関数」に渡す引数(上記の場合`foo1`, `foo2`, `foo3`)について`null`かどうか確認していたのを、
+do記法では細い矢印`<-`で`foo1`, `foo2`, `foo3`に代入する前に`null`かどうか確認するようになったのです。  
+このような自動的な書き換えがあるからこそ、HaskellではMonadが思いの外便利に使えるのです。  
+どうです？Javaにもちょっと欲しくなりませんか？
+
+## do記法とMonad則 (B)
+
+ついでに、この「do記法」とMonad則(B)ののっぴきならない関係を示すことで、Monad則(B)を守ることの重要性についてもお話ししましょう。  
+復習のためにもう一度↓に持ってきました。
+
+```java
+/* (B ) */
+    ax.apply(x).then((y) -> ay.apply(y).then(az))
+        /* ↑と↓の意味が同じになること */
+    ax.apply(x).then(       ay        ).then(az)
+```
+
+上記の通りMonad則(B)は、
+1つめの`then`に渡す「Monadの値を返す関数」における`then(az)`の部分が、
+一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、
+**処理の意味を変えずに、括り出せるようになっていなければならない**、ということでした。
+これによってネストを一段平たくできるのでしたね。
+
+この規則は、先程のdo記法を用いると、次のように表現することもできます。
+
+```java
+do {
+    y <- ax.apply(x);
+    do { // このdoブロック
+        z <- ay.apply(y);
+        az.apply(z);
+    };
+};
+```
+
+hoge: 色をコメントの色に合わせる
+`// このdoブロック` と記されたdoブロックを引き剥がして、
+
+```java
+do {
+    y <- ax.apply(x);
+    z <- ay.apply(y);
+    az.apply(z);
+};
+```
+
+と必ず（処理の意味を変えずに）書き換えられなければならない、ということです。  
+あるいは逆に`// このdoブロック`の場所をずらして、
+hoge: 色をコメントの色に合わせる
+
+```java
+do {
+    z <- do {
+        y <- ax.apply(x);
+        ay.apply(y);
+    };
+    az.apply(z);
+};
+```
+
+のようにも書き換えられなければならない、とも言えます。
+
+普通こんな無意味な書き換えはしないだろ、と思われるかもしれません。  
+ところがリファクタリングしたくなったときなど、do記法で並べた各行を、他のメソッドとして切り出したくなったときはいかがでしょう？
+
+先程の例で申しますと、
+
+hoge
+```java
+do {
+    y <- ax.apply(x);
+    z <- ay.apply(y);
+    az.apply(z);
+};
+```
+
+上記のhoge色を塗った箇所だけ切り出して
+
+```java
+public SomeMonad<Z> extractedMethod(X x){
+    do {
+        y <- ax.apply(x);
+        ay.apply(y);
+    };
+}
+
+do {
+    z <- extractedMethod(x);
+    az.apply(z);
+};
+```
+
+と書きたくなったり、  
+上記のhoge色を塗った箇所だけを切り出して
+
+```java
+public SomeMonad<Bar> extractedMethod(Y y){
+    do {
+        z <- ax.apply(y);
+        az.apply(z);
+    };
+}
+
+do {
+    y <- ax.apply(x);
+    extractedMethod(y);
+};
+```
+
+と書きたくなるかもしれません。
+
+このように、do記法のどんなところから切り出しを行っても意味が変わらないようにするには、
+Monad則(B)を満たして、**入れ子を関係を気にしなくてもいいようにする**ことが、必要不可欠なのです。
+
+# ここまでのまとめ
+
+- Monadインターフェースを実装するクラスの振る舞いをより明確に特徴付けるのは、`MonadFactory.doNothingReturning`ではなく`then`メソッドです。  
+- `Maybe`の`then`は、「次の関数を実行する前に値が`null`でないか確認」します。
+- do記法があるおかげで、HaskellではMonadが思いの外役に立ちます。
+- do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスが、Monad則(B)を守る必要があります。
+
+# 具体的な実装 その2 State
+
+さて、do記法のすごさが分かっていただけたところ（まだわからない場合、一番下までスクロールして、私にメールかIssueを送ってください！）で、
+Monadの別の例を紹介しましょう。  
+今度はJavaではあまり役に立たないとは思いますが、
+**純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように**見せる、魔法のようなMonadです。
+
+ちょっとMonadじゃないクラスがいくつか出てきますが、Stateモナドが依存しているので、どうかご了承下さい。  
+もちろん後で解説しますので...。
+
+```java
+// 状態を書き換えた結果を表すValue Object
+class MutationResult<S, T> {
+    public final S newState;
+    public final T value;
+
+    MutationResult(S newState, T value){
+        this.newState = newState;
+        this.value = value;
+    }
+}
+
+// 状態の書き換えをシミュレートするための関数オブジェクト
+@FunctionalInterface
+interface StateMutator<T, S> {
+    MutationResult<T, S> mutate(S oldState);
+}
+
+// Stateモナドの実装
+class State<S, T1> implements Monad<T1> {
+    public final StateMutator<T1, S> mutator;
+
+    State(StateMutator<T1, S> mutator){
+        this.mutator = mutator;
+    }
+
+    <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
+        StateMutator<S, T2> composedMutator = (s) -> {
+            MutationResult<S, T1> result = this.mutator.mutate(s);
+            State<S, T2> other = nextAction.apply(result.value);
+            return other.mutator.mutate(result.newState);
+        }
+        return new State(composedMutator);
+    }
+}
+
+class StateFactory<S> implements MonadFactory {
+    <T> State<S, T> doNothingReturning(T value){
+        return new State<S, T>(
+            (nonMutatedState) -> new MutationResult(nonMutatedState, value)
+        );
+    }
+}
+```
+
+うーん、肝心のStateクラス以外のものが多く、結構煩雑ですね...`(^-^;`  
+これだけでは何のこっちゃ、と感じられる方も多いと思うので、ちょっとずつ解説しましょう。
+
+## そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？
+
+ここで言う「命令型スタイル」というのが、「状態を書き換えることで結果を作る」プログラミングスタイルだとして、
+関数型プログラミング、つまり純粋な関数のみを使用したスタイルでは、どうやって状態の書き換えを表現するのでしょう？
+
+純粋な関数は、関数が返した値を使用しない限り、関数の外部へ影響を与えることができません。  
+ということで、素直に「古い状態を受け取って、新しい状態を返す」関数として表現してみましょう。  
+Javaのインターフェースで言うと↓のような感じ。
+
+```java
+@FunctionalInterface
+interface StateMutator0<S> {
+    S mutate(S oldState);
+}
+```
+
+しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
+例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove(java.lang.Object)は、
+呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
+そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、
+「書き換えた結果として、一緒に返す値」も返せるようにする必要があるのです。
+
+と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
+↓にもう一度載せておきます。
+
+```java
+// 状態を書き換えた結果を表すObject
+class MutationResult<S, T> {
+    public final S newState; // 新しい状態
+    public final T value;    // 一緒に返す値
+
+    MutationResult(S newState, T value){
+        this.newState = newState;
+        this.value = value;
+    }
+}
+
+// 状態の書き換えをシミュレートするための関数オブジェクト
+@FunctionalInterface
+interface StateMutator<T, S> {
+    // Sという型の新しい状態とともに、Tという型の書き換えた結果も返す
+    MutationResult<T, S> mutate(S oldState);
+}
+```
+
+「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、
+「新しい状態」と「書き換えた結果の値」とのペアを表すオブジェクト`MutationResult`を作りました。
+`StateMutator`は古い状態を受け取って、それを返すだけです。
+
+## `State`のコンストラクターがやっていること
+
+```java
+class State<S, T1> implements Monad<T1> {
+    public final StateMutator<T1, S> mutator;
+
+    State(StateMutator<T1, S> mutator){
+        this.mutator = mutator;
+    }
+    // ...
+}
+```
+
+コンストラクターでやっていることは単に引数をインスタンス変数にいれるだけのボイラープレートなコードです。  
+ここで注目していただきたいのは、`State<S, T1>`は、
+`StateMutator<T1, S>`,
+すなわち「`S`という型の古い状態を受け取って、同じく`S`という型の**書き換えた状態と**、
+`T1`という型の**書き換えた結果の値を返す関数**」を**ラップしただけ**のクラスであることです。  
+`State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
+
+## `StateFactory.doNothingReturning`がやっていること
+
+難しい`State.then`は後回しにして、先に`doNothingReturning`を解説しましょう。  
+
+```java
+class StateFactory<S> implements MonadFactory {
+    <T> State<S, T> doNothingReturning(T value){
+        return new State<S, T>(
+            (nonMutatedState) -> new MutationResult(nonMutatedState, value)
+        );
+    }
+}
+```
+
+Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。
+このルールに加えて、先ほど説明した、
+「`State<S, T1>`は、**書き換えた状態と、書き換えた結果の値を返す関数**をラップしただけのクラスである」
+という事実を思い出してください。  
+「書き換えた状態と、書き換えた結果の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
+**状態を書き換えないで、そのまま返す**、というのが正解です。  
+`StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult(nonMutatedState, value)`
+という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「書き換えた結果の値」として返すだけの関数を作っているのです。
+
+繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
+
+## `State.then`でやっていること
+
+それでは本題、Monadインターフェースにとって最も重要なメソッド、`then`の`State`の詳細を解説しましょう。  
+こちらは説明のために番号をコメントにふって載せますね。 ↓
+
+```java
+class State<S, T1> implements Monad<T1> {
+    public final StateMutator<T1, S> mutator;
+    // ...
+    <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
+        // (1) 新しいStateMutatorを作って、
+        StateMutator<S, T2> composedMutator = (oldState) -> {
+            // (2) 古い状態を書き換え、結果を受けとる
+            MutationResult<S, T1> result = this.mutator.mutate(oldState);
+            // (3) (2)で状態を書き換えた結果の値を、次の`State` Monadを作る関数へ渡す。
+            State<S, T2> other = nextAction.apply(result.value);
+            // (4) (2)で状態を書き換えた状態をまた処理する
+            return other.mutator.mutate(result.newState);
+        }
+        // (1) また別の`State` Monadとしてくるみなおす。
+        return new State(composedMutator);
+    }
+    // ...
+}
+```
+
+まずは`(1)`を着けた**2ヶ所**に注目してください。
+コメントに書いた通りですが、`State.then`メソッドでは`StateMutator`を作って、また`State`オブジェクトとしてくるみなおしています。  
+後半の、`State`オブジェクトとしてくるみなおす部分は、型を合わせるためだけのものです。  
+なので`State` Monadの`then`は(そしてその構文糖である`do`も)、
+「**`StateMutator`を新しく作ることで、いい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
+
+`(2)`は最初の状態書き換えです。
+結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返す値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
+
+`(3)`では、`(2)`で手に入れた情報のうち、「一緒に返す値」を利用して、新しい`State` Monadを作ります。  
+
+<!--
+`result.value`を渡している`nextAction`の型を振り返ってみていただくと分かるのですが、
+`nextAction`は「`Function<T1, State<S, T2>>`」と宣言されている通り、`T1`を受け取って、`State` Monadを返す関数となっているからです。
+ちょっとややこしいですね。
+-->
+
+`(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態を更に書き換えます。  
+そうして`(4)`で返された`MutationResult`が、`State.then`メソッド1回でできる最終的な状態の書き換えの結果となります。
+
+さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。
+あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
+それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、ただそれだけです。  
+ややこしいのは途中で`MutationResult`を「書き換えた状態」と「一緒に返す値」に分解しているところです。  
+上記のコードの`state`を処理している箇所のみに注目してみてください。  
+`oldState`を`this.mutator.mutate`した結果を`other.mutator.mutate`しているだけ、ということにお気づきでしょうか？
+
+更に簡潔にまとめますと、
+`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
+
+## 具体的な使い方
+
+説明が長くなってしまいましたが、いよいよ`State` Monadの使用例を示しましょう。  
+ひとまずここまで挙げたメソッドを組み合わせて、実用上ないと困る、ユーティリティメソッドを作ってみます。
+
+```java
+class State<S, T1> implements Monad<T1> {
+    /* ... * /
+
+    // 引数で与えた状態に書き換える
+    public static <S> State<S, Void> put(S newState){
+        return new State(
+            (ignoredState) -> new MutationResult(newState, null)
+        );
+    }
+
+    // 現在の状態を取得する
+    public static <S> State<S, S> get() {
+        return new State(
+            (currentState) -> new MutationResult(currentState, currentState)
+        );
+    }
+
+    public static <S> State<S, Void> modify(Function<S, S> simpleMutator){
+        return new State(
+            (currentState) -> {
+                S newState = simpleMutator.apply(currentState);
+                return new MutationResult(newState, null);
+            }
+        );
+    }
+    /* ... * /
+}
+```
+
+まずは`State.put`について。  
+`State.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、
+そのまま新しい状態(`newState`)で書き換える`StateMutator`を返します。  
+`new MutationResult()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
+`State.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、
+「一緒に返す値」として`null`、すなわち「一緒に返す値」がないものとしています。  
+これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。  
+戻り値の型が`State<S, Void>`になっている通りです。
+
+続いて`State.get`について。  
+`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult()`の第一引数として渡している通り、状態を一切書き換えません。
+あくまでも`get`するだけですからね。  
+そして状態を書き換えた際に「一緒に返す値」である`new MutationResult()`の第二引数にも、`currentState`をそのまま渡しています。  
+これにより、`State.get()`を使うと、現在の状態をそのまま取得することができます。
+
+最後に`State.modify`について。  
+`State.put`と同様に、`State.modify`も戻り値の型は`State<S, Void>`です。すなわち状態を書き換えるだけで、「一緒に返す値」を返しません。  
+`State.put`が新しい状態を引数から受け取っていたのに対して、`State.modify`では、前の状態に（第一引数として受け取った）関数を適用することで、新しい状態を作ります。  
+`simpleMutator`と読んでいる通り、第一引数は単純に書き換える前の状態を受け取って返します。
+
+`State` Monadは実用上、ここまで紹介した`State.put`, `State.get`, `State.modify`といったユーティリティメソッドを中心に利用した方が、直感的で使いやすいかと思います。  
+と、いうわけで上記の`State.get`と`State.put`を利用して、`StringBuilder`を真似したような例を紹介しましょう。
+
+```java
+State<String, Void> builder =
+          // 状態を取得して、次の関数に渡す。
+    State.get()
+          // ↓渡された状態に処理を加え、書き戻す。
+         .then((currentString) -> State.put(currentString + "one!"))
+         .then((_null /* どうせ State.put が返す（次の関数に渡す）のはnullなので無視する */) ->
+             // ↓また状態を取得する。
+             State.get()
+         )
+         // あとはその繰り返し。
+         .then((currentString) -> State.put(currentString + "two!"))
+         .then((_null) -> State.get())
+         .then((currentString) -> State.put(currentString + "three!"))
+
+System.out.println(
+    /* 初期値を渡すことで、初期値から書き換えていった結果が得られる */
+    /* この場合 "zero! one! two! three!" と出力される */
+    builder.mutator.mutate("zero! ").newState
+);
+```
+
+あるいは、`State.modify`を利用して次のように書くこともできます。
+
+```java
+State<String, Void> builder =
+    State.modify((currentString) -> currentString + "one! ")
+         .then((_null) -> State.modify((currentString) -> currentString + "two! "))
+         .then((_null) -> State.modify((currentString) -> currentString + "three!"));
+```
+
+## 何が嬉しいの？
+
+さて、ここまで長々と`State` Monadについて説明しましたが、いったいこんなものを作って何が嬉しいのでしょう？  
+この章の冒頭でも触れた通り、正直に言って、Javaではあまり役に立たないでしょう。  
+特に上記の例で言えば、普通に`StringBuilder`を使って書いた方が、読みやすさの観点からも実行効率の観点からも、遥かに優れているに決まっています。  
+そもそもJavaでは変数もオブジェクトもミュータブル（変更可能）なのですから、敢えてこんなものを作る必要はないでしょう。
+
+一方、これはHaskellでは結構役に立ちます。  
+Haskellでは型によって、**関数のできることに厳格な制約**がかけられます（主にデバッグのために使われる例外はあります）。  
+通常の関数は「決められた型の値を受け取って、決められた型の値を返す」以外に、全く何も出来ません。
+Javaではクラスの設計によって、利用者がそのクラスを使ってできることに制限を加えたりできますが、
+ある意味、Haskellには言語仕様レベルでそのような厳重な制限がかけられています。  
+このことは一見厳しすぎるように見えるかも知れませんが、実際には極めて大きなアドバンテージです。  
+本記事の守備範囲から離れてしまうので、お話しできないのが残念なくらいには。
+
+しかし実際問題として、こうした制約が面倒に感じられることも多々あります。  
+よくあるのは、同じ型の値を返しては別の関数に渡して書き換え、また値を返しては書き換え、というのを繰り返したいケースです。  
+こうしたケースでは、新しい変数名を考えるのもかったるいくらい、冗長な記述になってしまうでしょう。  
+それから、型を定義して表現したい対象について、命令型プログラミングスタイルで考えた方が相性がよいように感じられる場合、というのもよくあるでしょう。
+
+HaskellのState Monadは、そうしたケースにおいて、ちょうどよい「抜け道」を空けてくれます。  
+先程の例をよく振り返っていただきたいのですが、
+変数 `builder` を作るのに使うラムダ式や、`State` Monadの各種メソッドに至るまで、
+Java組み込みの`System.out.println`以外、**すべて純粋な関数のみで構成されている**ことにお気づきでしょうか？  
+`builder.mutator.mutate("zero! ")`してから`newState`を得るまでの全ての関数が、
+実際には「戻り値が引数によってのみ定まり、『戻り値を返す』以外になにもしない」「純粋な関数」なのです。
+
+```java
+State<String, Void> builder =
+    State.modify((str) -> str + "one! ")
+         .then((_null) -> State.modify((str) -> str + "two! "))
+         .then((_null) -> State.modify((str) -> str + "three!"));
+
+System.out.println(
+    builder.mutator.mutate("zero! ").newState
+);
+```
+
+このように`State` Monadは、
+純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように見せる、魔法のようなMonadとなっています。  
+do記法を使って書き換えると、よりそのことを実感できるでしょう。
+
+ただし、先程の`Maybe` Monadの例から、もう少しdo記法でできることを増やしましょう。  
+`State` Monadの最後の例の、
+
+```java
+.then((_null) -> State.modify((str) -> str + "two! "))
+```
+
+と、
+
+```java
+.then((_null) -> State.modify((str) -> str + "three!"));
+```
+
+の`then`メソッドでは、ラムダ式の第1引数(`_null`)が無視されていることにお気づきでしょうか？  
+これは、`State.modify`メソッドが「状態を書き換えたと同時に出てきた、別の値」として、
+`null`を返しているため、役立たずなためです。  
+<!--
+`State.modify`はあくまでも状態を書き換えることしかしないんですね。
+
+`State` Monadに限らず、Monadは定義上`interface Monad<T1>`となっていることから分かるように、
+なにかしら「(`T1`にあたる)他の値」がくっついてくるものですが、
+このように、「実際には何もくっついてない」なんてことがよくあります。  
+-->
+そうしたケースをより簡単に書けるように、
+`then`メソッドに渡す関数の、第1引数にあたる箇所を省略できるようにしましょう。  
+その結果がこれ↓です。
+
+```java
+State<String, Void> builder = do {
+    State.modify((str) -> str + "one! ");
+    State.modify((str) -> str + "two! ");
+    State.modify((str) -> str + "three!");
+};
+```
+
+さて、この場合どう構文糖で簡略化されたのでしょう？  
+元のコードの`then`メソッドの呼び出しが、セミコロン `;`, つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
+`State.modify`が返した`State` Monadを、セミコロン `;` が`then`メソッドで処理しているのです。
+
+これは[Monadを「プログラマブルセミコロン」として例える主張](http://zacharyvoase.com/2014/04/30/monads/)ともぴったり一致します。  
+上記の主張を借りるならば、Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれるのです [^get]。
+
+[^get]: うん、いい言葉なんでまとめでも借りよう。
+
+## Stateまとめ
+
+さて、長くなってしまいましたのでこの辺で一旦まとめます。
+
+- `State` Monadでは`then`メソッドが、状態を書き換える関数を、続けて実行するよう組み合わせる。
+- `State` Monadは純粋な関数だけの組み合わせで、命令型のようなスタイルで書けるようにすることができる。
+- `State` Monadは、「関数は全て純粋でないとならない」という(Haskellなどの)制約において、「抜け道」を作るのに役に立つ。
+- Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
+
+# 具体的な実装 その3 もしもFutureがMonadだったら
+
+「セミコロンをオーバーライドする」ことをもっと捉えやすくするために、
+もうひとつMonadの具体的な実装例を示しましょう。
+今度は[Future](https://docs.oracle.com/javase/jp/6/api/java/util/concu適当に省略しよう。rrent/Future.html)をMonadに変えてみます。  
+名前は... そうですね、いい名前も思い付かないので、とりあえず`MonadicFuture`にしましょう。
+実装は↓の通りです [^promise]。
+
+hoge: 言いたいことは`Future.get`するのと変わらないじゃん！という話なので、もっと簡潔にするため、いろいろ省く。、
+
+[^promise]: Haskellで近いことをしている、
+[promise](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)というパッケージのソースを参考にしました。
+
+```java
+class MonadicFuture<T1> implements Monad<T1> {
+    public final Future<T1> future;
+
+    MonadicFuture(Future<T1> future){
+        this.future = future;
+    }
+
+    <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+        FutureTask<T2> composedFuture = new FutureTask<>(() -> {
+            T1 result1 = this.future.get();
+            T2 result2 = nextAction.apply(result1).future.get();
+            return result2;
+        });
+        return new MonadicFuture<T2>(composedFuture);
+    }
+
+    // あると便利なユーティリティ。FutureTaskを作る手間を省く。
+    public static <V> MonadicFuture<V> start(Callable<V> callable){
+        return new MonadicFuture<V>(new FutureTask<V>(callable));
+    }
+}
+
+class MonadicFutureFactory implements MonadFactory {
+    <T> MonadicFuture<T> doNothingReturning(T x){
+        FutureTask<T> future = new FutureTask<>(() -> x);
+        return new MonadicFuture<T>(future);
+    }
+}
+```
+
+1つずつ解説していきましょう。
+
+- フィールドとコンストラクターについて
+
+`State` Monadが`StateMutator`(状態を受け取って書き換えた状態を返す関数)をラップしていたのと同様に、
+`MonadicFuture`では`Future`をラップします。
+
+- `then`について
+
+`State.then`の時と同様に、`MonadicFuture.then`についても各行に注釈を入れて細かく解説しましょう。
+`State.then`とよく似た処理をしているはずです。
+
+```java
+class MonadicFuture<T1> implements Monad<T1> {
+    public final Future<T1> future;
+    // ..
+    <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+        // (1) 新しいFutureを作って、
+        FutureTask<T2> composedFuture = new FutureTask<>(() -> {
+            // (2) ひとまず自分自身(`then`を呼び出したMonadicFuture)の完了を待ち、結果を受けとる。
+            T1 result = this.future.get();
+            // (3) (2)で完了待ちした結果の値を、次の`MonadicFuture`を作る関数へ渡す。
+            MonadicFuture<T2> other = nextAction.apply(result);
+            // (4) 更に(3)で得た`MonadicFuture`の完了を待ち、結果を返す。
+            return other.future.get();
+        });
+        // (1) また別の`MonadicFuture`としてくるみなおす。
+        return new MonadicFuture<T2>(composedFuture);
+    }
+    // ..
+}
+```
+
+`(1)` --- 2ヶ所にマークしています --- では、
+新しく`Future`を作って、`MonadicFuture`としてくるみなおしています。  
+`MonadicFuture`は`Future`をラップしたクラスなので、`MonadicFuture`を新しく作って返すには、当然のごとく`Future`を新しく作る必要があります。  
+`State` Monadの`then`が`StateMutator`をいい感じに組み合わせるよう作られているのと同様に、
+`MonadicFuture`の`then`は(そしてその構文糖である`do`も)、
+「**`Future`をいい感じに組み合わせる**」ためにある、言う点を覚えておいてください。  
+つまりこれ以降の説明は、`Future`をどのように組み合わせているのか、という問題が中心となります。
+
+`(2)`は、1つめの`Future`の結果待ちです。`get`メソッドを呼び出して実行結果を待ち、`(3)`で2つめの`Future`を得るのに必要な値を取得します。
+
+`(3)`は、`(2)`で取得した結果を`then`メソッドの引数`nextAction`に渡すことで、新しい`MonadicFuture`を作成します。  
+`nextAction`は引数を1個受け取って`MonadicFuture`を返す関数です。
+
+`(4)`では、今度は`(3)`で取得した`MonadicFuture`（がラップした`Future`）の完了を`get()`で待ち、
+その結果を最終的な結果として返します。
+
+`MonadicFuture`が`Future`をラップしただけのクラスであることから、
+この`then`メソッドがやっていることは結局のところ、
+「呼び出しもと(`this`)の`Future`ともう一つの(`nextAction`が返した)`Future`を**続けて実行する**、新たな`Future`を作る」
+と、要約されます。
+
+- `MonadicFutureFactory`について
+
+```java
+class MonadicFutureFactory implements MonadFactory {
+    <T> MonadicFuture<T> doNothingReturning(T x){
+        FutureTask<T> future = new FutureTask<>(() -> x);
+        return new MonadicFuture<T>(future);
+    }
+}
+```
+
+繰り返しになりますが、
+Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。  
+そして、型制約上、引数として受け取った値を必ず`MonadicFuture`に変換しなければなりません。  
+`MonadicFuture`にとっての「値を作って返すだけ」の処理は、
+引数として受け取った値を「返すだけ」の`FutureTask`を作る処理です。  
+値を`FutureTask`に包むだけで、もはや並行処理ですらありませんよね。
+
+## 具体的な使用例
+
+`MonadicFuture`を使って簡単に書けるようになる具体例として、下記のよくありそうな処理を想像してみましょう。
+
+- スレッドA
+    1. サーバーAにHTTPリクエストを投げる。
+    1. サーバーAからのレスポンスをリクエストパラメーターに乗せつつ、今度はサーバーBにHTTPリクエストを投げる。
+    1. スレッドBを停止させる。
+    1. サーバーBからのレスポンスを表示する。
+- スレッドB
+    1. スレッドAがサーバーBから結果を取得するまでの間、「Wait for a while...」と繰り返し表示する。
+
+`MonadicFuture`を使用すると、下記のように書くことができます。
+
+```java
+public class MonadicFutureSample {
+    public static MonadicFuture<String> sendRequest(String hostName){
+        // スタブ用メソッド。ここでは割愛。
+        // hoge
+        return MonadicFuture.start(() -> {
+            Thread.sleep(2000);
+            System.out.println(hostName + ": Accepted a GET request. Responding...");
+            Thread.sleep(1000);
+            return "response-from-" + hostName;
+        });
+    }
+    public static MonadicFuture<String> sendRequest(String hostName, String requestBody){
+        // スタブ用メソッド。ここでは割愛。
+        // hoge
+        return MonadicFuture.start(() -> {
+            Thread.sleep(3000);
+            System.out.println(hostName + ": Accepted a POST request with request body. Responding...");
+            Thread.sleep(2000);
+            return "response-from-" + hostName + "-with-body:'" + requestBody + "'";
+        });
+    }
+
+    public static void main(String[] args){
+        MonadicFuture<Void> threadA =
+            sendRequest(
+                "server-a"
+            ).then((response) ->
+                sendRequest("server-b", response)
+            ).then((response) -> {
+                threadB.cancel();
+                System.out.println("ThreadA: Response from server-b: " + response);
+                return new MonadicFutureFactory().doNothingReturning(null);
+            });
+        FutureTask<Void> threadB =
+            new FutureTask<>(() -> {
+                while(true){
+                    System.out.println("ThreadB: Wait for a while...");
+                    Thread.sleep(1000);
+                }
+                return null;
+            });
+
+        threadA.future.join();
+    }
+}
+```
+これをさらにdo記法で書き換えてみます。
+
+```java
+public class MonadicFutureSample {
+    // ...
+
+    public static void main(String[] args){
+        MonadicFuture<Void> threadA = do {
+            responseA <- sendRequest("server-a");
+            responseB <- sendRequest("server-b", responseA);
+            threadB.cancel();
+            System.out.println("ThreadA: Response from server-b: " + response);
+            new MonadicFutureFactory().doNothingReturning(null);
+        };
+
+        FutureTask<Void> threadB =
+            new FutureTask<>(() -> {
+                while(true){
+                    System.out.println("ThreadB: Wait for a while...");
+                    Thread.sleep(1000);
+                }
+                return null;
+            });
+
+        threadA.future.join();
+    }
+
+    // ...
+}
+```
+
+比較のために、`MonadicFuture`を使わず、純粋に`Future`のみを使って書いた場合も紹介しましょう。
+
+```java
+public class NonMonadicFutureSample {
+    public static FutureTask<String> sendRequest(String hostName){
+        // スタブ用メソッド。ここでは割愛。
+        // hoge
+        return new FutureTask(() -> {
+            Thread.sleep(2000);
+            System.out.println(hostName + ": Accepted a GET request. Responding...");
+            Thread.sleep(1000);
+            return "response-from-" + hostName;
+        });
+    }
+    public static FutureTask<String> sendRequest(String hostName, String requestBody){
+        // スタブ用メソッド。ここでは割愛。
+        // hoge
+        return new FutureTask(() -> {
+            Thread.sleep(3000);
+            System.out.println(hostName + ": Accepted a POST request with request body. Responding...");
+            Thread.sleep(2000);
+            return "response-from-" + hostName + "-with-body:'" + requestBody + "'";
+        });
+    }
+
+    public static void main(String[] args){
+        FutureTask<Void> threadA =
+            FutureTask.start(() -> {
+                String responseA = sendRequest("server-a").get();
+                String responseB = sendRequest("server-b", responseA).get();
+                threadB.cancel();
+                System.out.println("ThreadA: Response from server-b: " + responseB);
+                return null;
+            });
+        FutureTask<Void> threadB =
+            new FutureTask<>(() -> {
+                while(true){
+                    System.out.println("ThreadB: Wait for a while...");
+                    Thread.sleep(1000);
+                }
+                return null;
+            });
+
+        threadA.future.join();
+    }
+}
+```
+
+｢(ﾟﾍﾟ)あれ？`Future`を使った場合とあんまり変わりませんね...。
+
+そう、変わらないのです。  
+なぜならdo記法の中で`MonadicFuture`がやっているのは「セミコロンを`Future.get`に変える」ことだからです。
+
+もう少し正確に言いましょう。  
+`MonadicFuture`の`then`メソッドの解説で述べた、
+「呼び出しもと(`this`)の`Future`ともう一つの(`nextAction`が返した)`Future`を**続けて実行する**、新たな`Future`を作る」
+というのは、前の`Future`と後の`Future`を繋げるセミコロンを、
+それぞれの「`Future.get`メソッドで繋げる、新たな`Future`を作る」ようオーバーライドする、ことだったのです。
+
+# 最後に
+
+「セミコロンをオーバーライドする」ということの意味が分かっていただけたでしょうか？
+
+# 参考
+
+- [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
+- [java - How can I force a Constructor to be defined in all subclass of my abstract class - Stack Overflow](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
+- [Javaラムダ式メモ(Hishidama's Java8 Lambda Expression Memo)](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
+- [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
+- [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
+- [hoge](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)
