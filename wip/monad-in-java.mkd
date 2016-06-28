@@ -567,7 +567,7 @@ interface StateMutator0<S> {
 例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove(java.lang.Object)は、
 呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
 そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、
-「書き換えた結果として、一緒に返す値」も返せるようにする必要があるのです。
+「一緒に返す別の値」も返せるようにする必要があるのです。
 
 と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
 ↓にもう一度載せておきます。
@@ -593,7 +593,7 @@ interface StateMutator<T, S> {
 ```
 
 「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、
-「新しい状態」と「書き換えた結果の値」とのペアを表すオブジェクト`MutationResult`を作りました。
+「新しい状態」と「一緒に返す別の値」とのペアを表すオブジェクト`MutationResult`を作りました。
 `StateMutator`は古い状態を受け取って、それを返すだけです。
 
 ## `State`のコンストラクターがやっていること
@@ -613,7 +613,7 @@ class State<S, T1> implements Monad<T1> {
 ここで注目していただきたいのは、`State<S, T1>`は、
 `StateMutator<T1, S>`,
 すなわち「`S`という型の古い状態を受け取って、同じく`S`という型の**書き換えた状態と**、
-`T1`という型の**書き換えた結果の値を返す関数**」を**ラップしただけ**のクラスであることです。  
+`T1`という型の**別の値を一緒に返す関数**」を**ラップしただけ**のクラスであることです。  
 `State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
 
 ## `StateFactory.doNothingReturning`がやっていること
@@ -632,12 +632,12 @@ class StateFactory<S> implements MonadFactory {
 
 Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。
 このルールに加えて、先ほど説明した、
-「`State<S, T1>`は、**書き換えた状態と、書き換えた結果の値を返す関数**をラップしただけのクラスである」
+「`State<S, T1>`は、**書き換えた状態と、一緒に別の値を返す関数**をラップしただけのクラスである」
 という事実を思い出してください。  
-「書き換えた状態と、書き換えた結果の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
+「書き換えた状態と、一緒に別の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
 **状態を書き換えないで、そのまま返す**、というのが正解です。  
 `StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult(nonMutatedState, value)`
-という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「書き換えた結果の値」として返すだけの関数を作っているのです。
+という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「一緒に返す別の値」として返すだけの関数を作っているのです。
 
 繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
 
@@ -655,7 +655,7 @@ class State<S, T1> implements Monad<T1> {
         StateMutator<S, T2> composedMutator = (oldState) -> {
             // (2) 古い状態を書き換え、結果を受けとる
             MutationResult<S, T1> result = this.mutator.mutate(oldState);
-            // (3) (2)で状態を書き換えた結果の値を、次の`State` Monadを作る関数へ渡す。
+            // (3) (2)で状態を書き換えた際に一緒に返した値を、次の`State` Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
             // (4) (2)で状態を書き換えた状態をまた処理する
             return other.mutator.mutate(result.newState);
@@ -720,6 +720,7 @@ class State<S, T1> implements Monad<T1> {
         );
     }
 
+    // 引数で与えた関数で、状態を書き換える
     public static <S> State<S, Void> modify(Function<S, S> simpleMutator){
         return new State(
             (currentState) -> {
@@ -750,7 +751,7 @@ class State<S, T1> implements Monad<T1> {
 最後に`State.modify`について。  
 `State.put`と同様に、`State.modify`も戻り値の型は`State<S, Void>`です。すなわち状態を書き換えるだけで、「一緒に返す値」を返しません。  
 `State.put`が新しい状態を引数から受け取っていたのに対して、`State.modify`では、前の状態に（第一引数として受け取った）関数を適用することで、新しい状態を作ります。  
-`simpleMutator`と読んでいる通り、第一引数は単純に書き換える前の状態を受け取って返します。
+`simpleMutator`と呼んでいる通り第一引数の関数は、単純に書き換える前の状態を受け取って、変更後の状態を返す関数なのです。
 
 `State` Monadは実用上、ここまで紹介した`State.put`, `State.get`, `State.modify`といったユーティリティメソッドを中心に利用した方が、直感的で使いやすいかと思います。  
 と、いうわけで上記の`State.get`と`State.put`を利用して、`StringBuilder`を真似したような例を紹介しましょう。
@@ -761,7 +762,7 @@ State<String, Void> builder =
     State.get()
           // ↓渡された状態に処理を加え、書き戻す。
          .then((currentString) -> State.put(currentString + "one!"))
-         .then((_null /* どうせ State.put が返す（次の関数に渡す）のはnullなので無視する */) ->
+         .then((_null /* どうせ State.put が返す（次の関数に渡す）値はnullなので無視する */) ->
              // ↓また状態を取得する。
              State.get()
          )
@@ -789,12 +790,12 @@ State<String, Void> builder =
 ## 何が嬉しいの？
 
 さて、ここまで長々と`State` Monadについて説明しましたが、いったいこんなものを作って何が嬉しいのでしょう？  
-この章の冒頭でも触れた通り、正直に言って、Javaではあまり役に立たないでしょう。  
-特に上記の例で言えば、普通に`StringBuilder`を使って書いた方が、読みやすさの観点からも実行効率の観点からも、遥かに優れているに決まっています。  
+この章の冒頭でも触れた通り正直に言って、Javaではあまり役に立たないでしょう。  
+特に上記の例で言えば、普通に`StringBuilder`を使って書いた方が、読みやすさの観点からも実行効率の観点からも、明らかに優れています。  
 そもそもJavaでは変数もオブジェクトもミュータブル（変更可能）なのですから、敢えてこんなものを作る必要はないでしょう。
 
 一方、これはHaskellでは結構役に立ちます。  
-Haskellでは型によって、**関数のできることに厳格な制約**がかけられます（主にデバッグのために使われる例外はあります）。  
+Haskellでは、型によって**関数のできることに厳格な制約**がかけられます（主にデバッグのために使われる例外はあります）。  
 通常の関数は「決められた型の値を受け取って、決められた型の値を返す」以外に、全く何も出来ません。
 Javaではクラスの設計によって、利用者がそのクラスを使ってできることに制限を加えたりできますが、
 ある意味、Haskellには言語仕様レベルでそのような厳重な制限がかけられています。  
@@ -802,48 +803,40 @@ Javaではクラスの設計によって、利用者がそのクラスを使っ�
 本記事の守備範囲から離れてしまうので、お話しできないのが残念なくらいには。
 
 しかし実際問題として、こうした制約が面倒に感じられることも多々あります。  
-よくあるのは、同じ型の値を返しては別の関数に渡して書き換え、また値を返しては書き換え、というのを繰り返したいケースです。  
+よくあるのは、値を返しては別の関数に渡し、また値を返しては別の関数に渡し...というのを繰り返したいケースです。  
 こうしたケースでは、新しい変数名を考えるのもかったるいくらい、冗長な記述になってしまうでしょう。  
-それから、型を定義して表現したい対象について、命令型プログラミングスタイルで考えた方が相性がよいように感じられる場合、というのもよくあるでしょう。
+それから、型を定義して表現したい対象について、命令型プログラミングスタイルで考えた方が相性がよいように感じられる場合、というのもあるでしょうね。
 
 HaskellのState Monadは、そうしたケースにおいて、ちょうどよい「抜け道」を空けてくれます。  
 先程の例をよく振り返っていただきたいのですが、
 変数 `builder` を作るのに使うラムダ式や、`State` Monadの各種メソッドに至るまで、
 Java組み込みの`System.out.println`以外、**すべて純粋な関数のみで構成されている**ことにお気づきでしょうか？  
 `builder.mutator.mutate("zero! ")`してから`newState`を得るまでの全ての関数が、
-実際には「戻り値が引数によってのみ定まり、『戻り値を返す』以外になにもしない」「純粋な関数」なのです。
-
-```java
-State<String, Void> builder =
-    State.modify((str) -> str + "one! ")
-         .then((_null) -> State.modify((str) -> str + "two! "))
-         .then((_null) -> State.modify((str) -> str + "three!"));
-
-System.out.println(
-    builder.mutator.mutate("zero! ").newState
-);
-```
+「戻り値が引数によってのみ定まり、『戻り値を返す』以外になにもしない」「純粋な関数」でできているのです。
 
 このように`State` Monadは、
 純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように見せる、魔法のようなMonadとなっています。  
 do記法を使って書き換えると、よりそのことを実感できるでしょう。
 
 ただし、先程の`Maybe` Monadの例から、もう少しdo記法でできることを増やしましょう。  
-`State` Monadの最後の例の、
+`State` Monadの例において、
 
 ```java
-.then((_null) -> State.modify((str) -> str + "two! "))
+.then((currentString) -> State.put(currentString + "one!"))
+.then((_null /* どうせ State.put が返す（次の関数に渡す）値はnullなので無視する */) ->
+    // ↓また状態を取得する。
+    State.get()
+)
 ```
 
-と、
+とか、
 
 ```java
-.then((_null) -> State.modify((str) -> str + "three!"));
+.then((_null) -> State.modify((currentString) -> currentString + "three!"));
 ```
 
-の`then`メソッドでは、ラムダ式の第1引数(`_null`)が無視されていることにお気づきでしょうか？  
-これは、`State.modify`メソッドが「状態を書き換えたと同時に出てきた、別の値」として、
-`null`を返しているため、役立たずなためです。  
+などの`then`メソッドでは、コメントも書いた通り、ラムダ式の第1引数(`_null`)が無視されています。  
+これは、`State.modify`メソッドが「状態を書き換えた際に、一緒に返す値」として`null`を返しているため、役立たずなためです。  
 <!--
 `State.modify`はあくまでも状態を書き換えることしかしないんですね。
 
@@ -857,13 +850,28 @@ do記法を使って書き換えると、よりそのことを実感できるで
 
 ```java
 State<String, Void> builder = do {
-    State.modify((str) -> str + "one! ");
-    State.modify((str) -> str + "two! ");
-    State.modify((str) -> str + "three!");
+    currentString <- State.get();
+    State.put(currentString + "one!");
+
+    currentString <- State.get();
+    State.put(currentString + "two!");
+
+    currentString <- State.get();
+    State.put(currentString + "three!");
 };
 ```
 
-さて、この場合どう構文糖で簡略化されたのでしょう？  
+```java
+State<String, Void> builder = do {
+    State.modify((currentString) -> currentString + "one! ");
+    State.modify((currentString) -> currentString + "two! ");
+    State.modify((currentString) -> currentString + "three!");
+};
+```
+
+ますます普通の手続き型スタイルっぽくなりましたね！
+
+さて、この場合どう構文糖で簡略化されたのでしょう？    
 元のコードの`then`メソッドの呼び出しが、セミコロン `;`, つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
 `State.modify`が返した`State` Monadを、セミコロン `;` が`then`メソッドで処理しているのです。
 
