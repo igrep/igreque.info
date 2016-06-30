@@ -23,6 +23,11 @@ Java (Java 8以降の知識を前提とします)でMonadを定義して説明�
 
 # TL;DR (ここ以降がよくわかんなくてもとりあえず知ってもらいたいこと）
 
+- MonadをJavaで表現すると、2つのインターフェースで表現することができる。
+- do記法があるおかげで、HaskellではMonadが思いの外役に立つ。
+- do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスがMonad則を守る必要がある。
+- Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
+
 hoge
 
 # 目次
@@ -869,7 +874,9 @@ State<String, Void> builder = do {
 };
 ```
 
-ますます普通の手続き型スタイルっぽくなりましたね！
+ますます普通の手続き型スタイルっぽくなりましたね！  
+`State.put`したり`State.modify`することによってできる新しい状態が、`do`ブロックの中で直接現れず、`do`ブロック全体で共有されるようになります。  
+hoge TODO: できれば`currentString`を隠蔽した例を作る
 
 さて、この場合どう構文糖で簡略化されたのでしょう？    
 元のコードの`then`メソッドの呼び出しが、セミコロン `;`, つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
@@ -891,16 +898,13 @@ State<String, Void> builder = do {
 
 # 具体的な実装 その3 もしもFutureがMonadだったら
 
-「セミコロンをオーバーライドする」ことをもっと捉えやすくするために、
-もうひとつMonadの具体的な実装例を示しましょう。
+「セミコロンをオーバーライドする」ことをもっと捉えやすくするために、もうひとつMonadの具体的な実装例を示しましょう。  
 今度は[Future](https://docs.oracle.com/javase/jp/6/api/java/util/concu適当に省略しよう。rrent/Future.html)をMonadに変えてみます。  
 名前は... そうですね、いい名前も思い付かないので、とりあえず`MonadicFuture`にしましょう。
+
 実装は↓の通りです [^promise]。
 
-hoge: 言いたいことは`Future.get`するのと変わらないじゃん！という話なので、もっと簡潔にするため、いろいろ省く。、
-
-[^promise]: Haskellで近いことをしている、
-[promise](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)というパッケージのソースを参考にしました。
+[^promise]: Haskellで近いことをしている、[promise](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)というパッケージのソースを参考にしました。
 
 ```java
 class MonadicFuture<T1> implements Monad<T1> {
@@ -1007,15 +1011,13 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ## 具体的な使用例
 
-`MonadicFuture`を使って簡単に書けるようになる具体例として、下記のよくありそうな処理を想像してみましょう。
+hoge: 言いたいことは`Future.get`するのと変わらないじゃん！という話なので、もっと簡潔にするため、いろいろ省く。、
 
-- スレッドA
-    1. サーバーAにHTTPリクエストを投げる。
-    1. サーバーAからのレスポンスをリクエストパラメーターに乗せつつ、今度はサーバーBにHTTPリクエストを投げる。
-    1. スレッドBを停止させる。
-    1. サーバーBからのレスポンスを表示する。
-- スレッドB
-    1. スレッドAがサーバーBから結果を取得するまでの間、「Wait for a while...」と繰り返し表示する。
+`MonadicFuture`を使った具体例として、下記の単純な処理を想像していましょう。
+
+1. サーバーAにHTTPリクエストを投げる。
+1. サーバーAからのレスポンスをリクエストボディに乗せつつ、今度はサーバーBにHTTPリクエストを投げる。
+1. サーバーBからのレスポンスを表示する。
 
 `MonadicFuture`を使用すると、下記のように書くことができます。
 
@@ -1043,26 +1045,16 @@ public class MonadicFutureSample {
     }
 
     public static void main(String[] args){
-        MonadicFuture<Void> threadA =
+        MonadicFuture<Void> thread =
             sendRequest(
                 "server-a"
             ).then((response) ->
                 sendRequest("server-b", response)
             ).then((response) -> {
-                threadB.cancel();
                 System.out.println("ThreadA: Response from server-b: " + response);
                 return new MonadicFutureFactory().doNothingReturning(null);
             });
-        FutureTask<Void> threadB =
-            new FutureTask<>(() -> {
-                while(true){
-                    System.out.println("ThreadB: Wait for a while...");
-                    Thread.sleep(1000);
-                }
-                return null;
-            });
-
-        threadA.future.join();
+        thread.future.join();
     }
 }
 ```
@@ -1073,24 +1065,14 @@ public class MonadicFutureSample {
     // ...
 
     public static void main(String[] args){
-        MonadicFuture<Void> threadA = do {
+        MonadicFuture<Void> thread = do {
             responseA <- sendRequest("server-a");
             responseB <- sendRequest("server-b", responseA);
-            threadB.cancel();
             System.out.println("ThreadA: Response from server-b: " + response);
             new MonadicFutureFactory().doNothingReturning(null);
         };
 
-        FutureTask<Void> threadB =
-            new FutureTask<>(() -> {
-                while(true){
-                    System.out.println("ThreadB: Wait for a while...");
-                    Thread.sleep(1000);
-                }
-                return null;
-            });
-
-        threadA.future.join();
+        thread.future.join();
     }
 
     // ...
@@ -1123,24 +1105,15 @@ public class NonMonadicFutureSample {
     }
 
     public static void main(String[] args){
-        FutureTask<Void> threadA =
+        FutureTask<Void> thread =
             FutureTask.start(() -> {
                 String responseA = sendRequest("server-a").get();
                 String responseB = sendRequest("server-b", responseA).get();
-                threadB.cancel();
                 System.out.println("ThreadA: Response from server-b: " + responseB);
                 return null;
             });
-        FutureTask<Void> threadB =
-            new FutureTask<>(() -> {
-                while(true){
-                    System.out.println("ThreadB: Wait for a while...");
-                    Thread.sleep(1000);
-                }
-                return null;
-            });
 
-        threadA.future.join();
+        thread.future.join();
     }
 }
 ```
@@ -1154,11 +1127,10 @@ public class NonMonadicFutureSample {
 `MonadicFuture`の`then`メソッドの解説で述べた、
 「呼び出しもと(`this`)の`Future`ともう一つの(`nextAction`が返した)`Future`を**続けて実行する**、新たな`Future`を作る」
 というのは、前の`Future`と後の`Future`を繋げるセミコロンを、
-それぞれの「`Future.get`メソッドで繋げる、新たな`Future`を作る」ようオーバーライドする、ことだったのです。
+それぞれの「`Future.get`メソッドで繋げる、新たな`Future`を作る」ようオーバーライドする、ことだったのです。  
+「セミコロンをオーバーライドする」ということの意味が分かっていただけたでしょうか？
 
 # 最後に
-
-「セミコロンをオーバーライドする」ということの意味が分かっていただけたでしょうか？
 
 # 参考
 
