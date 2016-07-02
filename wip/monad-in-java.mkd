@@ -1132,6 +1132,17 @@ public class NonMonadicFutureSample {
 
 # 最後に
 
+hoge
+
+Monadは文と文を繋ぐもの、各文の間にあるものの意味を変えることを可能にします。
+
+繰り返しになりますが、まとめをもう一度挙げておきます。
+
+- MonadをJavaで表現すると、2つのインターフェースで表現することができる。
+- do記法があるおかげで、HaskellではMonadが思いの外役に立つ。
+- do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスがMonad則を守る必要がある。
+- Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
+
 # 参考
 
 - [モナドについてSwiftで説明してみた - Qiita](http://qiita.com/koher/items/12f72f2fc2db7fa709cf)
