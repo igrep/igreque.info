@@ -21,14 +21,12 @@ Java (Java 8以降の知識を前提とします)でMonadを定義して説明�
 と言った点も説明したいと思います！
 僕自身Javaを勉強中なんで一石二鳥ですね！
 
-# TL;DR (ここ以降がよくわかんなくてもとりあえず知ってもらいたいこと）
+# 最初にまとめ (ここ以降がよくわかんなくてもとりあえず知ってもらいたいこと）
 
 - MonadをJavaで表現すると、2つのインターフェースで表現することができる。
 - do記法があるおかげで、HaskellではMonadが思いの外役に立つ。
 - do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスがMonad則を守る必要がある。
-- Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
-
-hoge
+- Monadは（`+`などの演算子と同様に）各文と文を繋ぐものの意味を変える、すなわち、セミコロンをオーバーライドできるようにしてくれる。
 
 # 目次
 
@@ -1132,16 +1130,22 @@ public class NonMonadicFutureSample {
 
 # 最後に
 
-hoge
+Monadは文と文を繋ぐもの、各文の間にあるものの意味を変えることを可能にします。  
+Monadの説明でよく出てくる「文脈」[^context]という概念はここで言う「各文の間にあるものの意味」と捉えていただくと、いろいろとしっくり来るのではないでしょうか。
 
-Monadは文と文を繋ぐもの、各文の間にあるものの意味を変えることを可能にします。
+[^context]: 例えば<a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />の211ページの「本章で説明するモナドは、端端的には『文脈を伴う計算』同士を組み合わせ可能にするしくみです」という文。
 
-繰り返しになりますが、まとめをもう一度挙げておきます。
+例えばMaybe Monadであれば、各文の間に「結果がNothingでないかどうかチェックし、Nothingであれば次の文の実行をやめる」という処理がありますし、State Monadであれば、「前の文で書き換えた状態を、次の文に渡す」という処理があります。
+他のMonadをご存じであれば、それも考えてみてください。各Monadへの理解がいっそう深まることでしょう。
+
+最後に繰り返しになりますが、まとめをもう一度挙げておきます。
 
 - MonadをJavaで表現すると、2つのインターフェースで表現することができる。
 - do記法があるおかげで、HaskellではMonadが思いの外役に立つ。
 - do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスがMonad則を守る必要がある。
-- Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
+- Monadは（`+`などの演算子と同様に）各文と文を繋ぐものの意味を変える、すなわち、セミコロンをオーバーライドできるようにしてくれる。
+
+それではMonadでHappy Hacking!
 
 # 参考
 
@@ -1151,3 +1155,4 @@ Monadは文と文を繋ぐもの、各文の間にあるものの意味を変え
 - [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
 - [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
 - [hoge](https://github.com/jfischoff/promise/blob/9f8a9e48cdc015e1abd9dab852720da968bc0d4e/src/Control/Concurrent/Promise.hs)
+- <a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
