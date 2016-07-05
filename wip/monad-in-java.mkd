@@ -1,5 +1,5 @@
 ---
-title: JavaでMonadを説明してみる
+title: JavaでMonadをはじめからていねいに
 author: Yuji Yamamoto
 tags: Monad, Java
 date: February 25, 2016
@@ -19,7 +19,7 @@ Java (Java 8以降の知識を前提とします)でMonadを定義して説明�
 - Haskellのdo記法がどんなことをしているのか
 
 と言った点も説明したいと思います！
-僕自身Javaを勉強中なんで一石二鳥ですね！
+私自身Javaを勉強中なんで一石二鳥ですね！
 
 # 最初にまとめ (ここ以降がよくわかんなくてもとりあえず知ってもらいたいこと）
 
@@ -1009,9 +1009,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ## 具体的な使用例
 
-hoge: 言いたいことは`Future.get`するのと変わらないじゃん！という話なので、もっと簡潔にするため、いろいろ省く。、
-
-`MonadicFuture`を使った具体例として、下記の単純な処理を想像していましょう。
+`MonadicFuture`を使った具体例として、下記の単純な処理を想像してみましょう。
 
 1. サーバーAにHTTPリクエストを投げる。
 1. サーバーAからのレスポンスをリクエストボディに乗せつつ、今度はサーバーBにHTTPリクエストを投げる。
@@ -1104,7 +1102,7 @@ public class NonMonadicFutureSample {
 
     public static void main(String[] args){
         FutureTask<Void> thread =
-            FutureTask.start(() -> {
+            new FutureTask(() -> {
                 String responseA = sendRequest("server-a").get();
                 String responseB = sendRequest("server-b", responseA).get();
                 System.out.println("ThreadA: Response from server-b: " + responseB);
@@ -1130,7 +1128,7 @@ public class NonMonadicFutureSample {
 
 # 最後に
 
-Monadは文と文を繋ぐもの、各文の間にあるものの意味を変えることを可能にします。  
+Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間にあるもの」の意味を変えることを可能にします。  
 Monadの説明でよく出てくる「文脈」[^context]という概念はここで言う「各文の間にあるものの意味」と捉えていただくと、いろいろとしっくり来るのではないでしょうか。
 
 [^context]: 例えば<a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />の211ページの「本章で説明するモナドは、端端的には『文脈を伴う計算』同士を組み合わせ可能にするしくみです」という文。
