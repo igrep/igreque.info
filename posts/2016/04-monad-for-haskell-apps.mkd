@@ -1,15 +1,15 @@
 ---
 title: Haskellアプリ作りのためのMonad Overview
 author: Yuji Yamamoto
-date: May, 2016
+date: July, 2016
 tags: Haskell, Monad
 ...
 ---
 
-唐突ながら、会社でHaskellを採用する可能性が高まりつつあるので、
-チームのメンバーに向けて、Haskellで実践的なアプリを作る上で欠かせない、
-Monadの使い方やその実用的な役割にフォーカスした概要を、できるだけ簡潔に説明したいと思う。  
+唐突ながら、会社でHaskellを採用する可能性が高まりつつあるので[^lost]、チームのメンバーに向け、Haskellで実践的なアプリを作る上で欠かせない、Monadの使い方やその実用的な役割にフォーカスした概要を、できるだけ簡潔に説明したいと思う。  
 実際には会社で使いながら補足していき、必要に応じてこの記事にも書き足す方向で。
+
+[^lost]: 残念ながらこの時の採用はすでになくなってしまった。
 
 # この文章を読んで知って頂きたいこと
 
@@ -33,19 +33,15 @@ Monadの使い方やその実用的な役割にフォーカスした概要を、
 
 # HaskellにおけるMonadの役割
 
-いわゆる「純粋関数型プログラミング言語」などと知られている通り、Haskellは原則として、
-プログラムを全て「純粋な関数」 --- 値を受け取って、返すことしかできない --- で構成するよう設計されている。  
-しかしHaskellを敬遠する多くの人の想像するように、
-実際のところ、「純粋な関数」だけでは冗長すぎて書きにくい場面も多い。  
-例えば、同じ型の変数に関数をいくつも適用したいが、変数名をいくつもつけるのが面倒な場合や、それから、
-感じ方の問題ではあるが、設計者が考えたモデルについて、どう考えても状態を持ったものとして表現したほうが適切だと考えられる場合など。  
+いわゆる「純粋関数型プログラミング言語」などと知られている通り、Haskellは原則として、プログラムを全て「純粋な関数」 --- 値を受け取って、返すことしかできない --- で構成するよう設計されている。  
+しかしHaskellを敬遠する多くの人の想像するように、実際のところ、「純粋な関数」だけでは冗長すぎて書きにくい場面も多い。  
+例えば、同じ型の変数に関数をいくつも適用したいが、変数名をいくつもつけるのが面倒な場合や、それから感じ方の問題ではあるが、設計者が考えたモデルについて、どう考えても状態を持ったものとして表現したほうが適切だと考えられる場合など。  
 あと、最もありふれたケースとして、入出力処理をしたい場合も該当する。
 
 定義や理論はともかく、実践上、HaskellのMonadはそうしたニーズをごく自然な書き方で解決するための手段を提供する。  
-具体的には、「値を受け取って、返すことしかできない」「純粋な関数」(`a -> b`のような型の関数)の戻り値の型に、
-関数の「**権限を表すラベル**」を貼り付けることで、
+具体的には、「値を受け取って、返すことしかできない」「純粋な関数」(`a -> b`のような型の関数)の戻り値の型に、関数の「**権限を表すラベル**」を貼り付けることで、
 
-「この関数は『値を受け取って、返すこと』**以外のこと**もしうるよ！」
+*「この関数は『値を受け取って、返すこと』***以外のこと***もしうるよ！」*
 
 ということを型で明示する、と考えるとわかりやすいだろう（し、私自身そのように考えながら関数の型を見る）。  
 
@@ -56,16 +52,13 @@ pureFunction  :: a -> b
 stateFunction :: a -> State s b
 ```
 
-`pureFunction`が「`a`という型の値を受け取って、`b`という型の値を返すことしかできない」「純粋な関数」であるのに対して、
-`stateFunction`は、「`a`という型の値を受け取って、`b`という型の値を返しつつ」、
-「`s`という型の（とある一つの）変数を更新することもできるよ！」ということを明示している。
+`pureFunction`は普通の関数、「`a`という型の値を受け取って、`b`という型の値を返すことしかできない」いわゆる「純粋な関数」である。
+それに対して、`stateFunction`は、「`a`という型の値を受け取って、`b`という型の値を返す」だけでなく、「`s`という型の（とある一つの）変数を更新することもできるよ！」ということを明示している。
 
-Haskellでは関数の型にそうした「権限」を明記し、制限することで、
-プログラマは関数の与える影響範囲を簡単に知ることができるし、コンパイラにそれを保証させることができる。
+Haskellでは関数の型にそうした「権限」を明記し、制限することで、プログラマは関数の与える影響範囲を簡単に知ることができるし、コンパイラにそれを保証させることができる。
 
 これ以降で使う予定の用語を一点補足しておこう。  
-先ほどの`stateFunction`の`b`にくっついた`State s`ような、
-「**権限を表すラベル**」がくっついた型の値(`stateFunction`で言えば`State s b`)を、Haskellでは「アクション」だとか「Monadの値」と呼ぶ。  
+先ほどの`stateFunction`の`b`にくっついた`State s`ような、「**権限を表すラベル**」がくっついた型の値(`stateFunction`で言えば`State s b`)を、Haskellでは「アクション」だとか「Monadの値」と呼ぶ。  
 そして`stateFunction`のような型の関数が返す値(`State s b`という型の値)を「`State` Monadのアクション」と呼ぶ。  
 Haskellの型で一般化すると次のようになる。
 
@@ -75,9 +68,8 @@ action :: Monad m => m b
 
 # 各種Monadひとっ飛び
 
-具体的な使い方は後に回して、ひとまずHaskellの世界にはどんなMonadがあるのか、
-そしてそれらが「値を受け取って、返すこと」以外に何ができるか、ざっとリストアップする。  
-知っているものを網羅させるが、私の独断と偏見により、重要度に応じて★をつけた。
+具体的な使い方は後に回して、ひとまずHaskellの世界にはどんなMonadがあるのか、そしてそれらが「値を受け取って、返すこと」以外に何ができるか、ざっとリストアップする。  
+知っているものを網羅させつつ、私の独断と偏見により、重要度に応じて★をつけた。
 とりあえずは、★を2つ以上つけたものの使い方だけでも理解していただきたい。
 
 - State Monad (★):
@@ -88,7 +80,7 @@ action :: Monad m => m b
     - 例えば後述する`IO`を使わずに、ログをログらしく書きたい時などに使う。
 - Reader Monad (★):
     - `do`ブロックの中で共有している、とある型の変数を**読む**。
-    - 実質普通の関数と変わらないように聞こえる通り、実は普通の関数。
+    - 実質普通の関数と変わらないように聞こえるかもしれない。その推測は正しく、実際のところ本当に普通の関数。
     - アプリケーションの広い範囲で共有する、書き換えない変数を自然に表現するために使う。
         - 外部から読んできた環境設定を表現したり、ダイナミックスコープな定数をシミュレートしたりするのに使う。
 - **Maybe Monad** (★★):
@@ -99,14 +91,13 @@ action :: Monad m => m b
     - `throw`を使って、囲っている`try`ブロックを中断する機能の代わりに使う。
 - List Monad (★):
     - 関数が返した複数の結果を、`do`ブロックの中で総当りで実行する。
-    - 例えば他の言語でリストに対する`for`文がたくさんネストしてしまうケースにおいて、ネストをなくすのに使えたりする。
+    - 例えば他の言語でリストに対する`for`文がたくさんネストしてしまうケースにおいて、ネストを減らすのに使えたりする。
 - Cont Monad:
-    - 継続Monad。他の言語で言う`break`や`continue`をエミュレートするのに使ったりする。
+    - 継続(continuation) Monad。他の言語で言う`break`や`continue`をエミュレートするのに使ったりする。
     - [こういった使い方もある](http://qiita.com/tanakh/items/81fc1a0d9ae0af3865cb)。
     - 直接使うことは稀だと思うのでむやみに理解する必要はない。というか、私も仕組みを理解していない。
 - **IO Monad** (★★★):
-    - おなじみ入出力処理に加え、C言語で定義した関数の呼び出し、`IORef`という特殊な型の変数の破壊的変更、例外の送出など、だいたいなんでもできる。
-    - 一言で言うとワイルドカードのようなMonad。
+    - おなじみ入出力処理に加え、C言語で定義した関数の呼び出し、`IORef`という特殊な型の変数の破壊的変更、例外の送出など、いろいろなことができる。
     - 必要以上に使えば使うほど、Haskellで書くメリットが減っていくのでご利用は計画的に。
 - ST Monad:
     - `STRef`という特殊な型の変数の更新をする。
@@ -131,15 +122,14 @@ action :: Monad m => m b
 - その他
     - これまでに挙げた様々なMonadを、各アプリケーションやライブラリ専用に組み合わせたものが多い。
         - あるいは、実装は独自だが本質的に他のMonadと似たものか。
-    - 後はSTMやEvalなど、並列処理や並行処理用に作られたやつか。
+    - 後はSTMやEvalなど、並列処理や並行処理用に作られたやつとか。
         - こちらについて詳しくは<a href="http://www.amazon.co.jp/gp/product/4873116899/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4873116899&amp;linkCode=as2&amp;tag=poe02-22">Haskellによる並列・並行プログラミング</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4873116899" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を参照されたし。
 
 # Monadの一般的な使い方
 
 一部には`do`記法禁止、なんていう規約を設けているところもあるらしいが、
 通例Monadは「`do`記法」という特別な構文糖（シンタックスシュガー）を介して使用すると、わかりやすく直感的に書けることが多い。  
-そのため、以下にMonad全般（もちろん、ここまでに紹介したものを含む）で使用できる、「`do`記法」という構文糖の使い方を、
-ある意味最も身近なMonadであろう、IO Monadを例に示す。
+そのため、以下にMonad全般（もちろん、ここまでに紹介したものを含む）で使用できる、「`do`記法」という構文糖の使い方を、ある意味最も身近なMonadであろう、IO Monadを例に示す。
 
 IOには、例えば下記のような型のアクション（と、アクションを返す関数）がある。
 
@@ -179,8 +169,7 @@ largerAction = do
 アクションの「結果」とは、アクションを「実際に実行した結果」を表す。  
 そしてその型はアクションから「権限を表すラベル」を**剥がした**型となる。  
 上記の例で言うと、`line <- getLine`という行が該当する。  
-`line`には`getLine`を実行した結果、すなわち「標準入力から文字列を一行読みだした結果の文字列」が代入され、
-その型は`IO String`から`IO`を剥がした型`String`となる。
+`line`には`getLine`を実行した結果、すなわち「標準入力から文字列を一行読みだした結果の文字列」が代入され、その型は`IO String`から`IO`を剥がした型、すなわち`String`となる。
 
 `<-`で代入した変数は、もちろん`do`ブロックの中で他の関数に渡すことができる。  
 なので当然ながら上記の`readFile`は`line`を引数として受け取ることができる。
@@ -192,14 +181,11 @@ largerAction = do
 まとめると上記のアクションは、「`getLine`した結果を`readFile`して、その結果を返す」アクション、
 日本語に訳すと「標準入力から一行分読んだ文字列をファイル名として、その中身を読んで返す」アクションである。
 
-`do`ブロックの中でアクションでない値、すなわち「値を受け取って、返すことしかできない」、
-純粋な関数で作った値を作りたくなる場合も、当然あるだろう。  
+`do`ブロックの中でアクションでない値、すなわち「値を受け取って、返すことしかできない」、純粋な関数で作った値を作りたくなる場合も、当然あるだろう。  
 そのような場合は`let`を使う。
 
 例として、先程まで使った例を少し改造しよう。  
-ファイル名を`getLine`で受け取ってから、
-[MissingHというパッケージのData.String.Utilsモジュールにある、strip関数](https://hackage.haskell.org/package/MissingH-1.3.0.1/docs/Data-String-Utils.html)を使用して、
-ファイル名の前後に含まれてしまった空白文字を取り除き、更に拡張子を加えてみよう。
+ファイル名を`getLine`で受け取ってから、[MissingHというパッケージのData.String.Utilsモジュールにある、strip関数](https://hackage.haskell.org/package/MissingH-1.3.0.1/docs/Data-String-Utils.html)を使用して、ファイル名の前後に含まれてしまった空白文字を取り除き、更に拡張子を加えてみよう。
 
 ```haskell
 import Data.String.Utils (strip)
@@ -230,8 +216,7 @@ main = largerAction >>= print
 ### その1: 同じ`do`ブロックで列挙するアクションの「権限を表すラベル」は、必ず一貫していなければならない。
 
 例1: 下記の`largerAction`は、`IO String`という型なので、「権限を表すラベル」は`IO`である。  
-一方、[`lookup`関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)（連想配列 `Map`から指定したキーの値を取り出す関数）は、
-下記の場合`Maybe [Char]`返すので、「権限を表すラベル」は`Maybe`である。  
+一方、[`lookup`関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)（連想配列 `Map`から指定したキーの値を取り出す関数）は、下記の場合`Maybe String`返すので、「権限を表すラベル」は`Maybe`である。  
 したがって`IO`であることと一貫せず、コンパイルエラーとなる。
 
 ```haskell
@@ -248,7 +233,7 @@ largerAction = do
   readFile currency
 ```
 
-エラー内容:
+エラー内容 (`FilePath`, `[Char]`はそれぞれ同じ型(`String`)を指しているので注意）:
 
 ```haskell
     Couldn't match expected type ‘IO FilePath’
@@ -260,11 +245,8 @@ largerAction = do
 ```
 
 例2: 同様に、下記の`largerAction`は、`IO String`という型なので、「権限を表すラベル」は`IO`である。  
-一方、[`Control.Monad.Writer`の、`tell`関数](http://haddock.stackage.org/lts-5.16/mtl-2.2.1/Control-Monad-Writer-Lazy.html#v:tell)（[`mtl`](https://www.stackage.org/lts-5.16/package/mtl-2.2.1)というパッケージに入っている）は、
-下記の場合`Writer String ()`を返すので、「権限を表すラベル」は`Writer [Char]`である [^monadWriter]。  
+一方、[`Control.Monad.Writer`の、`tell`関数](http://haddock.stackage.org/lts-5.16/mtl-2.2.1/Control-Monad-Writer-Lazy.html#v:tell)（[`mtl`](https://www.stackage.org/lts-5.16/package/mtl-2.2.1)というパッケージに入っている）は、下記の場合`Writer String ()`を返すので、「権限を表すラベル」は`Writer [Char]`である。  
 したがって`IO`であることと一貫せず、コンパイルエラーとなる。
-
-[^monadWriter]: 実際には型クラスで抽象化されているので、厳密に言うと`(Monad m) => MonadWriter [Char] m`となる。
 
 ```haskell
 import Control.Monad.Writer
@@ -276,7 +258,7 @@ largerAction = do
   readFile "log"
 ```
 
-エラー内容:
+エラー内容（実際には`MonadWriter`型クラスで抽象化されているので、`(Monad m, MonadWriter [Char] m) => m ()`となる点に注意）:
 
 ```haskell
     No instance for (MonadWriter [Char] IO)
@@ -519,7 +501,7 @@ employeeCurrency name = do
 Left "Currency not found!"
 ```
 
-それから、`Either` Monadには他の言語にもよくある`throw`や`catch`のようなユーティリティ関数も用意されている。  
+それから、`Either` Monadには他の言語にもよくある`throw`や`catch`と似たようなユーティリティ関数も用意されている。  
 （使用するには[`mtl`パッケージに入っている`Control.Monad.Except`などのmodule](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)が必要）
 
 ```haskell
@@ -593,8 +575,15 @@ mustBePositiveInteger name text = do
 上記の例では、各種`must*`な関数において、入力された値が正しい値かどうかを確認し、そうでなければ`tell`でエラーメッセージを追記する。
 さて、`tell`で追記したエラーメッセージは、どのようにして取り出すのだろうか。  
 方法はいくつかあるが、最もオーソドックスな方法は、`runWriter`という関数を使うことだろう。  
-`runWriter`の型は(この場合)`runWriter :: Writer [String] () -> ((), [String])`である。  
-`Writer`の1つ目の型引数、すなわち`do`ブロックの中で共有している`[String]`を、「権限を表すラベル」を剥がした値として取り出すことができる。  
+`runWriter`の型は(この場合)`runWriter :: Writer [String] () -> ((), [String])`である。
+
+戻り値であるタプルの1番目の要素は`Writer [String] ()`の2つめの型引数`()`、
+`Writer [String]`という「権限を表すラベル」がくっついていた値である。  
+この例では`()`（「ユニット」と呼ばれる）という特になにも役に立たない値ではあるが、
+`return`してhoge
+戻り値であるタプルの2番目の要素は`Writer [String] ()`の1つめの型引数`[String]`、
+すなわち`do`ブロックの中で共有している`[String]`を`Writer [String] ()`から取り出した値である。
+
 上の例の場合、例えば下記のような結果となる。
 
 ```haskell
@@ -609,6 +598,43 @@ mustBePositiveInteger name text = do
 > import Text.Show.Unicode (uprint)
 > uprint $ runWriter $ validateInput input
 ((),["氏名は必須入力項目です。","メールアドレスの形式が正しくありません。","年収は整数で入力してください。"])
+```
+
+今回の例についても、`Writer` Monadを使用しないで愚直に書き換えたものも紹介しよう。
+
+```haskell
+import Data.Char (isDigit)
+
+data UserInput =
+  UserInput
+    { name :: String
+    , emailAddress :: String
+    , annualIncome :: String
+    }
+
+validateInput :: UserInput -> [String]
+validateInput input = do
+  mustBePresent "氏名" $ name input
+  mustContainAtSign "メールアドレス" $ emailAddress input
+  mustBePositiveInteger "年収" $ annualIncome input
+
+mustBePresent :: String -> String -> [String]
+mustBePresent name text = do
+  if null text
+    then tell [name ++ "は必須入力項目です。"]
+    else return ()
+
+mustContainAtSign :: String -> String -> [String]
+mustContainAtSign name text = do
+  if elem '@' text
+    then return ()
+    else tell [name ++ "の形式が正しくありません。"]
+
+mustBePositiveInteger :: String -> String -> [String]
+mustBePositiveInteger name text = do
+  if all isDigit
+    then return ()
+    else tell [name ++ "は整数で入力してください。"]
 ```
 
 ## Monad Transformerと呼ばれるもの (★★):
@@ -641,9 +667,9 @@ countScore int =
 
 runTests :: Scores -> Int
 runTests scores =
-  -- execWriter は runWriter した結果にsndを適用する関数。
-  -- tellして貯めていった結果**のみ**に関心がある場合に使う。
-  let points = execWriter $ do
+  -- この場合は、tellして貯めていった結果**のみ**に関心があるので、
+  -- runWriterの結果の1番目の要素は無視する。
+  let (_, points) = runWriter $ do
         countScore $ test1 scores
         countScore $ test2 scores
         countScore $ test3 scores
@@ -672,28 +698,31 @@ data Scores =
     , test3 :: Int
     }
 
--- 成績計算Monad。Monad Transformerで
+-- *** (1) ***
+-- 成績計算Monad。
+-- Monad Transformerを重ねて大きなMonadを作るときは、
+-- このようにtypeで型の別名を作るか、newtypeでラップすることが多い。
 type CountScoreMonad =
   WriterT [Int] (Either String) ()
 
 countScore :: Int -> CountScoreMonad
 countScore score =
   if score >= 50
+    -- *** (2) ***
     then tell [score]
     else throwError "赤点！"
 
 runTests :: Scores -> Either String Int
 runTests scores =
-  -- execWriterT は runWriterT した結果にsndを適用する関数。
-  -- tellして貯めていった結果**のみ**に関心がある場合に使う。
-  let result :: Either String [Int]
-      result = execWriterT $ do
+  -- *** (3) ***
+  let result :: Either String ((), [Int])
+      result = runWriterT $ do
         countScore $ test1 scores
         countScore $ test2 scores
         countScore $ test3 scores
   in
-    do -- このdoブロックは、fmap sum pointsと書き換えてもよい。
-      points <- result
+    -- *** (4) ***
+      (_, points) <- result
       return $ sum points
 
 main :: IO ()
@@ -701,6 +730,42 @@ main = do
   let input = Scores 30 50 100
   uprint $ runTests input
 ```
+
+それなりに複雑な例となったので、1個ずつ解説する。
+
+### (1) について
+
+(1)では、Either MonadにWriterT (Writer MonadのMonad Transformer)を重ねることで、
+「Writerの機能と、Eitherの機能両方が使えるMonad」を実装している。  
+「権限を表すラベル」という比喩に基づいて説明すると、
+`CountScoreMonad`のアクションを返す関数は「値を受け取って、返すこと」以外に、
+
+- 「実行が失敗した場合に囲っている`do`ブロックから脱出して失敗した理由を伝えること」と、
+- 「`do`ブロックの中で共有している、とある型の変数の値に追記する」ことが
+
+**同じ`do`ブロックの中で**できるようになるのだ。
+
+同様に、詳細は割愛するが`Maybe` MonadのMonad Transformerである`MaybeT`を重ねれば
+「関数の実行が失敗した場合に、囲っている`do`ブロックから脱出」できるようになるし、
+`Either` MonadのMonad Transformerである`ExceptT`を、別のMonadに重ねることができる[^eitherT]。
+
+[^eitherT]: 名前がなぜか`EitherT`でない事情は不明。
+
+### (2) について
+
+この例で最も重要な箇所である。  
+(1)で説明した通り、同じ`do`ブロックの中で`tell`と`throwError`の両方を使用している点に注目していただきたい。
+EitherにWriterTを重ねた`WriterT [Int] (Either String) ()` Monadのアクションを列挙した`do`ブロックの中では、
+Either MonadのアクションとWriter Monadのアクション**両方**が使用できるようになるのである。  
+大まかな仕組みは次の「Monad\*という名前がついた型クラス」でも簡単に紹介するが、
+ひとまずここではMonad Transformerを重ねると、
+**同じ`do`ブロックの中で複数のMonadの機能が使えるようになる**という点を理解していただきたい。
+
+### (3) について
+
+`IO`を除くMonadの多くは、何らかの形で
+
+### (4) について
 
 http://qiita.com/7shi/items/4408b76624067c17e933
 http://bicycle1885.hatenablog.com/entry/2012/12/08/165236
@@ -714,7 +779,5 @@ Monad Transformerと関連が深い。
 ## Reader Monad (★):
 
 ## State Monad (★):
-
-## Reader Monad (★):
 
 ## List Monad (★):
