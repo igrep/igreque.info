@@ -2,7 +2,7 @@
 title: External Links related to me
 author: Yuji Yamamoto
 tags: SNS, Git, Haskell, Vim, Elm
-date: April 10, 2016
+date: July 16, 2016
 ...
 ---
 
