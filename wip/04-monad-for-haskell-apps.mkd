@@ -1,7 +1,7 @@
 ---
 title: Haskellアプリ作りのためのMonad Overview
 author: Yuji Yamamoto
-date: July, 2016
+date: July 25, 2016
 tags: Haskell, Monad
 ...
 ---
@@ -334,7 +334,7 @@ largerAction = do
   return $ strip line
 ```
 
-あるいは、全てのMonadが`Functor`のインスタンスであることを利用して、次のように`<$>`を使っても良い。
+あるいはこの例に限って言えば、全てのMonadが`Functor`のインスタンスであることを利用して、次のように`<$>`を使っても良い。
 
 ```haskell
 import Data.String.Utils (strip)
@@ -388,10 +388,10 @@ largerAction = do
 Haskellでアプリケーションを作る上で最も重要なMonadは`IO`である。  
 というか、これを使わなければHaskellでアプリケーションを書くことは絶対にできない。  
 これは「純粋な関数だけじゃプログラムが書けないんじゃないの？」というよくある疑念が実は真実であることと理由は同じだ。  
-一応、理論的には`IO`のアクション（を返す関数）はあくまでも「アクション」を返しているだけなので純粋なのであるが、
-少なくとも見かけ上、`IO`を使ったコードは手続き型スタイルに見えて仕方がないだろうし、そう捉えたほうが説明しやすいときのほうが多い。
+一応、理論的には`IO`のアクション（を返す関数）はあくまでも「アクション」を返しているだけなので純粋なのであるが、少なくとも見かけ上、`IO`を使ったコードは手続き型スタイルに見えて仕方がないだろうし、そう捉えたほうが説明しやすいときのほうが多い。
 
-前置きが長くなったが、とは言え、純粋に使うだけであれば`IO`は単純だ。  
+前置きが長くなった。  
+とは言え、純粋に使うだけであれば`IO`は単純だ。  
 普通のMonadと同じように、`do`ブロックの中に`IO`のアクションを返す関数を列挙していけば良い。
 
 ```haskell
@@ -418,17 +418,15 @@ main = do
 他の言語でも同じように振る舞うだろうし、特に違和感を感じることもないんじゃないかと思う。
 
 アプリケーションを作る上で最も重要なMonadであるとともに、HaskellのMonadの中で最も変わった性質を持っているのも`IO`である。  
-`IO`のアクションは他のMonadと異なり、「権限を表すラベル」を「純粋な関数」の中で剥がすことができないようになっているのである  
-（ただし、[`unsafePerformIO`](http://haddock.stackage.org/lts-5.17/base-4.8.2.0/System-IO-Unsafe.html#v:unsafePerformIO)という、デバッグ用に作られた例外はある）。  
+`IO`のアクションは他のMonadと異なり、「権限を表すラベル」を「純粋な関数」の中で剥がすことができないようになっている（ただし、[`unsafePerformIO`](http://haddock.stackage.org/lts-5.17/base-4.8.2.0/System-IO-Unsafe.html#v:unsafePerformIO)という、デバッグ用に作られた例外はある）。  
 この性質は、「純粋な関数」と`IO`（入出力とか例外を投げるとか）を明確に区別するのに非常に役に立つ。コンパイラがそれを保証してくれるからだ。
 
 ## Maybe Monad (★★):
 
 `Maybe` Monadはいわゆる「nullチェック」の煩わしさを劇的に緩和する。  
-`Maybe`をMonadとして、すなわち`do`ブロックの中で使用した場合、
-`do`ブロックの各行に並べたアクションが、1つでも失敗したら(`Nothing`を返したら)`do`ブロックから抜け出すことができる。
+`Maybe`をMonadとして使用した場合、すなわち`do`ブロックの中で使用した場合、`do`ブロックの各行に並べたアクションが、1つでも失敗したら(`Nothing`を返したら)`do`ブロックから抜け出すことができる。
 
-典型的な使用例は、複数の連想配列 `Map`から[lookup関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)で値を取り出したいが、
+典型的な使用例は、複数の`Map`(連想配列)から[lookup関数](http://haddock.stackage.org/lts-5.16/containers-0.5.6.2/Data-Map-Lazy.html#v:lookup)で値を取り出したいが、
 そのうち一度でも値が見つからなかった場合は(`Nothing`を返して)関数の実行を終了させたい、なんて場合だろう。
 
 ```haskell
@@ -462,9 +460,10 @@ employeeCurrency name = do
 ```
 
 上記を愚直に`case`式を使ってチェックすると、次のようにやけにネストの深いコードとなってしまう。  
-コメントを除けば行数が2倍以上になっているのにもお気づきだろうか？
+コメントを除けば`employeeCurrency`の行数が2倍以上になっているのにもお気づきだろうか？
 
 ```haskell
+employeeCurrency :: String -> Maybe String
 employeeCurrency name =
   case lookup name employeeDept of
     Just dept ->
@@ -577,14 +576,12 @@ mustBePositiveInteger name text = do
 方法はいくつかあるが、最もオーソドックスな方法は、`runWriter`という関数を使うことだろう。  
 `runWriter`の型は(この場合)`runWriter :: Writer [String] () -> ((), [String])`である。
 
-戻り値であるタプルの1番目の要素は`Writer [String] ()`の2つめの型引数`()`、
-`Writer [String]`という「権限を表すラベル」がくっついていた値である。  
-この例では`()`（「ユニット」と呼ばれる）という特になにも役に立たない値ではあるが、
-`return`してhoge
-戻り値であるタプルの2番目の要素は`Writer [String] ()`の1つめの型引数`[String]`、
-すなわち`do`ブロックの中で共有している`[String]`を`Writer [String] ()`から取り出した値である。
+戻り値であるタプルの1番目の要素は`Writer [String] ()`の2つめの型引数`()`、`Writer [String]`という「権限を表すラベル」がくっついていた値である。  
+この例では`()`（「ユニット」と呼ばれる）という特になにも役に立たない値だ。  
+「特になにも役に立たない」のになぜ使用しているのかというと、ここで関心があるのは「`tell`で追記したエラーメッセージ」、すなわち`do`ブロック全体で共有している`[String]`だけだからである。
 
-上の例の場合、例えば下記のような結果となる。
+さて、その関心がある「`do`ブロック全体で共有している`[String]`」は、戻り値であるタプルの2番目の要素から取り出すことができる。  
+従って上の例の場合、例えば下記のような結果となる。
 
 ```haskell
 > let input = UserInput "" "a" "nondigit"
@@ -592,7 +589,7 @@ mustBePositiveInteger name text = do
 ((),["\27663\21517\12399\24517\38920\20837\21147\38917\30446\12391\12377\12290","\12513\12540\12523\12450\12489\12524\12473\12398\24418\24335\12364\27491\12375\12367\12354\12426\12414\12379\12435\12290","\24180\21454\12399\25972\25968\12391\20837\21147\12375\12390\12367\12384\12373\12356\12290"])
 ```
 
-おっと、日本語がエスケープ文字列に置き換えられてしまった。こういう時は[unicode-show](https://hackage.haskell.org/package/unicode-show)というパッケージを使おう。
+おっと、日本語がエスケープ文字列に置き換えられてしまった。こういう時は[unicode-show](https://hackage.haskell.org/package/unicode-show)というパッケージの`uprint`という関数を使おう。
 
 ```haskell
 > import Text.Show.Unicode (uprint)
@@ -613,28 +610,51 @@ data UserInput =
     }
 
 validateInput :: UserInput -> [String]
-validateInput input = do
-  mustBePresent "氏名" $ name input
-  mustContainAtSign "メールアドレス" $ emailAddress input
-  mustBePositiveInteger "年収" $ annualIncome input
+validateInput input =
+  let errors1 = mustBePresent "氏名" (name input)
+      errors2 = errors1 ++ mustContainAtSign "メールアドレス" (emailAddress input)
+      errors3 = errors2 ++ mustBePositiveInteger "年収" (annualIncome input)
+  in
+    errors3
 
 mustBePresent :: String -> String -> [String]
-mustBePresent name text = do
+mustBePresent name text =
   if null text
-    then tell [name ++ "は必須入力項目です。"]
-    else return ()
+    then [name ++ "は必須入力項目です。"]
+    else []
 
 mustContainAtSign :: String -> String -> [String]
 mustContainAtSign name text = do
   if elem '@' text
-    then return ()
-    else tell [name ++ "の形式が正しくありません。"]
+    then []
+    else [name ++ "の形式が正しくありません。"]
 
 mustBePositiveInteger :: String -> String -> [String]
 mustBePositiveInteger name text = do
   if all isDigit
-    then return ()
-    else tell [name ++ "は整数で入力してください。"]
+    then []
+    else [name ++ "は整数で入力してください。"]
+```
+
+「`do`ブロック全体で共有している`[String]`」が`errors1`や`errors2`などという変数として現れたのにお気づきだろうか？
+`Writer` Monadが「値を受け取って、返す以外にできること」はまさにその「暗黙に共有している変数(`[String]`)に値を追記していく」ことなのである。  
+本記事の目的上詳しくは説明しないが、下記のWriter Monadの定義に照らし合わせると、よりそのことが明確になるであろう。
+
+hoge
+
+```haskell
+import Data.Monoid (Monoid, mempty)
+
+newtype Writer w a = Writer { runWriter :: (a, w) }
+
+instance (Monoid w) => Monad (Writer w) a where
+  return a = Writer (a, mempty)
+  ma >>= f =
+    let (a, w1) = runWriter ma
+        mb = f a
+        (b, w2) = runWriter mb
+    in
+      Writer (b, w1 <> w2)
 ```
 
 ## Monad Transformerと呼ばれるもの (★★):
