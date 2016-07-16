@@ -33,7 +33,7 @@ Java (Java 8以降の知識を前提とします)でMonadを定義して説明�
 - [とりあえずJavaでの定義を。](#definitionInJava)
     - [Monad則って？](#monadLaw)
         - [なんでそんなのがあるの？](#whyLaw)
-        - [で、Monad則ってどんなのさ？](#{monadLawInJava})
+        - [で、Monad則ってどんなのさ？](#monadLawInJava)
 - [ここまでのまとめ](#summary1)
 - [具体的な実装その1 Maybe](#maybeInJava)
 - [do記法](#doSyntax)
