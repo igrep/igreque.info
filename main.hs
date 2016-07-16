@@ -23,19 +23,31 @@ inspectTags = inspect "tags"
 main :: IO ()
 main = hakyll $ do
   tags <- buildTags postsPattern (fromCapture "tags/*.html")
-  cssRules              -- Compressed CSS
-  idRules "fonts/*"     -- Fonts
-  idRules "imgs/**"     -- Images
-  postRules tags        -- Render posts
-  postsListRules        -- Render posts list
-  indexRules tags       -- Index
-  taggedPostsRules tags -- Display posts tagged as a praticular tag
-  atomRules             -- Atom feed
-  templateRules         -- Template
-  -- For slides written in HTML
+
+  cssRules
+  -- ^ Compressed CSS
+  idRules
+  -- ^ Fonts
+  idRules
+  -- ^ Images
+  postRulesOf
+  -- ^ Render posts
+  postRulesOf
+  -- ^ Render WIP posts
+  postsListRules
+  -- ^ Render posts list
+  indexRules
+  -- ^ Index
+  taggedPostsRules
+  -- ^ Display posts tagged as a praticular tag
+  atomRules
+  -- ^ Atom feed
+  templateRules
+  -- ^ Template
   slideRules
   idRules "slides/styles/*.css"
   idRules "slides/scripts/*.js"
+  -- ^ For slides written in HTML
 
 idRules :: Pattern -> Rules ()
 idRules pat =
@@ -52,9 +64,9 @@ cssRules =
     route   idRoute
     compile compressCssCompiler
 
-postRules :: Tags -> Rules ()
-postRules tags =
-  match postsPattern $ do
+postRulesOf :: Pattern -> Tags -> Rules ()
+postRulesOf ptn tags =
+  match ptn $ do
     route   $ setExtension ".html"
     compile $ do
       let loadWithTags = loadTemplateIn (postContext tags)
@@ -160,6 +172,9 @@ indexPostsByRecentFirst = take 10 <$> allPostsByRecentFirst
 
 postsPattern :: Pattern
 postsPattern = "posts/**"
+
+hiddenPostsPattern :: Pattern
+hiddenPostsPattern = "wip/**"
 
 encodeUrlComponent :: String -> String
 encodeUrlComponent = encString True (`elem` safeCharacters)
