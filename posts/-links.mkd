@@ -1,8 +1,8 @@
 ---
-title: External Links in relation to me
+title: External Links related to me
 author: Yuji Yamamoto
-tags: SNS, GTD, Git, Haskell, Ruby, Vim, Anime, Manga
-date: March 20, 2013
+tags: SNS, Git, Haskell, Vim, Elm
+date: April 10, 2016
 ...
 ---
 
@@ -11,32 +11,28 @@ date: March 20, 2013
 - [Twitter: \@igrep](https://twitter.com/igrep)
 - [Facebook: igrep](https://www.facebook.com/igrep)
 - [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
-- [Github: igrep](https://github.com/igrep)
-- [Forkwell: igrep](https://forkwell.com/u/igrep)
-
-# 作ってるもの
-- その他は[Github](https://github.com/igrep)で！
+- [GitHub: igrep](https://github.com/igrep)
+- [Gitlab: igrep](https://gitlab.com/u/igrep)
+- [Qiita: igrep](http://qiita.com/igrep)
 
 # すごく好きなもの
 ## コンピュータ関連
 - [Haskell](http://www.haskell.org/haskellwiki/Haskell)
-- [Ruby](http://www.ruby-lang.org/)
-- [Xubuntu](http://xubuntu.org/)
-- [Ubuntu](http://www.ubuntu.com/)
+- [Elm](http://elm-lang.org/)
+- [Vim](http://www.vim.org/)
 - [Hakyll](http://jaspervdj.be/hakyll/)
 - [アジャイルサムライ](http://ssl.ohmsha.co.jp/cgi-bin/menu.cgi?ISBN=978-4-274-06856-0)
-- [Sony Tablet S](http://www.sony.jp/tablet/products/S1/)
+- [Xperia Z4 Tablet](http://www.sony.jp/tablet/products/Z4/)
 
 ## アニメ・漫画関連
-- [ひだまりスケッチ](http://www.tbs.co.jp/anime/hidamari/)
-- [聖☆おにいさん](http://morningmanga.com/lineup/25)
 - [プリキュア](http://www.toei-anim.co.jp/tv/precure/)
-- [日常](http://www.shinonome-lab.com/)
+- [ポムポムプリン](http://www.sanrio.co.jp/character/pompompurin/)
 
 # 経歴
-- 現職：[Sansan株式会社](http://www.sansan.com/)にて契約社員中。
-- 前職：ひみつ。
-- いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/chuo-u/letters_subject11/index_j.html)
+- 現職：[GMOクリックホールディングス](https://www.gmo-click.com/)
+- 前職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
+- 前々職：ひみつ。
+- いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/academics/faculties/letters/major/socio_info/)
 
 # 昔のブログ
 - [発展途上猿人](http://blog.livedoor.jp/igrep/)
