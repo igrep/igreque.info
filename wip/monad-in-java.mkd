@@ -123,8 +123,7 @@ z.compareTo(z) // => -1
 このように不自然な`Comparable`を作らないためには、`Comparable`を**実装する側が意識**しなければなりません。コンパイラーが守ってくれないのです。
 
 Monad則もこれと同じようなものです。  
-Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、
-単純に`Monad`というインターフェースを実装するだけでなく、それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
+Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、単純に`Monad`というインターフェースを実装するだけでなく、それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
 そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！（詳細は後述！）
 
 ### で、Monad則ってどんなのさ？ {#monadLawInJava}
@@ -203,17 +202,57 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 ```
 
 意図的にスペースを挟んで調整したので、勘のいい方はお気づきかもしれません。  
-要するにこう↓いうことです。
+さらにわかりやすくするために、`ax.apply(x).then(       ay        ).then(az)`を↓のようにいじってみます。
 
-hoge
+```java
+// ayはFunctionなので (y) -> ay.apply(y) というラムダ式に変更しても、意味は変わらない。
+// なので
+   ax.apply(x).then(       ay        ).then(az)
+// は、
+   ax.apply(x).then((y) -> ay.apply(y)).then(az)
+// と、同じ。
+```
 
-上記の通り、二つめの`then`、すなわち`ay.apply.then`に渡す`then(az)`の部分が、
-一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。  
-後にも触れますが、これによって、ネストを一段平たくできたりします。
+上記のように変換した上で改めて比較してみます。
+
+```java
+   ax.apply(x).then((y) -> ay.apply(y).then(az))
+        /* ↑と↓の意味が同じになること */
+   ax.apply(x).then((y) -> ay.apply(y)).then(az)
+```
+
+めっちゃそっくりになりましたね！違うのは↓に示す部分だけです！
+
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
+>   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then(az)</span><span class="sourceHighlight2">)</span>
+                                      <span class="co">^ この<span class="sourceHighlight1">.then(az)</span>が...</span>
+   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then(az)</span>
+                                       <span class="co">^ カッコ<span class="sourceHighlight2">()</span>を突き破って、ここに出された！</span></code></pre></div>
+
+上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある`then(az)`が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
+
+後にも触れますが、これによってネストを一段平たくできます。  
+`then()`のカッコの中にインデントを加えてみるとよくわかるでしょう。
+
+```java
+ax.apply(x).then(
+  (y) -> ay.apply(y).then(
+    az
+  )
+)
+/* ↑と↓の意味が同じになること */
+ax.apply(x).then(
+  (y) -> ay.apply(y)
+).then(
+  az
+)
+```
 
 これをもうちょっとくだけた日本語に言い換えると、
-「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
-「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
+
+- 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
+- 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
+
 常に同じ意味でないといけない、と解釈できます。  
 この解釈だと「そんなの当たり前じゃないの？」と感じられるかもしれません。  
 それぐらい直感的な仕様を守ってくださいね、というのが「Monad則」の正体だ、と考えていただければしっくりくるでしょうか？  
