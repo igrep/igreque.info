@@ -178,6 +178,18 @@ pre {
   color: #008888;
 }
 
+.sourceHighlight1 {
+  background-color: #ffecec;
+  color: #c7254e;
+  font-weight: bold;
+}
+
+.sourceHighlight2 {
+  background-color: #dff0d8;
+  color: #3c763d;
+  font-weight: bold;
+}
+
 /* posts list */
 @media (max-width: 480px) {
   .postsListItem {
