@@ -725,7 +725,7 @@ class State<S, T1> implements Monad<T1> {
 
 ```java
 class State<S, T1> implements Monad<T1> {
-    /* ... * /
+    /* ... */
 
     // 引数で与えた状態に書き換える
     public static <S> State<S, Void> put(S newState){
