@@ -172,16 +172,12 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 
 最初の2つは、どちらかというと`doNothingReturning`が守るべき性質についての式です。
 
-第一に(A)では、
-`x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、
-それから(`then`)、更にMonadを返す関数`ax`を実行する(`ax.apply`)ということは、単に`ax`を1回実行するのと同じことだ
---- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行する(`ax.apply(x)`)のと同じ、
-なので`doNothingReturning`は**なにもしない**のと同等だ ---
+第一に(A)では、`x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、それから(`then`)、更にMonadを返す関数`ax`を実行する(`ax.apply`)ということは、単に`ax`を1回実行するのと同じことだ
+--- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行する(`ax.apply(x)`)のと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
 ということです。
 
 (A')についても同様です。  
-`x`を受け取ってMonadを返す関数`ax`を実行(`ax.apply(x)`)して、
-それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、単に`ax`を1回実行するのと同じことだ
+`x`を受け取ってMonadを返す関数`ax`を実行(`ax.apply(x)`)して、それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、単に`ax`を1回実行するのと同じことだ
 --- つまり、`doNothingReturning`をどんな`ax`の**後**に実行しても、`ax`を実行するのと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
 ということです。
 
@@ -248,7 +244,7 @@ ax.apply(x).then(
 )
 ```
 
-これをもうちょっとくだけた日本語に言い換えると、
+さて、この規則をもうちょっとくだけた日本語に言い換えると、
 
 - 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
 - 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
