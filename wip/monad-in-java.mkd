@@ -2,7 +2,7 @@
 title: JavaでMonadをはじめからていねいに
 author: Yuji Yamamoto
 tags: Monad, Java
-date: February 25, 2016
+date: July 25, 2016
 ...
 ---
 
@@ -750,7 +750,7 @@ class State<S, T1> implements Monad<T1> {
             }
         );
     }
-    /* ... * /
+    /* ... */
 }
 ```
 
