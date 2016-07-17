@@ -777,11 +777,11 @@ State<String, Void> builder =
          // あとはその繰り返し。
          .then((currentString) -> State.put(currentString + "two!"))
          .then((_null) -> State.get())
-         .then((currentString) -> State.put(currentString + "three!"))
+         .then((currentString) -> State.put(currentString + "three!"));
 
 System.out.println(
-    /* 初期値を渡すことで、初期値から書き換えていった結果が得られる */
-    /* この場合 "zero! one! two! three!" と出力される */
+    // 初期値を渡すことで、初期値から書き換えていった結果が得られる
+    // この場合 "zero! one!two!three!" と出力される
     builder.mutator.mutate("zero! ").newState
 );
 ```
@@ -790,8 +790,8 @@ System.out.println(
 
 ```java
 State<String, Void> builder =
-    State.modify((currentString) -> currentString + "one! ")
-         .then((_null) -> State.modify((currentString) -> currentString + "two! "))
+    State.modify((currentString) -> currentString + "one!")
+         .then((_null) -> State.modify((currentString) -> currentString + "two!"))
          .then((_null) -> State.modify((currentString) -> currentString + "three!"));
 ```
 
