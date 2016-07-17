@@ -414,7 +414,6 @@ Maybe<Bar> bar = do {
 復習のためにもう一度↓に持ってきました。
 
 ```java
-/* (B ) */
     ax.apply(x).then((y) -> ay.apply(y).then(az))
         /* ↑と↓の意味が同じになること */
     ax.apply(x).then(       ay        ).then(az)
