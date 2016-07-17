@@ -26,19 +26,19 @@ main = hakyll $ do
 
   cssRules
   -- ^ Compressed CSS
-  idRules
+  idRules "fonts/**"
   -- ^ Fonts
-  idRules
+  idRules "imgs/**"
   -- ^ Images
-  postRulesOf
+  postRulesOf postsPattern tags
   -- ^ Render posts
-  postRulesOf
+  postRulesOf hiddenPostsPattern tags
   -- ^ Render WIP posts
   postsListRules
   -- ^ Render posts list
-  indexRules
+  indexRules tags
   -- ^ Index
-  taggedPostsRules
+  taggedPostsRules tags
   -- ^ Display posts tagged as a praticular tag
   atomRules
   -- ^ Atom feed
