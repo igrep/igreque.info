@@ -584,7 +584,7 @@ interface StateMutator0<S> {
 ```
 
 しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
-例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove(java.lang.Object)は、呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
+例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove\(java.lang.Object\))は、呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
 そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、「一緒に返す別の値」も返せるようにする必要があるのです。
 
 と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
