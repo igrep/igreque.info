@@ -1055,7 +1055,7 @@ public class MonadicFutureSample {
         MonadicFuture<Void> thread = do {
             responseA <- sendRequest("server-a");
             responseB <- sendRequest("server-b", responseA);
-            System.out.println("ThreadA: Response from server-b: " + response);
+            System.out.println("ThreadA: Response from server-b: " + responseB);
             new MonadicFutureFactory().doNothingReturning(null);
         };
 
