@@ -295,7 +295,7 @@ class Maybe<T1> implements Monad<T1> {
         this.x = x;
     }
 
-    <T2> Maybe<T2> then(Function<T1, Maybe<T2>> nextAction){
+    public <T2> Maybe<T2> then(Function<T1, Maybe<T2>> nextAction){
         if (x != null){
             return nextAction.apply(x);
         } else {
@@ -305,7 +305,7 @@ class Maybe<T1> implements Monad<T1> {
 }
 
 class MaybeFactory implements MonadFactory {
-    <T> Maybe<T> doNothingReturning(T x){
+    public <T> Maybe<T> doNothingReturning(T x){
         return new Maybe<T>(x);
     }
 }
