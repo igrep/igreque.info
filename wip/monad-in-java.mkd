@@ -351,17 +351,11 @@ Maybe<Bar> bar =
 
 この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
 
-```java
-/* (B ) */
-    ax.apply(x).then((y) -> ay.apply(y).then(az))
-        /* ↑と↓の意味が同じになること */
-    ax.apply(x).then(       ay        ).then(az)
-```
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
+>   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then(az)</span><span class="sourceHighlight2">)</span>
+   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then(az)</span></code></pre></div>
 
-hoge
-
-この規則は、上の図のように、2つめの`then`(hoge色の箇所)を1つめの`then`(hoge色の箇所)に渡したラムダ式から取り出すことで、
-ネストを一段平たくすることができる、というものでした。  
+この規則は上の図のように、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then(az)`</span>を、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式からくくり出すことで、ネストを一段平たくすることができる、というものでした。  
 おっ。ということは今回のケースにも適用できるかもしれませんよ！やってみましょう！
 
 ```java
