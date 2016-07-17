@@ -424,40 +424,32 @@ Maybe<Bar> bar = do {
 
 この規則は、先程のdo記法を用いると、次のように表現することもできます。
 
-```java
-do {
-    y <- ax.apply(x);
-    do { // このdoブロック
-        z <- ay.apply(y);
-        az.apply(z);
-    };
-};
-```
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
+    y &lt;- ax.<span class="fu">apply</span>(x);
+    <span class="sourceHighlight2"><span class="kw">do</span> { <span class="co">// このdoブロック</span>
+        z &lt;- ay.<span class="fu">apply</span>(y);
+        az.<span class="fu">apply</span>(z);
+    }</span>;
+};</code></pre></div>
 
-hoge: 色をコメントの色に合わせる
-`// このdoブロック` と記されたdoブロックを引き剥がして、
+<span class="sourceHighlight2">`// このdoブロック`</span> と記されたdoブロックを引き剥がして、
 
-```java
-do {
-    y <- ax.apply(x);
-    z <- ay.apply(y);
-    az.apply(z);
-};
-```
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
+    y &lt;- ax.<span class="fu">apply</span>(x);
+    <span class="sourceHighlight2">z &lt;- ay.<span class="fu">apply</span>(y);</span>
+    <span class="sourceHighlight2">az.<span class="fu">apply</span>(z);</span>
+};</code></pre></div>
 
 と必ず（処理の意味を変えずに）書き換えられなければならない、ということです。  
-あるいは逆に`// このdoブロック`の場所をずらして、
-hoge: 色をコメントの色に合わせる
+あるいは逆に、doブロックの範囲を上にずらして、
 
-```java
-do {
-    z <- do {
-        y <- ax.apply(x);
-        ay.apply(y);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
+    <span class="sourceHighlight2">z &lt;- </span><span class="kw">do</span> {
+        y &lt;- ax.<span class="fu">apply</span>(x);
+        <span class="sourceHighlight2">ay.<span class="fu">apply</span>(y);</span>
     };
-    az.apply(z);
-};
-```
+    <span class="sourceHighlight2">az.<span class="fu">apply</span>(z);</span>
+};</code></pre></div>
 
 のようにも書き換えられなければならない、とも言えます。
 
@@ -466,47 +458,48 @@ do {
 
 先程の例で申しますと、
 
-hoge
-```java
-do {
-    y <- ax.apply(x);
-    z <- ay.apply(y);
-    az.apply(z);
-};
-```
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
+    <span class="sourceHighlight1">y &lt;- ax.<span class="fu">apply</span>(x);</span>
+    z &lt;- <span class="sourceHighlight1">ay.<span class="fu">apply</span>(y);</span>
+    az.<span class="fu">apply</span>(z);
+};</code></pre></div>
 
-上記のhoge色を塗った箇所だけ切り出して
+↑の<span class="sourceHighlight1">色</span>を塗った箇所だけ切り出して
 
-```java
-public SomeMonad<Z> extractedMethod(X x){
-    do {
-        y <- ax.apply(x);
-        ay.apply(y);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> SomeMonad&lt;Z&gt; <span class="fu">extractedMethod</span>(X x){
+    <span class="kw">return</span> <span class="kw">do</span> {
+        <span class="sourceHighlight1">y &lt;- ax.<span class="fu">apply</span>(x);</span>
+        <span class="sourceHighlight1">ay.<span class="fu">apply</span>(y);</span>
     };
 }
 
-do {
-    z <- extractedMethod(x);
-    az.apply(z);
-};
-```
+<span class="kw">do</span> {
+    z &lt;- <span class="fu">extractedMethod</span>(x);
+    az.<span class="fu">apply</span>(z);
+};</code></pre></div>
 
 と書きたくなったり、  
-上記のhoge色を塗った箇所だけを切り出して
+あるいは、
 
-```java
-public SomeMonad<Bar> extractedMethod(Y y){
-    do {
-        z <- ax.apply(y);
-        az.apply(z);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
+    y &lt;- ax.<span class="fu">apply</span>(x);
+    <span class="sourceHighlight2">z &lt;- ay.<span class="fu">apply</span>(y);</span>
+    <span class="sourceHighlight2">az.<span class="fu">apply</span>(z);</span>
+};</code></pre></div>
+
+から、<span class="sourceHighlight2">色</span>を塗った箇所だけを切り出して
+
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> SomeMonad&lt;Bar&gt; <span class="fu">extractedMethod</span>(Y y){
+    <span class="kw">return</span> <span class="kw">do</span> {
+        <span class="sourceHighlight2">z &lt;- ax.<span class="fu">apply</span>(y);</span>
+        <span class="sourceHighlight2">az.<span class="fu">apply</span>(z);</span>
     };
 }
 
-do {
-    y <- ax.apply(x);
-    extractedMethod(y);
-};
-```
+<span class="kw">do</span> {
+    y &lt;- ax.<span class="fu">apply</span>(x);
+    <span class="fu">extractedMethod</span>(y);
+};</code></pre></div>
 
 と書きたくなるかもしれません。
 
