@@ -1041,7 +1041,7 @@ public class MonadicFutureSample {
                 System.out.println("ThreadA: Response from server-b: " + response);
                 return new MonadicFutureFactory().doNothingReturning(null);
             });
-        thread.future.join();
+        thread.future.get();
     }
 }
 ```
