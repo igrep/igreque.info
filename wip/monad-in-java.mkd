@@ -223,7 +223,7 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
    ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then(az)</span>
                                        <span class="co">^ カッコ<span class="sourceHighlight2">()</span>を突き破って、ここに出された！</span></code></pre></div>
 
-上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある`then(az)`が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
+上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then(az)`</span>が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
 
 後にも触れますが、これによってネストを一段平たくできます。  
 `then()`のカッコの中にインデントを加えてみるとよくわかるでしょう。
