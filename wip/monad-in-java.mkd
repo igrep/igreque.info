@@ -299,14 +299,14 @@ class Maybe<T1> implements Monad<T1> {
         if (x != null){
             return nextAction.apply(x);
         } else {
-            return new Maybe(null);
+            return new Maybe<>(null);
         }
     }
 }
 
 class MaybeFactory implements MonadFactory {
     public <T> Maybe<T> doNothingReturning(T x){
-        return new Maybe<T>(x);
+        return new Maybe<>(x);
     }
 }
 ```
@@ -347,7 +347,7 @@ Maybe<Bar> bar =
 ...と、言いたいところですが、元ネタの`Optional.flatMap`を使った場合と同様、ネストが深くって嫌ですねー。  
 これでは普通にif文を書いた方がまだ読みやすそうです。`f.doNothingReturning`なんて書く分タイプ数も多いですし。
 
-`f.doNothingReturning`や`MaybeFactory<Foo> f = new MaybeFactory<Foo>();`の部分が長いのは単なる名付け方の名前だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
+`f.doNothingReturning`や`MaybeFactory f = new MaybeFactory();`の部分が長いのは単なる名付け方の名前だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
 
 この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
 
@@ -396,7 +396,7 @@ Java 8のラムダ式は、ラムダ式の中でローカル変数を書き換�
 本記事はあくまでもJavaでMonadを説明する記事ですので、ここではその「do記法」を**仮に**Javaに導入した場合を想像して、先程の例がどのように書き換えられるか示しましょう。
 
 ```java
-MaybeFactory f = new MaybeFactory<Foo>();
+MaybeFactory f = new MaybeFactory();
 
 Maybe<Bar> bar = do {
     Foo foo1 <- f.doNothingReturning(someMap.get(key1));
@@ -536,7 +536,7 @@ do {
 
 ```java
 // 状態を書き換えた結果を表すValue Object
-class MutationResult<S, T> {
+class MutationResult<T, S> {
     public final S newState;
     public final T value;
 
@@ -554,28 +554,28 @@ interface StateMutator<T, S> {
 
 // Stateモナドの実装
 class State<S, T1> implements Monad<T1> {
-    public final StateMutator<T1, S> mutator;
+    private final StateMutator<T1, S> mutator;
 
     State(StateMutator<T1, S> mutator){
         this.mutator = mutator;
     }
 
-    <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-        StateMutator<S, T2> composedMutator = (s) -> {
-            MutationResult<S, T1> result = this.mutator.mutate(s);
+    public <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
+        StateMutator<T2, S> composedMutator = (oldState) -> {
+            MutationResult<T1, S> result = this.mutator.mutate(oldState);
             State<S, T2> other = nextAction.apply(result.value);
             return other.mutator.mutate(result.newState);
-        }
-        return new State(composedMutator);
+        };
+        return new State<>(composedMutator);
     }
 }
 
 class StateFactory<S> implements MonadFactory {
-    <T> State<S, T> doNothingReturning(T value){
-        return new State<S, T>(
-            (nonMutatedState) -> new MutationResult(nonMutatedState, value)
-        );
-    }
+  public <T> State<S, T> doNothingReturning(T value){
+    return new State<S, T>(
+        (nonMutatedState) -> new MutationResult<>(nonMutatedState, value)
+    );
+  }
 }
 ```
 
@@ -605,8 +605,8 @@ interface StateMutator0<S> {
 ↓にもう一度載せておきます。
 
 ```java
-// 状態を書き換えた結果を表すObject
-class MutationResult<S, T> {
+// 状態を書き換えた結果を表すValue Object
+class MutationResult<T, S> {
     public final S newState; // 新しい状態
     public final T value;    // 一緒に返す値
 
@@ -650,11 +650,11 @@ class State<S, T1> implements Monad<T1> {
 
 ```java
 class StateFactory<S> implements MonadFactory {
-    <T> State<S, T> doNothingReturning(T value){
-        return new State<S, T>(
-            (nonMutatedState) -> new MutationResult(nonMutatedState, value)
-        );
-    }
+  public <T> State<S, T> doNothingReturning(T value){
+    return new State<S, T>(
+        (nonMutatedState) -> new MutationResult<>(nonMutatedState, value)
+    );
+  }
 }
 ```
 
@@ -662,7 +662,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 このルールに加えて、先ほど説明した、「`State<S, T1>`は、**書き換えた状態と、一緒に別の値を返す関数**をラップしただけのクラスである」という事実を思い出してください。  
 「書き換えた状態と、一緒に別の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
 **状態を書き換えないで、そのまま返す**、というのが正解です。  
-`StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult(nonMutatedState, value)` という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「一緒に返す別の値」として返すだけの関数を作っているのです。
+`StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult<>(nonMutatedState, value)` という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「一緒に返す別の値」として返すだけの関数を作っているのです。
 
 繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
 
@@ -677,16 +677,16 @@ class State<S, T1> implements Monad<T1> {
     // ...
     <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
         // (1) 新しいStateMutatorを作って、
-        StateMutator<S, T2> composedMutator = (oldState) -> {
+        StateMutator<T2, S> composedMutator = (oldState) -> {
             // (2) 古い状態を書き換え、結果を受けとる
-            MutationResult<S, T1> result = this.mutator.mutate(oldState);
+            MutationResult<T1, S> result = this.mutator.mutate(oldState);
             // (3) (2)で状態を書き換えた際に一緒に返した値を、次の`State` Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
             // (4) (2)で状態を書き換えた状態をまた処理する
             return other.mutator.mutate(result.newState);
-        }
+        };
         // (1) また別の`State` Monadとしてくるみなおす。
-        return new State(composedMutator);
+        return new State<>(composedMutator);
     }
     // ...
 }
@@ -732,26 +732,26 @@ class State<S, T1> implements Monad<T1> {
 
     // 引数で与えた状態に書き換える
     public static <S> State<S, Void> put(S newState){
-        return new State(
-            (ignoredState) -> new MutationResult(newState, null)
-        );
+        StateMutator<Void, S> putter =
+            (ignoredState) -> new MutationResult<>(newState, null);
+        return new State<>(putter);
     }
 
     // 現在の状態を取得する
     public static <S> State<S, S> get() {
-        return new State(
-            (currentState) -> new MutationResult(currentState, currentState)
-        );
+        StateMutator<S, S> getter =
+            (currentState) -> new MutationResult<>(currentState, currentState);
+        return new State<>(getter);
     }
 
     // 引数で与えた関数で、状態を書き換える
     public static <S> State<S, Void> modify(Function<S, S> simpleMutator){
-        return new State(
+        StateMutator<Void, S> modifier =
             (currentState) -> {
                 S newState = simpleMutator.apply(currentState);
-                return new MutationResult(newState, null);
-            }
-        );
+                return new MutationResult<>(newState, null);
+            };
+        return new State<>(modifier);
     }
     /* ... */
 }
@@ -759,15 +759,15 @@ class State<S, T1> implements Monad<T1> {
 
 まずは`State.put`について。  
 `State.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、そのまま新しい状態(`newState`)で書き換える`StateMutator`を返します。  
-`new MutationResult()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
+`new MutationResult<>()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
 `State.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、「一緒に返す値」として`null`、すなわち「一緒に返す値」がないものとしています。  
 これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。  
 戻り値の型が`State<S, Void>`になっている通りです。
 
 続いて`State.get`について。  
-`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult()`の第一引数として渡している通り、状態を一切書き換えません。
+`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult<>()`の第一引数として渡している通り、状態を一切書き換えません。
 あくまでも`get`するだけですからね。  
-そして状態を書き換えた際に「一緒に返す値」である`new MutationResult()`の第二引数にも、`currentState`をそのまま渡しています。  
+そして状態を書き換えた際に「一緒に返す値」である`new MutationResult<>()`の第二引数にも、`currentState`をそのまま渡しています。  
 これにより、`State.get()`を使うと、現在の状態をそのまま取得することができます。
 
 最後に`State.modify`について。  
@@ -925,7 +925,7 @@ class MonadicFuture<T1> implements Monad<T1> {
         this.future = future;
     }
 
-    <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+    public <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
         FutureTask<T2> composedFuture = new FutureTask<>(() -> {
             T1 result1 = this.future.get();
             T2 result2 = nextAction.apply(result1).future.get();
