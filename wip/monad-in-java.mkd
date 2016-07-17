@@ -915,23 +915,23 @@ class MonadicFuture<T1> implements Monad<T1> {
 
     public <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
         FutureTask<T2> composedFuture = new FutureTask<>(() -> {
-            T1 result1 = this.future.get();
-            T2 result2 = nextAction.apply(result1).future.get();
-            return result2;
+            T1 result = this.future.get();
+            MonadicFuture<T2> other = nextAction.apply(result);
+            return other.future.get();
         });
-        return new MonadicFuture<T2>(composedFuture);
+        return new MonadicFuture<>(composedFuture);
     }
 
     // あると便利なユーティリティ。FutureTaskを作る手間を省く。
     public static <V> MonadicFuture<V> start(Callable<V> callable){
-        return new MonadicFuture<V>(new FutureTask<V>(callable));
+        return new MonadicFuture<>(new FutureTask<>(callable));
     }
 }
 
 class MonadicFutureFactory implements MonadFactory {
-    <T> MonadicFuture<T> doNothingReturning(T x){
+    public <T> MonadicFuture<T> doNothingReturning(T x){
         FutureTask<T> future = new FutureTask<>(() -> x);
-        return new MonadicFuture<T>(future);
+        return new MonadicFuture<>(future);
     }
 }
 ```
@@ -951,10 +951,10 @@ class MonadicFutureFactory implements MonadFactory {
 class MonadicFuture<T1> implements Monad<T1> {
     public final Future<T1> future;
     // ..
-    <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
-        // (1) 新しいFutureを作って、
+    public <T2> MonadicFuture<T2> then(Function<T1, MonadicFuture<T2>> nextAction){
+        // (1) 新しい`Future`（の実装クラスである`FutureTask`）を作って、
         FutureTask<T2> composedFuture = new FutureTask<>(() -> {
-            // (2) ひとまず自分自身(`then`を呼び出したMonadicFuture)の完了を待ち、結果を受けとる。
+            // (2) ひとまず自分自身(`then`を呼び出した`MonadicFuture`)の完了を待ち、結果を受けとる。
             T1 result = this.future.get();
             // (3) (2)で完了待ちした結果の値を、次の`MonadicFuture`を作る関数へ渡す。
             MonadicFuture<T2> other = nextAction.apply(result);
@@ -986,7 +986,7 @@ class MonadicFuture<T1> implements Monad<T1> {
 
 ```java
 class MonadicFutureFactory implements MonadFactory {
-    <T> MonadicFuture<T> doNothingReturning(T x){
+    public <T> MonadicFuture<T> doNothingReturning(T x){
         FutureTask<T> future = new FutureTask<>(() -> x);
         return new MonadicFuture<T>(future);
     }
