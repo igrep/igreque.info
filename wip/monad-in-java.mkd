@@ -128,7 +128,11 @@ Monadはそもそも圏論という数学の一分野で定義されたものな
 ### で、Monad則ってどんなのさ？ {#monadLawInJava}
 
 前置きが長くなってしまいましたが、いよいよ「Monad則」をJavaで紹介しましょう！  
-下記の通りです。
+下記の通りです [^apply]。
+
+[^apply]: Javaの`Function`インターフェースの仕様上、本記事のMonad則で現れる`(x) -> ax.apply(x)`のような式は、本当は単に`ax`と書き換えることができます。  
+それから、`(y) -> f.doNothingReturning(y)`も、単に`f::doNothingReturning`と書くだけでOKです。  
+ですが比較しやすくするため、敢えて冗長な記述をしております。ご容赦を。
 
 ```java
 // 任意の型X, Y, Zの値をx, y, zとします。
@@ -140,23 +144,24 @@ Z z;
 MonadFactory<X> f = new SomeMonadFactory<>();
 
 // それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
+// Java 8におけるFunction型のオブジェクトは、applyメソッドを呼ぶことで実行できます。
 Function<X, Monad<Y>> ax = (x) -> ... ;
 Function<Y, Monad<Z>> ay = (y) -> ... ;
 Function<Z, Monad<A>> az = (z) -> ... ;
 
 // 下記の3組の式が**常に同じ意味となる**doNothingReturningとthenを
 // 実装している時、Monad則が成立します。
-/* (A ) */ f.doNothingReturning(x).then(ax)
+/* (A ) */ f.doNothingReturning(x).then((x) -> ax.apply(x))
            /* ↑と↓の意味が同じになること。以下同様。 */
            ax.apply(x)
 
-/* (A') */ ax.apply(x).then(f::doNothingReturning)
+/* (A') */ ax.apply(x).then((y) -> f.doNothingReturning(y))
            /* ↑と↓の意味が同じになること */
            ax.apply(x)
 
-/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then(az))
+/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
            /* ↑と↓の意味が同じになること */
-           ax.apply(x).then(       ay        ).then(az)
+           ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
 ```
 
 <!--
@@ -191,40 +196,20 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 集中するために該当の部分だけ持ってきましょう。
 
 ```java
-   ax.apply(x).then((y) -> ay.apply(y).then(az))
+   ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
         /* ↑と↓の意味が同じになること */
-   ax.apply(x).then(       ay        ).then(az)
+   ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
 ```
 
-意図的にスペースを挟んで調整したので、勘のいい方はお気づきかもしれません。  
-さらにわかりやすくするために、`ax.apply(x).then(       ay        ).then(az)`を↓のようにいじってみます。
-
-```java
-// ayはFunctionなので (y) -> ay.apply(y) というラムダ式に変更しても、意味は変わらない。
-// なので
-   ax.apply(x).then(       ay        ).then(az)
-// は、
-   ax.apply(x).then((y) -> ay.apply(y)).then(az)
-// と、同じ。
-```
-
-上記のように変換した上で改めて比較してみます。
-
-```java
-   ax.apply(x).then((y) -> ay.apply(y).then(az))
-        /* ↑と↓の意味が同じになること */
-   ax.apply(x).then((y) -> ay.apply(y)).then(az)
-```
-
-めっちゃそっくりになりましたね！違うのは↓に示す部分だけです！
+ぱっと見どこが違うのかわかりませんね！違うのは↓に示す部分だけです！
 
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
->   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then(az)</span><span class="sourceHighlight2">)</span>
-                                      <span class="co">^ この<span class="sourceHighlight1">.then(az)</span>が...</span>
-   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then(az)</span>
+>   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span><span class="sourceHighlight2">)</span>
+                                      <span class="co">^ この<span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span>が...</span>
+   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span>
                                        <span class="co">^ カッコ<span class="sourceHighlight2">()</span>を突き破って、ここに出された！</span></code></pre></div>
 
-上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then(az)`</span>が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
+上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then((z) -> az.apply(z))`</span>が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
 
 後にも触れますが、これによってネストを一段平たくできます。  
 `then()`のカッコの中にインデントを加えてみるとよくわかるでしょう。
@@ -232,21 +217,21 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 ```java
 ax.apply(x).then(
   (y) -> ay.apply(y).then(
-    az
+    (z) -> az.apply(z)
   )
 )
 /* ↑と↓の意味が同じになること */
 ax.apply(x).then(
   (y) -> ay.apply(y)
 ).then(
-  az
+  (z) -> az.apply(z)
 )
 ```
 
 さて、この規則をもうちょっとくだけた日本語に言い換えると、
 
-- 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、
-- 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、
+- 「`ax.apply(x)`してから『`ay.apply(y)`してから`az.apply(z)`する』」ことと、
+- 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az.apply(z)`する』」ことが、
 
 常に同じ意味でないといけない、と解釈できます。  
 この解釈だと「そんなの当たり前じゃないの？」と感じられるかもしれません。  
@@ -262,15 +247,15 @@ ax.apply(x).then(
     - (A), (A') `doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはならない。
         ```java
         /* ↓3行の意味が同じになること */
-        f.doNothingReturning(x).then(ax)
-        ax.apply(x).then(f::doNothingReturning)
+        f.doNothingReturning(x).then((x) -> ax.apply(x))
+        ax.apply(x).then((y) -> f.doNothingReturning(y))
         ax.apply(x)
         ```
     - (B) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
         ```java
            ax.apply(x).then((y) -> ay.apply(y).then(az))
             /* ↑と↓の意味が同じになること */
-           ax.apply(x).then(       ay        ).then(az)
+           ax.apply(x).then((y) -> ay.apply(y)).then(az)
         ```
 
 一点重要な注意事項を捕捉します。  
@@ -353,10 +338,10 @@ Maybe<Bar> bar =
 この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
 
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
->   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then(az)</span><span class="sourceHighlight2">)</span>
-   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then(az)</span></code></pre></div>
+>   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then((z) -&gt; az.apply(az))</span><span class="sourceHighlight2">)</span>
+   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then((z) -&gt; az.apply(az))</span></code></pre></div>
 
-この規則は上の図のように、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then(az)`</span>を、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式からくくり出すことで、ネストを一段平たくすることができる、というものでした。  
+この規則は上の図のように、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then((z) -> az.apply(z))`</span>を、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式からくくり出すことで、ネストを一段平たくすることができる、というものでした。  
 おっ。ということは今回のケースにも適用できるかもしれませんよ！やってみましょう！
 
 ```java
@@ -415,12 +400,12 @@ Maybe<Bar> bar = do {
 復習のためにもう一度↓に持ってきました。
 
 ```java
-    ax.apply(x).then((y) -> ay.apply(y).then(az))
+    ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
         /* ↑と↓の意味が同じになること */
-    ax.apply(x).then(       ay        ).then(az)
+    ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
 ```
 
-上記の通りMonad則(B)は、二つめの`then`の引数における`then(az)`の部分が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**処理の意味を変えずに、括り出せるようになっていなければならない**、ということでした。
+上記の通りMonad則(B)は、二つめの`then`の引数における`then((z) -> az.apply(z))`の部分が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**処理の意味を変えずに、括り出せるようになっていなければならない**、ということでした。
 これによってネストを一段平たくできるのでしたね。
 
 この規則は、先程のdo記法を用いると、次のように表現することもできます。
