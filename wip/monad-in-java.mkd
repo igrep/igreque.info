@@ -652,12 +652,12 @@ class State<S, T1> implements Monad<T1> {
         StateMutator<T2, S> composedMutator = (oldState) -> {
             // (2) 古い状態を書き換え、結果を受けとる
             MutationResult<T1, S> result = this.mutator.mutate(oldState);
-            // (3) (2)で状態を書き換えた際に一緒に返した値を、次の`State` Monadを作る関数へ渡す。
+            // (3) (2)で状態を書き換えた際に一緒に返した値を、次のState Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
             // (4) (2)で状態を書き換えた状態をまた処理する
             return other.mutator.mutate(result.newState);
         };
-        // (1) また別の`State` Monadとしてくるみなおす。
+        // (1) また別のState Monadとしてくるみなおす。
         return new State<>(composedMutator);
     }
     // ...
