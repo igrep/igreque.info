@@ -571,7 +571,7 @@ class StateFactory<S> implements MonadFactory {
 
 ## そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？ {#pretendImperative}
 
-ここで言う「命令型スタイル」というのが「状態を書き換えることで結果を作る」プログラミングスタイルだとして --- いわゆる関数型プログラミング --- つまり純粋な関数のみを使用したスタイルでは、どうやって状態の書き換えを表現するのでしょう？
+ここで言う「命令型スタイル」というのが「状態を書き換えることで結果を作る」プログラミングスタイルだとして、いわゆる「関数型プログラミング」 --- つまり純粋な関数のみを使用したスタイルでは、どうやって状態の書き換えを表現するのでしょう？
 
 純粋な関数は、関数が返した値を使用しない限り、関数の外部へ影響を与えることができません。  
 ということで、素直に「古い状態を受け取って、新しい状態を返す」関数として表現してみましょう。  
@@ -585,7 +585,7 @@ interface StateMutator0<S> {
 ```
 
 しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
-例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove\(java.lang.Object\))は、呼び出し元の`Map`の（要素を取り除くことで）状態を書き換えると同時に、取り除いた要素を返しますよね。  
+例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove\(java.lang.Object\))は、呼び出し元の`Map`の要素を取り除くことで状態を書き換えると同時に、取り除いた要素を返しますよね。  
 そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、「一緒に返す別の値」も返せるようにする必要があるのです。
 
 と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
@@ -655,7 +655,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ## `State.then`でやっていること {#stateThen}
 
-それでは本題、Monadインターフェースにとって最も重要なメソッド、`then`の`State`の詳細を解説しましょう。  
+それでは本題、Monadインターフェースにとって最も重要なメソッド、`State`の`then`の詳細を解説しましょう。  
 こちらは説明のために番号をコメントにふって載せますね。 ↓
 
 ```java
@@ -840,7 +840,7 @@ do記法を使って書き換えると、よりそのことを実感できるで
 ```
 
 などの`then`メソッドでは、コメントも書いた通り、ラムダ式の第1引数(`_null`)が無視されています。  
-これは、`State.modify`メソッドが「状態を書き換えた際に、一緒に返す値」として`null`を返しているため、役立たずなためです。  
+これは、`State.put`メソッドや`State.modify`メソッドが「状態を書き換えた際に、一緒に返す値」として`null`を返しているため、役立たずなためです。  
 <!--
 `State.modify`はあくまでも状態を書き換えることしかしないんですね。
 
@@ -866,27 +866,26 @@ State<String, Void> builder = do {
 
 ```java
 State<String, Void> builder = do {
-    State.modify((currentString) -> currentString + "one! ");
-    State.modify((currentString) -> currentString + "two! ");
+    State.modify((currentString) -> currentString + "one!");
+    State.modify((currentString) -> currentString + "two!");
     State.modify((currentString) -> currentString + "three!");
 };
 ```
 
 ますます普通の手続き型スタイルっぽくなりましたね！  
-`State.put`したり`State.modify`することによってできる新しい状態が、`do`ブロックの中で直接現れず、`do`ブロック全体で共有されるようになります。  
+`State.put`したり`State.modify`することによって書き換えられる新しい状態が、`do`ブロックの中で直接現れず、`do`ブロック全体で共有されるようになります。  
+`State.get`の結果か`State.modify`に渡したラムダ式の中からでしか、現在の状態が見えず、`do`ブロックの中で暗黙に状態を保持しているように見えるようになるのです。
 
-さて、この場合どう構文糖で簡略化されたのでしょう？    
-元のコードの`then`メソッドの呼び出しが、セミコロン `;`, つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
-`State.modify`が返した`State` Monadを、セミコロン `;` が`then`メソッドで処理しているのです。
+さて、この場合どう構文糖で簡略化されたのでしょう？  
+元のコードの`then`メソッドの呼び出しが、セミコロン「`;`」、 つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
+`State.modify`などが返した`State` Monadを、セミコロン 「`;`」 が`then`メソッドで処理しているのです。
 
 これは[Monadを「プログラマブルセミコロン」として例える主張](http://zacharyvoase.com/2014/04/30/monads/)ともぴったり一致します。  
-上記の主張を借りるならば、Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれるのです [^get]。
-
-[^get]: うん、いい言葉なんでまとめでも借りよう。
+上記の主張を借りるならば、Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれるのです。
 
 ## Stateまとめ {#stateSummary}
 
-さて、長くなってしまいましたのでこの辺で一旦まとめます。
+長くなってしまいましたのでこの辺で一旦まとめます。
 
 - `State` Monadでは`then`メソッドが、状態を書き換える関数を、続けて実行するよう組み合わせる。
 - `State` Monadは純粋な関数だけの組み合わせで、命令型のようなスタイルで書けるようにすることができる。
@@ -895,13 +894,14 @@ State<String, Void> builder = do {
 
 # 最後に {#bottomLine}
 
-Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間にあるもの」の意味を変えることを可能にします。  
-Monadの説明でよく出てくる「文脈」[^context]という概念はここで言う「各文の間にあるものの意味」と捉えていただくと、いろいろとしっくり来るのではないでしょうか。
+繰り返しになりますが、Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間にあるもの」を変えることを可能にします。  
+`Maybe` Monadの例ではそのことに触れず「[細い矢印 `<-` の箇所に置き換わった](#doSyntax)」と説明しましたが、「セミコロンの箇所で`null`チェックをしている」と解釈しても今ならそんなに違和感ありませんよね？
 
-[^context]: 例えば<a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />の211ページの「本章で説明するモナドは、端端的には『文脈を伴う計算』同士を組み合わせ可能にするしくみです」という文。
-
-例えばMaybe Monadであれば、各文の間に「結果がNothingでないかどうかチェックし、Nothingであれば次の文の実行をやめる」という処理がありますし、State Monadであれば、「前の文で書き換えた状態を、次の文に渡す」という処理があります。
+また、Monadの説明でよく出てくる「文脈」[^context]という概念はここで言う「各文の間にあるもの」と捉えていただくと、もっといろいろしっくり来るのではないでしょうか。  
+例えば`Maybe` Monadであれば、各文の間に「結果が`Nothing`でないかどうかチェックし、`Nothing`であれば次の文の実行をやめる」という処理がありますし、State Monadであれば、「前の文で書き換えた状態を、次の文に渡す」という処理があります。
 他のMonadをご存じであれば、それも考えてみてください。各Monadへの理解がいっそう深まることでしょう。
+
+[^context]: 例えば<a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />の211ページの「本章で説明するモナドは、端的には『文脈を伴う計算』同士を組み合わせ可能にするしくみです」という文。
 
 最後に繰り返しになりますが、まとめをもう一度挙げておきます。
 
