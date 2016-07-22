@@ -130,9 +130,9 @@ Monadはそもそも圏論という数学の一分野で定義されたものな
 前置きが長くなってしまいましたが、いよいよ「Monad則」をJavaで紹介しましょう！  
 下記の通りです [^apply]。
 
-[^apply]: Javaの`Function`インターフェースの仕様上、本記事のMonad則で現れる`(x) -> ax.apply(x)`のような式は、本当は単に`ax`と書き換えることができます。  
+[^apply]: Javaの関数オブジェクトやラムダ式の仕様上、本記事のMonad則で現れる`(x) -> ax.apply(x)`のような式は、本当は単に`ax`と書き換えることができます。  
 それから、`(y) -> f.doNothingReturning(y)`も、単に`f::doNothingReturning`と書くだけでOKです。  
-ですが比較しやすくするため、敢えて冗長な記述をしております。ご容赦を。
+ですが説明しやすさのために敢えて冗長な記述をしております。ご容赦を。
 
 ```java
 // 任意の型X, Y, Zの値をx, y, zとします。
@@ -141,7 +141,7 @@ Y y;
 Z z;
 
 // MonadFactoryをfとします
-MonadFactory<X> f = new SomeMonadFactory<>();
+MonadFactory f = new SomeMonadFactory<>();
 
 // それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
 // Java 8におけるFunction型のオブジェクトは、applyメソッドを呼ぶことで実行できます。
@@ -251,7 +251,7 @@ ax.apply(x).then(
         ax.apply(x).then((y) -> f.doNothingReturning(y))
         ax.apply(x)
         ```
-    - (B) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
+    - \(B\) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
         ```java
            ax.apply(x).then((y) -> ay.apply(y).then(az))
             /* ↑と↓の意味が同じになること */
@@ -265,7 +265,7 @@ Haskellや数学の世界でどう呼んでいるかは各自調べてくださ�
 # 具体的な実装その1 Maybe {#maybeInJava}
 
 **重要な注意事項**:  
-次の例を含め、この記事で紹介する`Monad`インターフェースを実装したクラスは、残念ながら全てコンパイルが通りません。Javaのインターフェースの仕様上仕方ないのです。
+次の例を含め、この記事で紹介する`Monad`インターフェースを実装したクラスは、残念ながら全てコンパイルが通りません。Javaのインターフェースの仕様上仕方ないのです。  
 あくまでも**説明のためのコード**だということでご了承下さい。  
 ダウンキャストなどを使って一応コンパイルを通したソースが[igrep/monad-in-java-sample](https://github.com/igrep/monad-in-java-sample)にあります。  
 また、もっとちゃんとしたMonadのJavaによる実装に興味がある方は[highj](https://github.com/DanielGronau/highj)をご覧下さい。  
@@ -302,13 +302,13 @@ class MaybeFactory implements MonadFactory {
 Monad則のところで触れたように、「Monadの値を作って返すだけで、それ以外のことはしない」のが`doNothingReturning`のお約束なので、Monadインターフェースを実装するクラスをより明確に特徴付けるのは、`then`メソッドの方です。  
 そのため繰り返しになりますが、次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
 
-ところで、最近のJavaに慣れた方は`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきでしょう。  
+ところで、最近のJavaに慣れた方は`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきかもしれません。  
 `Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当する、と考えると、確かに！  
 事実、その前提で[open-jdkの`Optional.java`](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)と見比べてみると、上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
 
 [^haskell-maybe]: ちなみに、Haskellの`Maybe`とはちょっと異なる振る舞いをします。
 Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すことはないからです。
-`null`と`Nothing`は実際には大きく異なるものなので単純に比較できませんが。詳しくはHaskell勉強してみて確かめましょう！
+`null`と`Nothing`は実際には大きく異なるものなので単純に比較できませんが。詳しくはHaskellを勉強してみて確かめましょう！
 
 `Optional`と同じようなものなので特に目新しい部分はないかもしれませんが、上記の`Maybe`の使用例を示しましょう。
 
@@ -390,9 +390,8 @@ Maybe<Bar> bar = do {
 
 「一体どこがどう構文糖で簡略化されたんだ？」という疑問にお答えしましょう。  
 この場合、元のコードの`then`メソッドの呼び出しが、細い矢印 `<-` の箇所に置き換わったと考えると分かりやすいでしょう。  
-`then`メソッドが「引数として渡された関数」に渡す引数(上記の場合`foo1`, `foo2`, `foo3`)について、`null`かどうか確認していたのを、do記法では細い矢印 `<-` で`foo1`, `foo2`, `foo3`に代入する前に`null`かどうか確認するようになったのです。  
-このような自動的な書き換えがあるからこそ、HaskellではMonadが思いの外便利に使えるのです。  
-どうです？Javaにもちょっと欲しくなりませんか？
+`then`メソッドが「引数として渡された関数」に渡す引数(上記の場合`foo1`, `foo2`, `foo3`)について`null`かどうか確認していたのを、do記法では細い矢印 `<-` で`foo1`, `foo2`, `foo3`に代入する前に`null`かどうか確認するようになったのです。  
+このような自動的な書き換えがあるからこそ、HaskellではMonadが思いの外便利に使えるのです。どうです？Javaにもちょっと欲しくなりませんか？
 
 ## do記法とMonad則 (B) {#doSyntaxAndLaw}
 
@@ -418,7 +417,7 @@ Maybe<Bar> bar = do {
     }</span>;
 };</code></pre></div>
 
-<span class="sourceHighlight2">`// このdoブロック`</span> と記されたdoブロックを引き剥がして、
+<span class="sourceHighlight2"><span class="co">`// このdoブロック`</span></span> と記されたdoブロックを引き剥がして、
 
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
     y &lt;- ax.<span class="fu">apply</span>(x);
@@ -475,7 +474,7 @@ Maybe<Bar> bar = do {
 
 から、<span class="sourceHighlight2">色</span>を塗った箇所だけを切り出して
 
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> SomeMonad&lt;Bar&gt; <span class="fu">extractedMethod</span>(Y y){
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> SomeMonad&lt;A&gt; <span class="fu">extractedMethod</span>(Y y){
     <span class="kw">return</span> <span class="kw">do</span> {
         <span class="sourceHighlight2">z &lt;- ax.<span class="fu">apply</span>(y);</span>
         <span class="sourceHighlight2">az.<span class="fu">apply</span>(z);</span>
@@ -630,11 +629,17 @@ class StateFactory<S> implements MonadFactory {
 }
 ```
 
-Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。
+Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。  
 このルールに加えて、先ほど説明した、「`State<S, T1>`は、**書き換えた状態と、一緒に別の値を返す関数**をラップしただけのクラスである」という事実を思い出してください。  
-「書き換えた状態と、一緒に別の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
+それでは「書き換えた状態と、一緒に別の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
 **状態を書き換えないで、そのまま返す**、というのが正解です。  
-`StateFactory.doNothingReturning`は、`(nonMutatedState) -> new MutationResult<>(nonMutatedState, value)` という、`nonMutatedState`を何も書き換えずにそのまま返し、加えて引数`value`を「一緒に返す別の値」として返すだけの関数を作っているのです。
+`StateFactory.doNothingReturning`は、  
+`(nonMutatedState) -> new MutationResult<>(nonMutatedState, value)` という、
+
+- `nonMutatedState`を何も書き換えずにそのまま返し、
+- 加えて引数`value`を「一緒に返す別の値」として返すだけ
+
+の関数を作っているのです。
 
 繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
 
@@ -665,14 +670,13 @@ class State<S, T1> implements Monad<T1> {
 ```
 
 まずは`(1)`を着けた**2ヶ所**に注目してください。
-コメントに書いた通りですが、`State.then`メソッドでは`StateMutator`を作って、また`State`オブジェクトとしてくるみなおしています。  
+コメントに書いた通りですが、`State.then`メソッドでは新しい`StateMutator`を作って、また`State`オブジェクトとしてくるみなおしています。  
 後半の、`State`オブジェクトとしてくるみなおす部分は、型を合わせるためだけのものです。  
 なので`State` Monadの`then`は(そしてその構文糖である`do`も)、「**`StateMutator`を新しく作ることで、いい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
 
-`(2)`は最初の状態書き換えです。
-結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返す値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
+`(2)`は最初の状態書き換えです。結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返す値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
 
-`(3)`では、`(2)`で手に入れた情報のうち、「一緒に返す値」を利用して、新しい`State` Monadを作ります。  
+`(3)`では、`(2)`で手に入れた「書き換えた結果（`MutationResult`）」のうち、「一緒に返す値」を利用して、新しい`State` Monadを作ります。  
 
 <!--
 `result.value`を渡している`nextAction`の型を振り返ってみていただくと分かるのですが、
@@ -680,18 +684,16 @@ class State<S, T1> implements Monad<T1> {
 ちょっとややこしいですね。
 -->
 
-`(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態を更に書き換えます。  
+`(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態（`MutationResult.newState`）を更に書き換えます。  
 そうして`(4)`で返された`MutationResult`が、`State.then`メソッド1回でできる最終的な状態の書き換えの結果となります。
 
-さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。
-あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
+さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
 それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、ただそれだけです。  
 ややこしいのは途中で`MutationResult`を「書き換えた状態」と「一緒に返す値」に分解しているところです。  
 上記のコードの`state`を処理している箇所のみに注目してみてください。  
 `oldState`を`this.mutator.mutate`した結果を`other.mutator.mutate`しているだけ、ということにお気づきでしょうか？
 
-更に簡潔にまとめますと、
-`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
+更に簡潔にまとめますと、`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
 
 ## 具体的な使い方 {#stateUsage}
 
@@ -733,12 +735,11 @@ class State<S, T1> implements Monad<T1> {
 `State.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、そのまま新しい状態(`newState`)で書き換える`StateMutator`を返します。  
 `new MutationResult<>()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
 `State.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、「一緒に返す値」として`null`、すなわち「一緒に返す値」がないものとしています。  
-これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。  
-戻り値の型が`State<S, Void>`になっている通りです。
+これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。戻り値の型が`State<S, Void>`になっている通りです。
 
 続いて`State.get`について。  
-`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult<>()`の第一引数として渡している通り、状態を一切書き換えません。
-あくまでも`get`するだけですからね。  
+`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult<>()`の第一引数として渡して返します。  
+状態を一切書き換えないのです。あくまでも`get`するだけですからね。  
 そして状態を書き換えた際に「一緒に返す値」である`new MutationResult<>()`の第二引数にも、`currentState`をそのまま渡しています。  
 これにより、`State.get()`を使うと、現在の状態をそのまま取得することができます。
 
@@ -754,7 +755,7 @@ class State<S, T1> implements Monad<T1> {
 State<String, Void> builder =
           // 状態を取得して、次の関数に渡す。
     State.get()
-          // ↓渡された状態に処理を加え、書き戻す。
+          // ↓getから渡された状態に処理を加え、書き戻す。
          .then((currentString) -> State.put(currentString + "one!"))
          .then((_null /* どうせ State.put が返す（次の関数に渡す）値はnullなので無視する */) ->
              // ↓また状態を取得する。
@@ -790,8 +791,8 @@ State<String, Void> builder =
 
 一方、これはHaskellでは結構役に立ちます。  
 Haskellでは、型によって**関数のできることに厳格な制約**がかけられます（主にデバッグのために使われる例外はあります）。  
-通常の関数は「決められた型の値を受け取って、決められた型の値を返す」以外に、全く何も出来ません。
-Javaではクラスの設計によって、利用者がそのクラスを使ってできることに制限を加えたりできますが、ある意味、Haskellには言語仕様レベルでそのような厳重な制限がかけられています。  
+通常の関数は「決められた型の値を受け取って、決められた型の値を返す」以外に、全く何も出来ません。  
+Javaではクラスの設計によって、利用者がそのクラスを使ってできることに制限を加えたりできますが、ある意味、Haskellでは言語仕様レベルでそのような厳重な制限がかけられています。  
 このことは一見厳しすぎるように見えるかも知れませんが、実際には極めて大きなアドバンテージです。  
 本記事の守備範囲から離れてしまうので、お話しできないのが残念なくらいには。
 
@@ -824,7 +825,7 @@ do記法を使って書き換えると、よりそのことを実感できるで
 .then((_null) -> State.modify((currentString) -> currentString + "three!"));
 ```
 
-などの`then`メソッドでは、コメントも書いた通り、ラムダ式の第1引数(`_null`)が無視されています。  
+などの`then`メソッドでは、コメントにも書いた通り、ラムダ式の第1引数(`_null`)が無視されています。  
 これは、`State.put`メソッドや`State.modify`メソッドが「状態を書き換えた際に、一緒に返す値」として`null`を返しているため、役立たずなためです。  
 <!--
 `State.modify`はあくまでも状態を書き換えることしかしないんですね。
@@ -859,7 +860,7 @@ State<String, Void> builder = do {
 
 ますます普通の手続き型スタイルっぽくなりましたね！  
 `State.put`したり`State.modify`することによって書き換えられる新しい状態が、`do`ブロックの中で直接現れず、`do`ブロック全体で共有されるようになります。  
-`State.get`の結果か`State.modify`に渡したラムダ式の中からでしか、現在の状態が見えず、`do`ブロックの中で暗黙に状態を保持しているように見えるようになるのです。
+`State.get`の結果か`State.modify`に渡したラムダ式の中からでしか、現在の状態が見えず、`do`ブロックの中で暗黙に状態を共有しているように見えるようになるのです。
 
 さて、この場合どう構文糖で簡略化されたのでしょう？  
 元のコードの`then`メソッドの呼び出しが、セミコロン「`;`」、 つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
@@ -879,7 +880,7 @@ State<String, Void> builder = do {
 
 # 最後に {#bottomLine}
 
-繰り返しになりますが、Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間にあるもの」を変えることを可能にします。  
+Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間にあるもの」を変えることを可能にします。  
 `Maybe` Monadの例ではそのことに触れず「[細い矢印 `<-` の箇所に置き換わった](#doSyntax)」と説明しましたが、「セミコロンの箇所で`null`チェックをしている」と解釈しても今ならそんなに違和感ありませんよね？
 
 また、Monadの説明でよく出てくる「文脈」[^context]という概念はここで言う「各文の間にあるもの」と捉えていただくと、もっといろいろしっくり来るのではないでしょうか。  
