@@ -76,7 +76,7 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
 - 型変数を1つ受けとるinterfaceである。
 - **`then`というメソッドを実装しなければならない。**
 - `Monad<T1>`というクラスのインスタンスがあったとき、`then`は次の値を受け取り、返す。
-    - 「`T1`を受け取り、別の型引数`T2`の`Monad`, `Monad<T2>`を返す関数」を受け取って、
+    - 「`T1`を受け取り、別の型引数`T2`を持った`Monad`、`Monad<T2>`を返す関数」を受け取って、
     - `Monad<T2>`の値を返す。
 - `Monad`を実装したクラスを実装したとき、任意のクラスの値に対して、そのインスタンスを返すためのファクトリークラス（`MonadFactory`インターフェースを実装したクラス）も実装しなければならない [^refval]。
 
@@ -88,19 +88,17 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
 
 ## Monad則って？ {#monadLaw}
 
-上記の通り`Monad`インターフェースは、`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド,
-合わせて2つのメソッドを実装しなければなりません。  
+上記の通り`Monad`インターフェースは、`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド、合わせて2つのメソッドを実装しなければなりません。  
 加えて、これらのメソッドは「Monad則」というある一定の規則を満たさなければならないよう決まっています。  
 ここではこの「Monad則」についてもJavaに置き換えて紹介します。
 
 ### なんでそんなのがあるの？ {#whyLaw}
 
 そもそも、なぜこんな規則があるのでしょう？  
-この法則を満たすと、Monadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
+この法則を満たすとMonadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
 その代わり、ここではJavaで言うところの似たような「規則」を紹介することで、「Monad則」の「立ち位置」みたいなものをお伝えしたいと思います。
 
-お馴染み`Comparable`インターフェースを思い出してください。
-例えば下記のように振る舞う`Comparable`があったら嫌ですよね？
+お馴染み`Comparable`インターフェースを思い出してください。例えば下記のように振る舞う`Comparable`があったら嫌ですよね？
 
 ```java
 /**
@@ -127,6 +125,8 @@ Monadはそもそも圏論という数学の一分野で定義されたものな
 
 ### で、Monad則ってどんなのさ？ {#monadLawInJava}
 
+**これ以降を読む上でのヒント**: Java 8における`Function`型のオブジェクトは、`apply`メソッドを呼ぶことで実行できます。
+
 前置きが長くなってしまいましたが、いよいよ「Monad則」をJavaで紹介しましょう！  
 下記の通りです [^apply]。
 
@@ -144,7 +144,6 @@ Z z;
 MonadFactory f = new SomeMonadFactory<>();
 
 // それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
-// Java 8におけるFunction型のオブジェクトは、applyメソッドを呼ぶことで実行できます。
 Function<X, Monad<Y>> ax = (x) -> ... ;
 Function<Y, Monad<Z>> ay = (y) -> ... ;
 Function<Z, Monad<A>> az = (z) -> ... ;
@@ -187,8 +186,7 @@ m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
 
 いずれにおいても、`doNothingReturning`は**Monadの値を作って返すだけで、実質なにもしない**という点が、ここでは重要です。
 「そんなの役に立つの？」と思われるかもしれません。  
-とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。
-ここから先の例で伝われば幸いです。
+とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。ここから先の例でなんとなく伝われば幸いです。
 
 #### (B)について
 
@@ -251,11 +249,11 @@ ax.apply(x).then(
         ax.apply(x).then((y) -> f.doNothingReturning(y))
         ax.apply(x)
         ```
-    - \(B\) 「`ax.apply(x)`してから『`ay.apply(y)`してから`az`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az`する』」ことが、常に同じ意味でないとならない。
+    - \(B\) 「`ax.apply(x)`してから『`ay.apply(y)`してから`(z) -> az.apply(z)`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`(z) -> az.apply(z)`する』」ことが、常に同じ意味でないとならない。
         ```java
-           ax.apply(x).then((y) -> ay.apply(y).then(az))
+           ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
             /* ↑と↓の意味が同じになること */
-           ax.apply(x).then((y) -> ay.apply(y)).then(az)
+           ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
         ```
 
 一点重要な注意事項を捕捉します。  
@@ -333,7 +331,7 @@ Maybe<Bar> bar =
 ...と、言いたいところですが、元ネタの`Optional.flatMap`を使った場合と同様、ネストが深くって嫌ですねー。  
 これでは普通にif文を書いた方がまだ読みやすそうです。`f.doNothingReturning`なんて書く分タイプ数も多いですし。
 
-`f.doNothingReturning`や`MaybeFactory f = new MaybeFactory();`の部分が長いのは単なる名付け方の名前だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
+`f.doNothingReturning`や`MaybeFactory f = new MaybeFactory();`の部分が長いのは単なる名付け方の問題だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
 
 この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
 
@@ -417,7 +415,7 @@ Maybe<Bar> bar = do {
     }</span>;
 };</code></pre></div>
 
-<span class="sourceHighlight2"><span class="co">`// このdoブロック`</span></span> と記されたdoブロックを引き剥がして、
+<span class="sourceHighlight2 co">`// このdoブロック`</span> と記されたdoブロックを引き剥がして、
 
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">do</span> {
     y &lt;- ax.<span class="fu">apply</span>(x);
@@ -517,25 +515,20 @@ class MutationResult<T, S> {
     }
 }
 
-// 状態の書き換えをシミュレートするための関数オブジェクト
-@FunctionalInterface
-interface StateMutator<T, S> {
-    MutationResult<T, S> mutate(S oldState);
-}
-
 // Stateモナドの実装
 class State<S, T1> implements Monad<T1> {
-    public final StateMutator<T1, S> mutator;
+    // 状態の書き換えをシミュレートするための関数オブジェクト
+    public final Function<S, MutationResult<T1, S>> mutator;
 
-    State(StateMutator<T1, S> mutator){
+    State(Function<S, MutationResult<T1, S>> mutator){
         this.mutator = mutator;
     }
 
     public <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-        StateMutator<T2, S> composedMutator = (oldState) -> {
-            MutationResult<T1, S> result = this.mutator.mutate(oldState);
+        Function<S, MutationResult<T2, S>> composedMutator = (oldState) -> {
+            MutationResult<T1, S> result = this.mutator.apply(oldState);
             State<S, T2> other = nextAction.apply(result.value);
-            return other.mutator.mutate(result.newState);
+            return other.mutator.apply(result.newState);
         };
         return new State<>(composedMutator);
     }
@@ -550,7 +543,7 @@ class StateFactory<S> implements MonadFactory {
 }
 ```
 
-うーん、肝心のStateクラス以外のものが多く、結構煩雑ですね...`(^-^;`  
+うーん、肝心のStateクラス以外のものが多く、その上結構煩雑ですね...`(^-^;`  
 これだけでは何のこっちゃと感じられる方も多いと思うので、ちょっとずつ解説しましょう。
 
 ## そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？ {#pretendImperative}
@@ -559,20 +552,17 @@ class StateFactory<S> implements MonadFactory {
 
 純粋な関数は、関数が返した値を使用しない限り、関数の外部へ影響を与えることができません。  
 ということで、素直に「古い状態を受け取って、新しい状態を返す」関数として表現してみましょう。  
-Javaのインターフェースで言うと↓のような感じ。
+Javaの`Function`で言うと↓のような感じ。
 
 ```java
-@FunctionalInterface
-interface StateMutator0<S> {
-    S mutate(S oldState);
-}
+Function<S, S> mutator;
 ```
 
 しかしこれでは、「状態を書き換えたと同時に、別の値も返したい！」という時に不便ですよね。  
 例えば、[Javaの`Map`の`remove`メソッド](https://docs.oracle.com/javase/jp/6/api/java/util/Map.html#remove\(java.lang.Object\))は、呼び出し元の`Map`の要素を取り除くことで状態を書き換えると同時に、取り除いた要素を返しますよね。  
 そうした振る舞いをシミュレートするためには、「古い状態を受け取って、新しい状態を返す」だけでなく、「一緒に返す別の値」も返せるようにする必要があるのです。
 
-と、いうわけで出来たのが先ほど挙げました`MutationResult`と`StateMutator`です。  
+と、いうわけで出来たのが先ほど挙げました`MutationResult`と`Function<S, MutationResult<T1, S>> mutator`です。  
 ↓にもう一度載せておきます。
 
 ```java
@@ -587,32 +577,32 @@ class MutationResult<T, S> {
     }
 }
 
-// 状態の書き換えをシミュレートするための関数オブジェクト
-@FunctionalInterface
-interface StateMutator<T, S> {
+class State<S, T1> implements Monad<T1> {
+    // 状態の書き換えをシミュレートするための関数オブジェクト
     // Sという型の新しい状態とともに、Tという型の書き換えた結果も返す
-    MutationResult<T, S> mutate(S oldState);
+    public final Function<S, MutationResult<T1, S>> mutator;
 }
 ```
 
-「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、「新しい状態」と「一緒に返す別の値」とのペアを表すオブジェクト`MutationResult`を作りました。
-`StateMutator`は古い状態を受け取って、それを返すだけです。
+「状態を書き換えたと同時に、別の値も返したい！」というニーズを満たすため、「新しい状態」と「一緒に返す別の値」とのペアを表すクラス `MutationResult` を作りました。`Function<S, MutationResult<T1, S>>`は古い状態を受け取って、`MutationResult`のインスタンスを返すだけです。
+
+なお、これ以降`Function<S, MutationResult<T1, S>>`のような型の関数を、単純に「`S`と`T1`の**mutator**」と呼ぶことにします。`Function<S, MutationResult<T1, S>>`とか「古い状態を受け取って、新しい状態と一緒に別の値を返す関数」では単純に長いので。
 
 ## `State`のコンストラクターがやっていること {#stateConstructor}
 
 ```java
 class State<S, T1> implements Monad<T1> {
-    public final StateMutator<T1, S> mutator;
+    public final Function<S, MutationResult<T1, S>> mutator;
 
-    State(StateMutator<T1, S> mutator){
+    State(Function<S, MutationResult<T1, S>> mutator){
         this.mutator = mutator;
     }
     // ...
 }
 ```
 
-コンストラクターでやっていることは単に引数をインスタンス変数にいれるだけのボイラープレートなコードです。  
-ここで注目していただきたいのは、`State<S, T1>`は、`StateMutator<T1, S>`, すなわち「`S`という型の古い状態を受け取って、同じく`S`という型の**書き換えた状態と**、`T1`という型の**別の値を一緒に返す関数**」を**ラップしただけ**のクラスであることです。  
+コンストラクターでやっていることは、単に引数をインスタンス変数にいれるだけのボイラープレートなコードです。  
+ここで注目していただきたいのは、`State<S, T1>`は、`Function<S, MutationResult<T1, S>>`、すなわち「`S`と`T1`のmutator」を**ラップしただけ**のクラスであることです。  
 `State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
 
 ## `StateFactory.doNothingReturning`がやっていること {#stateFactoryDoNothingReturning}
@@ -630,9 +620,9 @@ class StateFactory<S> implements MonadFactory {
 ```
 
 Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはいけません。  
-このルールに加えて、先ほど説明した、「`State<S, T1>`は、**書き換えた状態と、一緒に別の値を返す関数**をラップしただけのクラスである」という事実を思い出してください。  
+このルールに加えて、先ほど説明した、「`State<S, T1>`は、**書き換えた状態と、一緒に別の値を返す関数**（本節でいうところの`mutator`）をラップしただけのクラスである」という事実を思い出してください。  
 それでは「書き換えた状態と、一緒に別の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
-**状態を書き換えないで、そのまま返す**、というのが正解です。  
+「**状態を書き換えないで、そのまま返す**」というのが正解です。  
 `StateFactory.doNothingReturning`は、  
 `(nonMutatedState) -> new MutationResult<>(nonMutatedState, value)` という、
 
@@ -646,21 +636,21 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 ## `State.then`でやっていること {#stateThen}
 
 それでは本題、Monadインターフェースにとって最も重要なメソッド、`State`の`then`の詳細を解説しましょう。  
-こちらは説明のために番号をコメントにふって載せますね。 ↓
+説明のために番号をコメントにふって載せますね。↓
 
 ```java
 class State<S, T1> implements Monad<T1> {
-    public final StateMutator<T1, S> mutator;
+    public final Function<S, MutationResult<T1, S>> mutator;
     // ...
     <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-        // (1) 新しいStateMutatorを作って、
-        StateMutator<T2, S> composedMutator = (oldState) -> {
+        // (1) 新しく「状態を書き換えて
+        Function<S, MutationResult<T2, S>> composedMutator = (oldState) -> {
             // (2) 古い状態を書き換え、結果を受けとる
-            MutationResult<T1, S> result = this.mutator.mutate(oldState);
+            MutationResult<T1, S> result = this.mutator.apply(oldState);
             // (3) (2)で状態を書き換えた際に一緒に返した値を、次のState Monadを作る関数へ渡す。
             State<S, T2> other = nextAction.apply(result.value);
             // (4) (2)で状態を書き換えた状態をまた処理する
-            return other.mutator.mutate(result.newState);
+            return other.mutator.apply(result.newState);
         };
         // (1) また別のState Monadとしてくるみなおす。
         return new State<>(composedMutator);
@@ -670,9 +660,9 @@ class State<S, T1> implements Monad<T1> {
 ```
 
 まずは`(1)`を着けた**2ヶ所**に注目してください。
-コメントに書いた通りですが、`State.then`メソッドでは新しい`StateMutator`を作って、また`State`オブジェクトとしてくるみなおしています。  
+コメントに書いた通りですが、`State.then`メソッドでは新しいmutatorを作って、また`State`オブジェクトとしてくるみなおしています。  
 後半の、`State`オブジェクトとしてくるみなおす部分は、型を合わせるためだけのものです。  
-なので`State` Monadの`then`は(そしてその構文糖である`do`も)、「**`StateMutator`を新しく作ることで、いい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
+なので`State` Monadの`then`は(そしてその構文糖である`do`も)、「**mutatorを新しく作ることで、いい感じに組み合わせる**」ためにある、言う点を覚えておいてください。
 
 `(2)`は最初の状態書き換えです。結果を`MutationResult`として返すことで「書き換えた後の状態」と「一緒に返す値」を、`(3)`や`(4)`でそれぞれを利用できるようにします。
 
@@ -684,14 +674,14 @@ class State<S, T1> implements Monad<T1> {
 ちょっとややこしいですね。
 -->
 
-`(4)`では、`(3)`で手に入れた`State` Monadの`StateMutator`を利用して、`(2)`で書き換えた状態（`MutationResult.newState`）を更に書き換えます。  
+`(4)`では、`(3)`で手に入れた`State` Monadのmutatorを利用して、`(2)`で書き換えた状態（`MutationResult.newState`）を更に書き換えます。  
 そうして`(4)`で返された`MutationResult`が、`State.then`メソッド1回でできる最終的な状態の書き換えの結果となります。
 
-さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。あるいは、`StateMutator`をどのように「いい感じに」組み合わせているのでしょうか？  
-それは、**最初の`StateMutator`(`this.mutator`)で`mutate`してから、引数で渡された`StateMutator`(`other.mutator`)で`mutate`する**ように組み合わせている、ただそれだけです。  
+さて、`(1)`～`(4)`まで色々やりましたが、結局のところ、`State.then`は全体として何をしているのでしょうか。あるいは、mutatorをどのように「いい感じに」組み合わせているのでしょうか？  
+それは、**最初のmutator(`this.mutator`)で`mutate`してから、引数で渡されたmutator(`other.mutator`)で`mutate`する**ように組み合わせている、ただそれだけです。  
 ややこしいのは途中で`MutationResult`を「書き換えた状態」と「一緒に返す値」に分解しているところです。  
 上記のコードの`state`を処理している箇所のみに注目してみてください。  
-`oldState`を`this.mutator.mutate`した結果を`other.mutator.mutate`しているだけ、ということにお気づきでしょうか？
+`oldState`を`this.mutator.apply`した結果を`other.mutator.apply`しているだけ、ということにお気づきでしょうか？
 
 更に簡潔にまとめますと、`State.then`は**状態を書き換える関数を、続けて実行するよう組み合わせる**ということをしています。
 
@@ -706,21 +696,21 @@ class State<S, T1> implements Monad<T1> {
 
     // 引数で与えた状態に書き換える
     public static <S> State<S, Void> put(S newState){
-        StateMutator<Void, S> putter =
+        Function<S, MutationResult<Void, S>> putter =
             (ignoredState) -> new MutationResult<>(newState, null);
         return new State<>(putter);
     }
 
     // 現在の状態を取得する
     public static <S> State<S, S> get() {
-        StateMutator<S, S> getter =
+        Function<S, MutationResult<S, S>> getter =
             (currentState) -> new MutationResult<>(currentState, currentState);
         return new State<>(getter);
     }
 
     // 引数で与えた関数で、状態を書き換える
     public static <S> State<S, Void> modify(Function<S, S> simpleMutator){
-        StateMutator<Void, S> modifier =
+        Function<S, MutationResult<Void, S>> modifier =
             (currentState) -> {
                 S newState = simpleMutator.apply(currentState);
                 return new MutationResult<>(newState, null);
@@ -732,13 +722,13 @@ class State<S, T1> implements Monad<T1> {
 ```
 
 まずは`State.put`について。  
-`State.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、そのまま新しい状態(`newState`)で書き換える`StateMutator`を返します。  
+`State.put`は新しい状態(`newState`)を引数として受け取り、前の状態(`ignoredState`)を使わず、そのまま新しい状態(`newState`)で書き換えるmutatorを返します。  
 `new MutationResult<>()`の第一引数が「書き換えた新しい状態」で、第二引数が「一緒に返す値」であることを思い出してください。  
 `State.put`メソッドでは「書き換えた新しい状態」として受け取った`newState`をそのまま渡し、「一緒に返す値」として`null`、すなわち「一緒に返す値」がないものとしています。  
 これは、Javaで例えるなら戻り値が`void`のメソッドのようなものです。戻り値の型が`State<S, Void>`になっている通りです。
 
 続いて`State.get`について。  
-`State.get`がラップして返す`StateMutator`は、引数として受けとる`currentState`をそっくりそのまま`new MutationResult<>()`の第一引数として渡して返します。  
+`State.get`がラップして返すmutatorは、引数として受けとる`currentState`をそっくりそのまま`new MutationResult<>()`の第一引数として渡して返します。  
 状態を一切書き換えないのです。あくまでも`get`するだけですからね。  
 そして状態を書き換えた際に「一緒に返す値」である`new MutationResult<>()`の第二引数にも、`currentState`をそのまま渡しています。  
 これにより、`State.get()`を使うと、現在の状態をそのまま取得することができます。
@@ -758,7 +748,7 @@ State<String, Void> builder =
           // ↓getから渡された状態に処理を加え、書き戻す。
          .then((currentString) -> State.put(currentString + "one!"))
          .then((_null /* どうせ State.put が返す（次の関数に渡す）値はnullなので無視する */) ->
-             // ↓また状態を取得する。
+             // ↓また状態を取得する。今度は前の行でputした後の状態が返ってくる。
              State.get()
          )
          // あとはその繰り返し。
@@ -769,7 +759,7 @@ State<String, Void> builder =
 System.out.println(
     // 初期値を渡すことで、初期値から書き換えていった結果が得られる
     // この場合 "zero! one!two!three!" と出力される
-    builder.mutator.mutate("zero! ").newState
+    builder.mutator.apply("zero! ").newState
 );
 ```
 
@@ -782,18 +772,20 @@ State<String, Void> builder =
          .then((_null) -> State.modify((currentString) -> currentString + "three!"));
 ```
 
+今回のケースではこちらの方がすっきりして分かりやすいでしょうね。
+
 ## 何が嬉しいの？ {#stateGoodness}
 
 さて、ここまで長々と`State` Monadについて説明しましたが、いったいこんなものを作って何が嬉しいのでしょう？  
-この章の冒頭でも触れた通り正直に言って、Javaではあまり役に立たないでしょう。  
-特に上記の例で言えば、普通に`StringBuilder`を使って書いた方が、読みやすさの観点からも実行効率の観点からも、明らかに優れています。  
-そもそもJavaでは変数もオブジェクトもミュータブル（変更可能）なのですから、敢えてこんなものを作る必要はないでしょう。
+この章の冒頭でも触れた通り正直に言って、Javaではあまり役に立ちません。  
+特に上記の例に限って言えば、普通に`StringBuilder`を使って書いた方が、読みやすさの観点からも実行効率の観点からも、明らかに優れています。  
+そもそもJavaでは変数もオブジェクトもミュータブル（変更可能）なのですから、敢えてこんなものを作る必要はないですしね。
 
 一方、これはHaskellでは結構役に立ちます。  
 Haskellでは、型によって**関数のできることに厳格な制約**がかけられます（主にデバッグのために使われる例外はあります）。  
 通常の関数は「決められた型の値を受け取って、決められた型の値を返す」以外に、全く何も出来ません。  
 Javaではクラスの設計によって、利用者がそのクラスを使ってできることに制限を加えたりできますが、ある意味、Haskellでは言語仕様レベルでそのような厳重な制限がかけられています。  
-このことは一見厳しすぎるように見えるかも知れませんが、実際には極めて大きなアドバンテージです。  
+このことは一見厳しすぎるように見えるかも知れませんが、実際には極めて大きなアドバンテージでもあります。  
 本記事の守備範囲から離れてしまうので、お話しできないのが残念なくらいには。
 
 しかし実際問題として、こうした制約が面倒に感じられることも多々あります。  
@@ -803,10 +795,10 @@ Javaではクラスの設計によって、利用者がそのクラスを使っ�
 
 HaskellのState Monadは、そうしたケースにおいて、ちょうどよい「抜け道」を空けてくれます。  
 先程の例をよく振り返っていただきたいのですが、変数 `builder` を作るのに使うラムダ式や、`State` Monadの各種メソッドに至るまで、Java組み込みの`System.out.println`以外、**すべて純粋な関数のみで構成されている**ことにお気づきでしょうか？  
-`builder.mutator.mutate("zero! ")`してから`newState`を得るまでの全ての関数が、「戻り値が引数によってのみ定まり、『戻り値を返す』以外になにもしない」「純粋な関数」でできているのです。
+`builder.mutator.apply("zero! ")`してから`newState`を得るまでの全ての関数が、「戻り値が引数によってのみ定まり、『戻り値を返す』以外になにもしない」「純粋な関数」でできているのです。
 
 このように`State` Monadは、純粋な関数のみを使っているのに、あたかも命令型スタイルで書かれているかのように見せる、魔法のようなMonadとなっています。  
-do記法を使って書き換えると、よりそのことを実感できるでしょう。
+do記法を使って書き換えると、そのことをもっと実感できるでしょう。
 
 ただし、先程の`Maybe` Monadの例から、もう少しdo記法でできることを増やしましょう。  
 `State` Monadの例において、
@@ -830,9 +822,7 @@ do記法を使って書き換えると、よりそのことを実感できるで
 <!--
 `State.modify`はあくまでも状態を書き換えることしかしないんですね。
 
-`State` Monadに限らず、Monadは定義上`interface Monad<T1>`となっていることから分かるように、
-なにかしら「(`T1`にあたる)他の値」がくっついてくるものですが、
-このように、「実際には何もくっついてない」なんてことがよくあります。  
+`State` Monadに限らず、Monadは定義上`interface Monad<T1>`となっていることから分かるように、なにかしら「(`T1`にあたる)他の値」がくっついてくるものですが、このように、「実際には何もくっついてない」なんてことがよくあります。  
 -->
 そうしたケースをより簡単に書けるように、`then`メソッドに渡す関数の、第1引数にあたる箇所を省略できるようにしましょう。  
 その結果がこれ↓です。
@@ -860,20 +850,20 @@ State<String, Void> builder = do {
 
 ますます普通の手続き型スタイルっぽくなりましたね！  
 `State.put`したり`State.modify`することによって書き換えられる新しい状態が、`do`ブロックの中で直接現れず、`do`ブロック全体で共有されるようになります。  
-`State.get`の結果か`State.modify`に渡したラムダ式の中からでしか、現在の状態が見えず、`do`ブロックの中で暗黙に状態を共有しているように見えるようになるのです。
+`State.get`の結果か、`State.modify`に渡したラムダ式の中からでしか、現在の状態は見えません。「現在の状態」は`do`ブロックの中で**暗黙に共有**されるようになるのです。
 
 さて、この場合どう構文糖で簡略化されたのでしょう？  
-元のコードの`then`メソッドの呼び出しが、セミコロン「`;`」、 つまり文の終端に置き換わったと考えると分かりやすいでしょう。  
-`State.modify`などが返した`State` Monadを、セミコロン 「`;`」 が`then`メソッドで処理しているのです。
+元のコードの`then`メソッドの呼び出しが、セミコロン「`;`」、 つまり文の終端に置き換わったと考えると分かりやすいです。  
+`State.modify`などが返した`State` Monadを、セミコロン 「`;`」 が`then`メソッドを呼び出して処理しているのです。
 
 これは[Monadを「プログラマブルセミコロン」として例える主張](http://zacharyvoase.com/2014/04/30/monads/)ともぴったり一致します。  
 上記の主張を借りるならば、Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれるのです。
 
 ## Stateまとめ {#stateSummary}
 
-長くなってしまいましたのでこの辺で一旦まとめます。
+長くなってしまいましたのでここで一旦まとめます。もう次が「最後に」なんですけどね。
 
-- `State` Monadでは`then`メソッドが、状態を書き換える関数を、続けて実行するよう組み合わせる。
+- `State` Monadでは`then`メソッドが、状態を書き換える関数を続けて実行するよう組み合わせる。
 - `State` Monadは純粋な関数だけの組み合わせで、命令型のようなスタイルで書けるようにすることができる。
 - `State` Monadは、「関数は全て純粋でないとならない」という(Haskellなどの)制約において、「抜け道」を作るのに役に立つ。
 - Monadは（`+`などの演算子と同様に）**セミコロンをオーバーライド**できるようにしてくれる。
@@ -904,5 +894,5 @@ Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間に
 - [java - How can I force a Constructor to be defined in all subclass of my abstract class - Stack Overflow](http://stackoverflow.com/questions/3164334/how-can-i-force-a-constructor-to-be-defined-in-all-subclass-of-my-abstract-class)
 - [Javaラムダ式メモ(Hishidama's Java8 Lambda Expression Memo)](http://www.ne.jp/asahi/hishidama/home/tech/java/lambda.html)
 - [Monads, or Programmable Semicolons | Zack’s Blog](http://zacharyvoase.com/2014/04/30/monads/)
-- [改訂2版　パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
+- [改訂2版 パーフェクトJava](https://gihyo.jp/book/2014/978-4-7741-6685-8)
 - [関数プログラミング実践入門](https://gihyo.jp/book/2014/978-4-7741-6926-2)
