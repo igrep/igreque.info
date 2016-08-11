@@ -257,10 +257,6 @@ ax.apply(x).then(
            ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
         ```
 
-一点重要な注意事項を捕捉します。  
-冒頭でも触れましたが、`then`や`doNothingReturning`などの名前は、分かりやすさのために**私が勝手につけたもの**です。  
-Haskellや数学の世界でどう呼んでいるかは各自調べてください。 
-
 # 具体的な実装その1 Maybe {#maybeInJava}
 
 **重要な注意事項**:  
