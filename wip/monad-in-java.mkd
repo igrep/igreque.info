@@ -66,8 +66,8 @@ interface Monad<T1> {
 }
 interface MonadFactory {
     // Haskellで言うところのreturnに相当します。
-    // 本当は1個のinterfaceにまとめたいけど
-    // Javaのinterfaceでは無理っぽいorz.
+    // 本当は1個のインターフェースにまとめたいけど
+    // Javaのインターフェースでは無理っぽいorz.
     <T> Monad<T> doNothingReturning(T value);
 }
 ```
@@ -75,7 +75,7 @@ interface MonadFactory {
 Java 8がある程度普及した現在、関数を受けとる関数を表現するのがらくちんになりましたね！  
 上記の通りMonadをJavaで表現すると、次のような日本語に言い換えることができます。
 
-- 型変数を1つ受けとるinterfaceである。
+- 型変数を1つ受けとるインターフェースである。
 - **`then`というメソッドを実装しなければならない。**
 - `Monad<T1>`というクラスのインスタンスがあったとき、`then`は次の値を受け取り、返す。
     - 「`T1`を受け取り、別の型引数`T2`を持った`Monad`、`Monad<T2>`を返す関数」を受け取って、
