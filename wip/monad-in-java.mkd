@@ -36,14 +36,13 @@ HaskellではMonadは「ないと文字通りプログラムが書けないぐ�
 # 目次
 
 - [とりあえずJavaでの定義を。](#definitionInJava)
-    - [Monad則って？](#monadLaw)
-        - [なんでそんなのがあるの？](#whyLaw)
-        - [で、Monad則ってどんなのさ？](#monadLawInJava)
-- [ここまでのまとめ](#summary1)
 - [具体的な実装その1 Maybe](#maybeInJava)
+- [Monad則って？](#monadLaw)
+    - [なんでそんなのがあるの？](#whyLaw)
+    - [で、Monad則ってどんなのさ？](#monadLawInJava)
 - [do記法](#doSyntax)
     - [do記法とMonad則 (B)](#doSyntaxAndLaw)
-- [ここまでのまとめ](#summary2)
+- [ここまでのまとめ](#summary1)
 - [具体的な実装 その2 State](#stateInJava)
     - [そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？](#pretendImperative)
     - [`State`のコンストラクターがやっていること](#stateConstructor)
@@ -86,7 +85,7 @@ Java 8がある程度普及した現在、関数を受けとる関数を表現�
 - (1): 型引数を1つとります。なので、渡した型をラップする型となります。
 - (2): 引数として、「ラップした型T1を受け取り、別の型T2をラップしたMonadを返す関数」を受け取ります。
     - 戻り値は、そのT2をラップしたMonadでなければなりません。
-- (3): 任意の値一つを受け取って[^refval]、そのMonadのインスタンスを作る、ファクトリーメソッド的なメソッドが必要です。
+- (3): 任意の値一つを受け取って[^refval]、そのMonadのインスタンスを返す返す、ファクトリーメソッド的なものものが必要です。
 
 [^refval]: 参照型と値型の区別はこの際お見逃しください。やっぱりJavaで厳密にMonadを表現するのは難しい。
 
@@ -101,175 +100,6 @@ Monad interfaceを実装したクラスは、
     - 任意のクラスの値を1つ受け取って、そのインスタンスを作れなければならない。
 
 いろいろ書きましたが、ここで特に大事なところは「**`then`というメソッドを実装しなければならない**」と「**`doNothingReturning`**を実装しなければならない」の二点です！
-
-## Monad則って？ {#monadLaw}
-
-上記の通り`Monad`インターフェースは、`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド、合わせて2つのメソッドを実装しなければなりません。  
-加えて、これらのメソッドは「Monad則」というある一定の規則を満たさなければならないよう決まっています。  
-ここではこの「Monad則」についてもJavaに置き換えて紹介します。
-
-### なんでそんなのがあるの？ {#whyLaw}
-
-そもそも、なぜこんな規則があるのでしょう？  
-この法則を満たすとMonadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
-その代わり、ここではJavaで言うところの似たような「規則」を紹介することで、「Monad則」の「立ち位置」みたいなものをお伝えしたいと思います。
-
-お馴染み`Comparable`インターフェースを思い出してください。例えば下記のように振る舞う`Comparable`があったら嫌ですよね？
-
-```java
-/**
- * 引数とレシーバーを逆にしても1（より大きい）が返る！
- * どっちが本当に大きいの？
- */
-x.compareTo(y) // => 1
-y.compareTo(x) // => 1
-
-/**
- * 自分自身と比較しても-1（より小さい）が返る！
- * どうやったら等しくなるんだ！？
- */
-z.compareTo(z) // => -1
-```
-
-継承の仕方などによっては、間違って上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。もちろん意図的にそうした実装を作ることも可能です。  
-このように不自然な`Comparable`を作らないためには、`Comparable`を**実装する側が意識**しなければなりません。間違った実装を作ってしまっても、コンパイラーが「間違ってるよ！」と教えてくれないのです。
-
-Monad則もこれと同じようなものです。  
-Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、単純に`Monad`というインターフェースを実装するだけでなく、それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
-そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！（詳細は後述！）
-
-### で、Monad則ってどんなのさ？ {#monadLawInJava}
-
-**これ以降を読む上でのヒント**: Java 8における`Function`型のオブジェクトは、`apply`メソッドを呼ぶことで実行できます。
-
-前置きが長くなってしまいましたが、いよいよ「Monad則」をJavaで紹介しましょう！  
-下記の通りです [^apply]。
-
-[^apply]: Javaの関数オブジェクトやラムダ式の仕様上、本記事のMonad則で現れる`(x) -> ax.apply(x)`のような式は、本当は単に`ax`と書き換えることができます。  
-それから、`(y) -> f.doNothingReturning(y)`も、単に`f::doNothingReturning`と書くだけでOKです。  
-ですが説明しやすさのために敢えて冗長な記述をしております。ご容赦を。
-
-```java
-// 任意の型X, Y, Zの値をx, y, zとします。
-X x;
-Y y;
-Z z;
-
-// MonadFactoryをfとします
-MonadFactory f = new SomeMonadFactory<>();
-
-// それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
-Function<X, Monad<Y>> ax = (x) -> ... ;
-Function<Y, Monad<Z>> ay = (y) -> ... ;
-Function<Z, Monad<A>> az = (z) -> ... ;
-
-// 下記の3組の式が**常に同じ意味となる**doNothingReturningとthenを
-// 実装している時、Monad則が成立します。
-/* (A ) */ f.doNothingReturning(x).then((x) -> ax.apply(x))
-           /* ↑と↓の意味が同じになること。以下同様。 */
-           ax.apply(x)
-
-/* (A') */ ax.apply(x).then((y) -> f.doNothingReturning(y))
-           /* ↑と↓の意味が同じになること */
-           ax.apply(x)
-
-/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
-           /* ↑と↓の意味が同じになること */
-           ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
-```
-
-<!--
-return a >>= k  =  k a
-m >>= return    =  m
-m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
--->
-
-各変数の定義まで書いてしまったので長ったらしくなってしまいましたが、一つずつ解説しましょう。
-
-#### (A), (A')について
-
-最初の2つは、どちらかというと`doNothingReturning`が守るべき性質についての式です。
-
-第一に(A)では、`x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、それから(`then`)、更にMonadを返す関数`ax`を実行する(`ax.apply`)ということは、単に`ax`を1回実行するのと同じことだ
---- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行する(`ax.apply(x)`)のと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
-ということです。
-
-(A')についても同様です。  
-`x`を受け取ってMonadを返す関数`ax`を実行(`ax.apply(x)`)して、それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、単に`ax`を1回実行するのと同じことだ
---- つまり、`doNothingReturning`をどんな`ax`の**後**に実行しても、`ax`を実行するのと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
-ということです。
-
-いずれにおいても、`doNothingReturning`は**Monadの値を作って返すだけで、実質なにもしない**という点が、ここでは重要です。
-「そんなの役に立つの？」と思われるかもしれません。  
-とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。ここから先の例でなんとなく伝われば幸いです。
-
-#### (B)について
-
-(B)はちょっと複雑ですね。  
-集中するために該当の部分だけ持ってきましょう。
-
-```java
-   ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
-        /* ↑と↓の意味が同じになること */
-   ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
-```
-
-ぱっと見どこが違うのかわかりませんね！違うのは↓に示す部分だけです！
-
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
->   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span><span class="sourceHighlight2">)</span>
-                                      <span class="co">^ この<span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span>が...</span>
-   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span>
-                                       <span class="co">^ カッコ<span class="sourceHighlight2">()</span>を突き破って、ここに出された！</span></code></pre></div>
-
-上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then((z) -> az.apply(z))`</span>が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
-
-後にも触れますが、これによってネストを一段平たくできます。  
-`then()`のカッコの中にインデントを加えてみるとよくわかるでしょう。
-
-```java
-ax.apply(x).then(
-  (y) -> ay.apply(y).then(
-    (z) -> az.apply(z)
-  )
-)
-/* ↑と↓の意味が同じになること */
-ax.apply(x).then(
-  (y) -> ay.apply(y)
-).then(
-  (z) -> az.apply(z)
-)
-```
-
-さて、この規則をもうちょっとくだけた日本語に言い換えると、
-
-- 「`ax.apply(x)`してから『`ay.apply(y)`してから`az.apply(z)`する』」ことと、
-- 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az.apply(z)`する』」ことが、
-
-常に同じ意味でないといけない、と解釈できます。  
-この解釈だと「そんなの当たり前じゃないの？」と感じられるかもしれません。  
-それぐらい直感的な仕様を守ってくださいね、というのが「Monad則」の正体だ、と考えていただければしっくりくるでしょうか？  
-`Comparable`な`x`が常に`x.compareTo(x) == 0`であってほしいのと同じことです。
-
-# ここまでのまとめ {#summary1}
-
-さて、ここまでのまとめです。
-
-- MonadをJavaで表現すると、`then`というメソッドを持ったインターフェースと、それに対応する、`doNothingReturning`というメソッドを持ったファクトリークラスのインターフェースで表現することができる。
-- それらのインターフェースを実装するクラスは、下記の「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
-    - (A), (A') `doNothingReturning`はMonadの値を作って返すだけで、それ以外のことはしてはならない。
-        ```java
-        /* ↓3行の意味が同じになること */
-        f.doNothingReturning(x).then((x) -> ax.apply(x))
-        ax.apply(x).then((y) -> f.doNothingReturning(y))
-        ax.apply(x)
-        ```
-    - \(B\) 「`ax.apply(x)`してから『`ay.apply(y)`してから`(z) -> az.apply(z)`する』」ことと、「`ax.apply(x)`してから『`ay.apply(y)`してから』『`(z) -> az.apply(z)`する』」ことが、常に同じ意味でないとならない。
-        ```java
-           ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
-            /* ↑と↓の意味が同じになること */
-           ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
-        ```
 
 # 具体的な実装その1 Maybe {#maybeInJava}
 
@@ -342,9 +172,213 @@ Maybe<Bar> bar =
 ...と、言いたいところですが、元ネタの`Optional.flatMap`を使った場合と同様、ネストが深くって嫌ですねー。  
 これでは普通にif文を書いた方がまだ読みやすそうです。`f.doNothingReturning`なんて書く分タイプ数も多いですし。
 
-`f.doNothingReturning`や`MaybeFactory f = new MaybeFactory();`の部分が長いのは単なる名付け方の問題だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？
+`f.doNothingReturning`や`MaybeFactory f = new MaybeFactory();`の部分が長いのは単なる名付け方の問題だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？  
+実はこれから説明する「Monad則」というのを利用すると、このような問題をクールに解決することができます！
 
-この問題を解決するヒントとして、前述の「Monad則」の(B)を思い出してみましょう。
+# Monad則って？ {#monadLaw}
+
+冒頭の通り、`Monad`インターフェースは`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド、合わせて2つのメソッドを実装しなければなりません。  
+加えて、これらのメソッドは「Monad則」というある一定の規則を満たして実装しなければならないよう決まっています。  
+ここではこの「Monad則」についてもJavaに置き換えて紹介しましょう。  
+詳細は後で解説するので、ここではひとまず重要な部分のみチラ見せします↓。
+
+```java
+// 下記の3組の式が**常に同じ意味となる**doNothingReturningとthen
+// となっていなければ、thenとdoNothingReturningを実装していても、
+// 「そのクラスはMonadである」とはいえません。
+/* (A ) */ f.doNothingReturning(x).then((x) -> ax.apply(x))
+           /* ↑と↓の意味が同じになること。以下同様。 */
+           ax.apply(x)
+
+/* (A') */ ax.apply(x).then((y) -> f.doNothingReturning(y))
+           /* ↑と↓の意味が同じになること */
+           ax.apply(x)
+
+/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
+           /* ↑と↓の意味が同じになること */
+           ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
+```
+
+なんだかややこしいですね！
+
+## なんでそんなのがあるの？ {#whyLaw}
+
+そもそも、なぜこんな面倒な規則があるのでしょう？  
+この法則を満たすとMonadは非常に便利に使えるようになるのですが、それについては後ほど説明します。  
+その代わり、ここではJavaで言うところの似たような「規則」を紹介することで、「Monad則」の「立ち位置」みたいなものをお伝えしたいと思います。
+
+例えば[Javaな方にはお馴染み`Comparable`インターフェース](http://docs.oracle.com/javase/jp/7/api/java/lang/Comparable.html)を実装したクラスは、以下のように振る舞うよう定められています。
+
+`x.compareTo(y)`というメソッドを呼んだとき、
+
+- `x`より`y`の方が「より大きい」時、`0`より大きい値（`1`にすることが多い)を返す。
+- `x`より`y`の方が「より小さい」時、`0`より小さい値（`-1`にすることが多い)を返す。
+- `x`と`y`が「等しい」時、`0`を返す。
+
+これによって、ユーザーが自由に「全順序性」を持ったクラスを定義して、比較したりソートしたりできるようになるのでした。
+
+ちなみに、RubyやPerlのスペースシップ演算子(`<=>`)やPythonの(`__cmp__`)など、そっくりな振る舞いを要求するメソッドは他の言語にもしばしばあります。  
+以下の話はそれらに置き換えて読んでいただいても全く問題ありません。
+
+そんな`Comparable`ですが、上記の規則を破って、下記のように振る舞う`Comparable`があったら嫌ですよね？
+
+```java
+/**
+ * 引数とレシーバーを逆にしても1（より大きい）が返る！
+ * どっちが本当に大きいの？
+ */
+x.compareTo(y) // => 1
+y.compareTo(x) // => 1
+
+/**
+ * 自分自身と比較しても-1（より小さい）が返る！
+ * どうやったら等しくなるんだ！？
+ */
+z.compareTo(z) // => -1
+```
+
+継承の仕方などによっては、間違って上記のようなおかしな振る舞いの`Comparable`を産み出してしまうことはあるでしょう。もちろん意図的にそうした実装を作ることも可能です。  
+このように不自然な`Comparable`を作らないためには、`Comparable`を**実装する側が意識**しなければなりません。間違った実装を作ってしまっても、コンパイラーが「間違ってるよ！」と教えてくれないのです。
+
+Monad則もこれと同じようなものです。  
+Monadはそもそも圏論という数学の一分野で定義されたものなので、その定義に準拠したものであるためには、単純に`Monad`というインターフェースを実装するだけでなく、それに沿うよう気を付けて中身(`then`と`doNothingReturning`)を実装しなければなりません。  
+そして、繰り返しますがこのMonad則を満たすからこそみなさんはMonadを便利に使えるのです！（詳細は後述！）
+
+## で、Monad則ってどんなのさ？ {#monadLawInJava}
+
+**これ以降を読む上でのヒント**: Java 8における`Function`型のオブジェクトは、`apply`メソッドを呼ぶことで実行できます。
+
+前置きが長くなってしまいましたが、いよいよ「Monad則」をJavaで紹介しましょう！  
+先ほどは省略した変数の定義も含めて、下記の通りです [^apply]！
+
+[^apply]: Javaの関数オブジェクトやラムダ式の仕様上、本記事のMonad則で現れる`(x) -> ax.apply(x)`のような式は、本当は単に`ax`と書き換えることができます。  
+それから、`(y) -> f.doNothingReturning(y)`も、単に`f::doNothingReturning`と書くだけでOKです。  
+ですが説明しやすさのために敢えて冗長な記述をしております。ご容赦を。
+
+```java
+// 任意の型X, Y, Zの値をx, y, zとします。
+X x;
+Y y;
+Z z;
+
+// MonadFactoryをfとします
+MonadFactory f = new SomeMonadFactory<>();
+
+// それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
+Function<X, Monad<Y>> ax = (x) -> ... ;
+Function<Y, Monad<Z>> ay = (y) -> ... ;
+Function<Z, Monad<A>> az = (z) -> ... ;
+
+// 下記の3組の式が**常に同じ意味となる**doNothingReturningとthen
+// となっていなければ、thenとdoNothingReturningを実装していても、
+// 「そのクラスはMonadである」とはいえません。
+/* (A ) */ f.doNothingReturning(x).then((x) -> ax.apply(x))
+           /* ↑と↓の意味が同じになること。以下同様。 */
+           ax.apply(x)
+
+/* (A') */ ax.apply(x).then((y) -> f.doNothingReturning(y))
+           /* ↑と↓の意味が同じになること */
+           ax.apply(x)
+
+/* (B ) */ ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
+           /* ↑と↓の意味が同じになること */
+           ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
+```
+
+<!--
+return a >>= k  =  k a
+m >>= return    =  m
+m >>= (\x -> k x >>= h)  =  (m >>= k) >>= h
+-->
+
+各変数の定義まで書いてしまったので長ったらしくなってしまいましたが、一つずつ解説しましょう。
+
+### (A), (A')について
+
+最初の2つは、どちらかというと`doNothingReturning`が守るべき性質についての式です。
+
+第一に(A)では、`x`に対して「なにもしないで」Monadの値を作って(`doNothingReturning(x)`)、それから(`then`)、更にMonadを返す関数`ax`を実行する(`ax.apply`)ということは、単に`ax`を1回実行するのと同じことだ
+--- つまり、`doNothingReturning`をどんな`ax`の**前**に実行しても、`ax`を実行する(`ax.apply(x)`)のと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
+ということです。
+
+(A')についても同様です。  
+`x`を受け取ってMonadを返す関数`ax`を実行(`ax.apply(x)`)して、それから(`then`)、「なにもしないで」Monadの値を作る(`doNothingReturning`)ことは、単に`ax`を1回実行するのと同じことだ
+--- つまり、`doNothingReturning`をどんな`ax`の**後**に実行しても、`ax`を実行するのと同じ、なので`doNothingReturning`は**なにもしない**のと同等だ ---
+ということです。
+
+いずれにおいても、`doNothingReturning`は**Monadの値を作って返すだけで、実質なにもしない**という点が、ここでは重要です。
+「そんなの役に立つの？」と思われるかもしれません。  
+とりあえずは「定義上そう決まっているのでそういうものだ」とご理解しておいてください。ここから先の例でなんとなく伝われば幸いです。
+
+### (B)について
+
+(B)はちょっと複雑ですね。  
+集中するために該当の部分だけ持ってきましょう。
+
+```java
+   ax.apply(x).then((y) -> ay.apply(y).then((z) -> az.apply(z)))
+        /* ↑と↓の意味が同じになること */
+   ax.apply(x).then((y) -> ay.apply(y)).then((z) -> az.apply(z))
+```
+
+ぱっと見どこが違うのかわかりませんね！違うのは↓に示す部分だけです！
+
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
+>   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span><span class="sourceHighlight2">)</span>
+                                      <span class="co">^ この<span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span>が...</span>
+   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight2">)</span><span class="sourceHighlight1">.then((z) -&gt; az.apply(z))</span>
+                                       <span class="co">^ カッコ<span class="sourceHighlight2">()</span>を突き破って、ここに出された！</span></code></pre></div>
+
+上記の通り、二つめの`then`、すなわち`ay.apply`の後ろにある<span class="sourceHighlight1">`then((z) -> az.apply(z))`</span>が、一つめの`then`、つまり`ax.apply(x).then`に渡したラムダ式から、**括り出せるようになっていなければならない**、ということです。
+
+この規則によって、ネストを一段平たくできます。  
+`then()`のカッコの中にインデントを加えてみるとよくわかるでしょう。
+
+```java
+ax.apply(x).then(
+  (y) -> ay.apply(y).then(
+    (z) -> az.apply(z)
+  )
+)
+/* ↑と↓の意味が同じになること */
+ax.apply(x).then(
+  (y) -> ay.apply(y)
+).then(
+  (z) -> az.apply(z)
+)
+```
+
+さて、この規則をもうちょっとくだけた日本語に言い換えると、
+
+- 「`ax.apply(x)`してから『`ay.apply(y)`してから`az.apply(z)`する』」ことと、
+- 「`ax.apply(x)`してから『`ay.apply(y)`してから』『`az.apply(z)`する』」ことが、
+
+常に同じ意味でないといけない、と解釈できます。  
+この解釈だと「そんなの当たり前じゃないの？」と感じられるかもしれません。  
+それぐらい直感的な仕様を守ってくださいね、というのが「Monad則」の正体だ、と考えていただければしっくりくるでしょうか？  
+`Comparable`な`x`が常に`x.compareTo(x) == 0`であってほしいのと同じことです。
+
+## 「Monad則」(B)のMaybeへの応用 {#monadLawAndMaybe}
+
+さて、Monad則の話が長くなってしまいましたが、Maybeのお話に帰りましょう。  
+下記のようなMaybe Monadの例においてMonad則を応用すると、「ネストが深くって嫌ですねー」という問題をクールに解決することができる、というお話でした。
+
+```java
+Foo maybeFoo1 = someMap.get(key1);
+MaybeFactory f = new MaybeFactory();
+Maybe<Bar> bar =
+    f.doNothingReturning(maybeFoo1).then((foo1) -> {
+        Foo maybeFoo2 = someMap.get(key2);
+        return f.doNothingReturning(maybeFoo2).then((foo2) -> {
+            Foo maybeFoo3 = someMap.get(key3);
+            return f.doNothingReturning(maybeFoo3).then((foo3) -> {
+                f.doNothingReturning(foo1.doSomething(foo2, foo3));
+            });
+        });
+    });
+```
+
+解決するヒントとして、「Monad則」の(B)を思い出してみましょう。
 
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"
 >   ax.<span class="fu">apply</span>(x).<span class="fu">then</span><span class="sourceHighlight2">(</span>(y) -&gt; ay.<span class="fu">apply</span>(y)<span class="sourceHighlight1">.then((z) -&gt; az.apply(az))</span><span class="sourceHighlight2">)</span>
@@ -499,12 +533,16 @@ Maybe<Bar> bar = do {
 
 このように、do記法のどんなところから切り出しを行っても意味が変わらないようにするには、Monad則(B)を満たして、**入れ子を関係を気にしなくてもいいようにする**ことが、必要不可欠なのです。
 
-# ここまでのまとめ {#summary2}
+# ここまでのまとめ {#summary1}
 
-- Monadインターフェースを実装するクラスの振る舞いをより明確に特徴付けるのは、`MonadFactory.doNothingReturning`ではなく`then`メソッドです。  
-- `Maybe`の`then`は、「次の関数を実行する前に値が`null`でないか確認」します。
-- do記法があるおかげで、HaskellではMonadが思いの外役に立ちます。
-- do記法をdo記法らしく直感的に使えるようにするためには、Monadインターフェースを実装したクラスが、Monad則(B)を守る必要があります。
+長くなりましたがここまでのまとめです。
+
+- MonadをJavaで表現すると、`then`というメソッドを持ったインターフェースと、それに対応する、`doNothingReturning`というメソッドを持ったファクトリークラスのインターフェースで表現することができる。
+- それらのインターフェースを実装するクラスは、「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
+    - Monad則を守ることによって、do記法はdo記法らしく直感的に使えるようになる。
+    - そのdo記法があるおかげで、HaskellではMonadが思いの外役に立つ。
+- Monadインターフェースを実装するクラスの振る舞いをより明確に特徴付けるのは、`MonadFactory.doNothingReturning`ではなく`then`メソッド。
+- `Maybe`の`then`は、「次の関数を実行する前に値が`null`でないか確認」する。
 
 # 具体的な実装 その2 State {#stateInJava}
 
