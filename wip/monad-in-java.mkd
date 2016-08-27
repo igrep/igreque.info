@@ -696,7 +696,7 @@ class State<S, T1> implements Monad<T1> {
   public final Function<S, MutationResult<T1, S>> mutator;
   // ...
   <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-    // (1) 新しく「状態を書き換えて
+    // (1) 新しくmutatorを作って
     Function<S, MutationResult<T2, S>> composedMutator = (oldState) -> {
       // (2) 古い状態を書き換え、結果を受けとる
       MutationResult<T1, S> result = this.mutator.apply(oldState);
