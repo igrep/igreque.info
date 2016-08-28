@@ -46,7 +46,7 @@ HaskellではMonadは「ないと文字通りプログラムが書けないぐ�
 - [具体的な実装 その2 State](#stateInJava)
     - [そもそも、「純粋な関数」のみで命令型スタイルに見せる、とは？](#pretendImperative)
     - [`State`のコンストラクターがやっていること](#stateConstructor)
-    - [`StateFactory.doNothingReturning`がやっていること](#stateFactoryDoNothingReturning)
+    - [`State.Return.doNothingReturning`がやっていること](#stateReturnDoNothingReturning)
     - [`State.then`でやっていること](#stateThen)
     - [具体的な使い方](#stateUsage)
     - [何が嬉しいの？](#stateGoodness)
@@ -59,7 +59,7 @@ HaskellではMonadは「ないと文字通りプログラムが書けないぐ�
 手始めに、Monadの定義をJavaに翻訳してみましょう [^monad-in-haskell]。
 Haskellや圏論での呼び方も、より分かりやすくなるようもっと具体的な名前に差し替えます。
 
-[^monad-in-haskell]: Haskellに詳しい方はすぐに察することができるかと思いますが、`Monad`の`then`メソッドがHaskellでいうところの`>>=` (bind)に相当し、`MonadFactory`の`doNothingReturning`メソッドが`return`に相当します。
+[^monad-in-haskell]: Haskellに詳しい方はすぐに察することができるかと思いますが、`Monad`の`then`メソッドがHaskellでいうところの`>>=` (bind)に相当し、`Monad.Return`の`doNothingReturning`メソッドが`return`に相当します。
 
 ```java
 /**
@@ -110,7 +110,7 @@ Monad interfaceを実装したクラスは、
 また、もっとちゃんとしたMonadのJavaによる実装に興味がある方は[highj](https://github.com/DanielGronau/highj)をご覧下さい（結構トリッキーな実装なので、今回の説明では使用しませんでした）。  
 **重要な注意事項終わり**
 
-さて、それではMonadについてもうちょっと具体的なイメージを持っていただくために、前節で定義した`Monad`インターフェース(と、対応する`MonadFactory`インターフェース)を実装したクラスの例を紹介しましょう。
+さて、それではMonadについてもうちょっと具体的なイメージを持っていただくために、前節で定義した`Monad`インターフェース(と、対応する`Monad.Return`インターフェース)を実装したクラスの例を紹介しましょう。
 
 ```java
 class Maybe<T1> implements Monad<T1> {
@@ -127,11 +127,11 @@ class Maybe<T1> implements Monad<T1> {
             return new Maybe<>(null);
         }
     }
-}
 
-class MaybeFactory implements MonadFactory {
-    public <T> Maybe<T> doNothingReturning(T x){
-        return new Maybe<>(x);
+    public static class Return implements Monad.Return {
+        public <T> Maybe<T> doNothingReturning(T x){
+            return new Maybe<>(x);
+        }
     }
 }
 ```
@@ -142,7 +142,7 @@ Monad則のところで触れたように、「Monadの値を作って返すだ�
 そのため繰り返しになりますが、次の関数(`nextAction`)を実行する前に「`null`でないか確認する」のが上記の`Maybe`クラスの役割だ、と言い換えることもできるでしょう。
 
 ところで、最近のJavaに慣れた方は`Maybe`がJava 8の`Optional`とそっくりなものであることにお気づきかもしれません。  
-`Maybe.then`は`Optional.flatMap`に相当し、`MaybeFactory.doNothingReturning`は`Optional.ofNullable`に相当する、と考えると、確かに！  
+`Maybe.then`は`Optional.flatMap`に相当し、`Maybe.Return.doNothingReturning`は`Optional.ofNullable`に相当する、と考えると、確かに！  
 事実、その前提で[open-jdkの`Optional.java`](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java)と見比べてみると、上記は`Optional.java`を大幅に簡略化したものと同等であることがわかります [^haskell-maybe]。
 
 [^haskell-maybe]: ちなみに、Haskellの`Maybe`とはちょっと異なる振る舞いをします。
@@ -153,31 +153,31 @@ Haskellの`Maybe`は、`return`が`null`に相当する`Nothing`を返すこと�
 
 ```java
 Foo maybeFoo1 = someMap.get(key1);
-MaybeFactory f = new MaybeFactory();
+Maybe.Return r = new Maybe.Return();
 Maybe<Bar> bar =
-    f.doNothingReturning(maybeFoo1).then((foo1) -> {
-        Foo maybeFoo2 = someMap.get(key2);
-        return f.doNothingReturning(maybeFoo2).then((foo2) -> {
-            Foo maybeFoo3 = someMap.get(key3);
-            return f.doNothingReturning(maybeFoo3).then((foo3) -> {
-                f.doNothingReturning(foo1.doSomething(foo2, foo3));
-            });
-        });
+  r.doNothingReturning(maybeFoo1).then((foo1) -> {
+    Foo maybeFoo2 = someMap.get(key2);
+    return r.doNothingReturning(maybeFoo2).then((foo2) -> {
+      Foo maybeFoo3 = someMap.get(key3);
+      return r.doNothingReturning(maybeFoo3).then((foo3) -> {
+        return r.doNothingReturning(foo1.doSomething(foo2, foo3));
+      });
     });
+  });
 ```
 
 上記のように、`null`を返すかもしれないメソッドをたくさん使うとき、`Maybe`を使えば、`then`に`null`チェックをお任せすることができます。  
 これでぬるぽともお別れだー！やったね！(^\_-)
 
 ...と、言いたいところですが、元ネタの`Optional.flatMap`を使った場合と同様、ネストが深くって嫌ですねー。  
-これでは普通にif文を書いた方がまだ読みやすそうです。`f.doNothingReturning`なんて書く分タイプ数も多いですし。
+これでは普通にif文を書いた方がまだ読みやすそうです。`r.doNothingReturning`なんて書く分タイプ数も多いですし。
 
-`f.doNothingReturning`や`MaybeFactory f = new MaybeFactory();`の部分が長いのは単なる名付け方の問題だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？  
+`r.doNothingReturning`や`Maybe.Return r = new Maybe.Return();`の部分が長いのは単なる名付け方の問題だから（もっと短い名前を普及させればよいのであって）目をつぶるとして、結局ネストが深くなってしまう問題はどうにかならないのでしょうか？  
 実はこれから説明する「Monad則」というのを利用すると、このような問題をクールに解決することができます！
 
 # Monad則って？ {#monadLaw}
 
-冒頭の通り、`Monad`インターフェースは`then`メソッドと`MonadFactory`の`doNothingReturning`メソッド、合わせて2つのメソッドを実装しなければなりません。  
+冒頭の通り、`Monad`インターフェースは`then`メソッドと`Monad.Return`の`doNothingReturning`メソッド、合わせて2つのメソッドを実装しなければなりません。  
 加えて、これらのメソッドは「Monad則」というある一定の規則を満たして実装しなければならないよう決まっています。  
 ここではこの「Monad則」についてもJavaに置き換えて紹介しましょう。  
 詳細は後で解説するので、ここではひとまず重要な部分のみチラ見せします↓。
@@ -186,11 +186,11 @@ Maybe<Bar> bar =
 // 下記の3組の式が**常に同じ意味となる**doNothingReturningとthen
 // となっていなければ、thenとdoNothingReturningを実装していても、
 // 「そのクラスはMonadである」とはいえません。
-/* (A ) */ f.doNothingReturning(x).then((x) -> ax.apply(x))
+/* (A ) */ r.doNothingReturning(x).then((x) -> ax.apply(x))
            /* ↑と↓の意味が同じになること。以下同様。 */
            ax.apply(x)
 
-/* (A') */ ax.apply(x).then((y) -> f.doNothingReturning(y))
+/* (A') */ ax.apply(x).then((y) -> r.doNothingReturning(y))
            /* ↑と↓の意味が同じになること */
            ax.apply(x)
 
@@ -252,7 +252,7 @@ Monadはそもそも圏論という数学の一分野で定義されたものな
 先ほどは省略した変数の定義も含めて、下記の通りです [^apply]！
 
 [^apply]: Javaの関数オブジェクトやラムダ式の仕様上、本記事のMonad則で現れる`(x) -> ax.apply(x)`のような式は、本当は単に`ax`と書き換えることができます。  
-それから、`(y) -> f.doNothingReturning(y)`も、単に`f::doNothingReturning`と書くだけでOKです。  
+それから、`(y) -> r.doNothingReturning(y)`も、単に`r::doNothingReturning`と書くだけでOKです。  
 ですが説明しやすさのために敢えて冗長な記述をしております。ご容赦を。
 
 ```java
@@ -261,8 +261,8 @@ X x;
 Y y;
 Z z;
 
-// MonadFactoryをfとします
-MonadFactory f = new SomeMonadFactory<>();
+// Monad.Returnをrとします
+Monad.Return r = new SomeMonad.Return();
 
 // それから、X, Y, Zを受け取って別のMonadの値を返す関数をax, ay, azとしましょう。
 Function<X, Monad<Y>> ax = (x) -> ... ;
@@ -272,11 +272,11 @@ Function<Z, Monad<A>> az = (z) -> ... ;
 // 下記の3組の式が**常に同じ意味となる**doNothingReturningとthen
 // となっていなければ、thenとdoNothingReturningを実装していても、
 // 「そのクラスはMonadである」とはいえません。
-/* (A ) */ f.doNothingReturning(x).then((x) -> ax.apply(x))
+/* (A ) */ r.doNothingReturning(x).then((x) -> ax.apply(x))
            /* ↑と↓の意味が同じになること。以下同様。 */
            ax.apply(x)
 
-/* (A') */ ax.apply(x).then((y) -> f.doNothingReturning(y))
+/* (A') */ ax.apply(x).then((y) -> r.doNothingReturning(y))
            /* ↑と↓の意味が同じになること */
            ax.apply(x)
 
@@ -365,14 +365,14 @@ ax.apply(x).then(
 
 ```java
 Foo maybeFoo1 = someMap.get(key1);
-MaybeFactory f = new MaybeFactory();
+Maybe.Return r = new Maybe.Return();
 Maybe<Bar> bar =
-    f.doNothingReturning(maybeFoo1).then((foo1) -> {
+    r.doNothingReturning(maybeFoo1).then((foo1) -> {
         Foo maybeFoo2 = someMap.get(key2);
-        return f.doNothingReturning(maybeFoo2).then((foo2) -> {
+        return r.doNothingReturning(maybeFoo2).then((foo2) -> {
             Foo maybeFoo3 = someMap.get(key3);
-            return f.doNothingReturning(maybeFoo3).then((foo3) -> {
-                f.doNothingReturning(foo1.doSomething(foo2, foo3));
+            return r.doNothingReturning(maybeFoo3).then((foo3) -> {
+                r.doNothingReturning(foo1.doSomething(foo2, foo3));
             });
         });
     });
@@ -390,19 +390,19 @@ Maybe<Bar> bar =
 ```java
 Foo maybeFoo1;
 Foo foo1, Foo foo2, Foo foo3;
-MaybeFactory f = new MaybeFactory();
+Maybe.Return r = new Maybe.Return();
 
 maybeFoo1 = someMap.get(key1);
 Maybe<Bar> bar =
-    f.doNothingReturning(maybeFoo1).then((foo1Arg) -> {
+    r.doNothingReturning(maybeFoo1).then((foo1Arg) -> {
         foo1 = foo1Arg;
-        return f.doNothingReturning(someMap.get(key2));
+        return r.doNothingReturning(someMap.get(key2));
     }).then((foo2Arg) -> { // <- このラムダ式と、
         foo2 = foo2Arg;
-        return f.doNothingReturning(someMap.get(key3));
+        return r.doNothingReturning(someMap.get(key3));
     }).then((foo3Arg) -> { // <- このラムダ式がくくりだされた。
         foo3 = foo3Arg;
-        return f.doNothingReturning(foo1.doSomething(foo2, foo3));
+        return r.doNothingReturning(foo1.doSomething(foo2, foo3));
     });
 ```
 
@@ -419,13 +419,13 @@ Java 8のラムダ式は、ラムダ式の中でローカル変数を書き換�
 本記事はあくまでもJavaでMonadを説明する記事ですので、ここではその「do記法」を**仮に**Javaに導入した場合を想像して、先程の例がどのように書き換えられるか示しましょう。
 
 ```java
-MaybeFactory f = new MaybeFactory();
+Maybe.Return r = new Maybe.Return();
 
 Maybe<Bar> bar = do {
-    Foo foo1 <- f.doNothingReturning(someMap.get(key1));
-    Foo foo2 <- f.doNothingReturning(someMap.get(key2));
-    Foo foo3 <- f.doNothingReturning(someMap.get(key3));
-    f.doNothingReturning(foo1.doSomething(foo2, foo3));
+    Foo foo1 <- r.doNothingReturning(someMap.get(key1));
+    Foo foo2 <- r.doNothingReturning(someMap.get(key2));
+    Foo foo3 <- r.doNothingReturning(someMap.get(key3));
+    r.doNothingReturning(foo1.doSomething(foo2, foo3));
 };
 ```
 
@@ -541,7 +541,7 @@ Maybe<Bar> bar = do {
 - それらのインターフェースを実装するクラスは、「Monad則」を満たすように`then`と`doNothingReturning`を実装しなければならない。
     - Monad則を守ることによって、do記法はdo記法らしく直感的に使えるようになる。
     - そのdo記法があるおかげで、HaskellではMonadが思いの外役に立つ。
-- Monadインターフェースを実装するクラスの振る舞いをより明確に特徴付けるのは、`MonadFactory.doNothingReturning`ではなく`then`メソッド。
+- Monadインターフェースを実装するクラスの振る舞いをより明確に特徴付けるのは、`Monad.Return.doNothingReturning`ではなく`then`メソッド。
 - `Maybe`の`then`は、「次の関数を実行する前に値が`null`でないか確認」する。
 
 # 具体的な実装 その2 State {#stateInJava}
@@ -581,14 +581,14 @@ class State<S, T1> implements Monad<T1> {
         };
         return new State<>(composedMutator);
     }
-}
 
-class StateFactory<S> implements MonadFactory {
-  public <T> State<S, T> doNothingReturning(T value){
-    return new State<S, T>(
-        (nonMutatedState) -> new MutationResult<>(nonMutatedState, value)
-    );
-  }
+    public static class Return<S> implements Monad.Return {
+        public <T> State<S, T> doNothingReturning(T value){
+            return new State<>(
+                (nonMutatedState) -> new MutationResult<>(nonMutatedState, value)
+            );
+        }
+    }
 }
 ```
 
@@ -653,17 +653,22 @@ class State<S, T1> implements Monad<T1> {
 ここで注目していただきたいのは、`State<S, T1>`は、`Function<S, MutationResult<T1, S>>`、すなわち「`S`と`T1`のmutator」を**ラップしただけ**のクラスであることです。  
 `State` Monadはこれにちょっと色を着けるだけで、あたかも命令型スタイルで書いているかのように錯覚させることができるのです！
 
-## `StateFactory.doNothingReturning`がやっていること {#stateFactoryDoNothingReturning}
+## `State.Return.doNothingReturning`がやっていること {#stateReturnDoNothingReturning}
 
 難しい`State.then`は後回しにして、先に`doNothingReturning`を解説しましょう。  
 
 ```java
-class StateFactory<S> implements MonadFactory {
-  public <T> State<S, T> doNothingReturning(T value){
-    return new State<S, T>(
-        (nonMutatedState) -> new MutationResult<>(nonMutatedState, value)
-    );
-  }
+class State<S, T1> implements Monad<T1> {
+
+    // ...
+
+    class Return<S> implements Monad.Return {
+      public <T> State<S, T> doNothingReturning(T value){
+        return new State<>(
+            (nonMutatedState) -> new MutationResult<>(nonMutatedState, value)
+        );
+      }
+    }
 }
 ```
 
@@ -671,7 +676,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 このルールに加えて、先ほど説明した、「`State<S, T1>`は、`S`と`T1`のmutator、すなわち、**書き換えた状態と、一緒に別の値を返す関数**をラップしただけのクラスである」という事実を思い出してください。  
 それでは「書き換えた状態と、一緒に別の値を返す関数」のうち、「何もしない」ものを作るにはどうすればよいでしょう？  
 「**状態を書き換えないで、そのまま返す**」というのが正解です。  
-`StateFactory.doNothingReturning`は、  
+`State.Return.doNothingReturning`は、  
 `(nonMutatedState) -> new MutationResult<>(nonMutatedState, value)` という、
 
 - `nonMutatedState`を何も書き換えずにそのまま返し、
@@ -679,7 +684,7 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 の関数を作っているのです。
 
-繰り返しになりますが、`StateFactory.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
+繰り返しになりますが、`State.Return.doNothingReturning`は、「受け取った状態を全く書き換えないで返す関数」を作る、ただそれだけのことをしています。
 
 ## `State.then`でやっていること {#stateThen}
 
@@ -688,22 +693,22 @@ Monad則上、`doNothingReturning`はMonadの値を作って返すだけで、�
 
 ```java
 class State<S, T1> implements Monad<T1> {
-    public final Function<S, MutationResult<T1, S>> mutator;
-    // ...
-    <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
-        // (1) 新しく「状態を書き換えて
-        Function<S, MutationResult<T2, S>> composedMutator = (oldState) -> {
-            // (2) 古い状態を書き換え、結果を受けとる
-            MutationResult<T1, S> result = this.mutator.apply(oldState);
-            // (3) (2)で状態を書き換えた際に一緒に返した値を、次のState Monadを作る関数へ渡す。
-            State<S, T2> other = nextAction.apply(result.value);
-            // (4) (2)で状態を書き換えた状態をまた処理する
-            return other.mutator.apply(result.newState);
-        };
-        // (1) また別のState Monadとしてくるみなおす。
-        return new State<>(composedMutator);
-    }
-    // ...
+  public final Function<S, MutationResult<T1, S>> mutator;
+  // ...
+  <T2> State<S, T2> then(Function<T1, State<S, T2>> nextAction){
+    // (1) 新しく「状態を書き換えて
+    Function<S, MutationResult<T2, S>> composedMutator = (oldState) -> {
+      // (2) 古い状態を書き換え、結果を受けとる
+      MutationResult<T1, S> result = this.mutator.apply(oldState);
+      // (3) (2)で状態を書き換えた際に一緒に返した値を、次のState Monadを作る関数へ渡す。
+      State<S, T2> other = nextAction.apply(result.value);
+      // (4) (2)で状態を書き換えた状態をまた処理する
+      return other.mutator.apply(result.newState);
+    };
+    // (1) また別のState Monadとしてくるみなおす。
+    return new State<>(composedMutator);
+  }
+  // ...
 }
 ```
 
