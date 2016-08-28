@@ -1,8 +1,8 @@
 ---
 title: JavaでMonadをはじめからていねいに
 author: Yuji Yamamoto
-tags: Monad, Java
-date: July 25, 2016
+tags: Monad, Java, Haskell
+date: August 28, 2016
 ...
 ---
 
