@@ -27,5 +27,9 @@ date: September 18, 2016
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">やはりHaskellは面白い!<br>情熱を傾ける価値は十分にある。<a href="https://twitter.com/hashtag/hsd2016?src=hash">#hsd2016</a></p>&mdash; lagénorhynque (@lagenorhynque) <a href="https://twitter.com/lagenorhynque/status/777090967635505153">2016年9月17日</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">今日のHaskell Dayは楽しかった。SPJの講演の冒頭で、今回はGHCの改良の人手を探していて勧誘したいからGHC内部の話をすると言っていたけど、こういうのをきっかけに実際に参加が進んだりするのかもしれない <a href="https://twitter.com/hashtag/hsd2016?src=hash">#hsd2016</a> 僕自身は流石に貢献するだけの力は無いが...</p>&mdash; Nebuta (@nebutalab) <a href="https://twitter.com/nebutalab/status/777159928905474048">2016年9月17日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">お疲れさまでした！<br>受付して一番つらかったのは「あ、このIDこの人なのか－！」って人が続出したにも関わらずクールに素早く流すしかなかったことですね。 <a href="https://twitter.com/hashtag/hsd2016?src=hash">#hsd2016</a></p>&mdash; Yuji Yamamoto: 山本悠滋 (@igrep) <a href="https://twitter.com/igrep/status/777065623088013312">2016年9月17日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 以上、薄っぺらいまとめになってしまいましたが、まもなく[ICFP 2016](http://conf.researchr.org/home/icfp-2016)に向けて出発しなければならないので！
