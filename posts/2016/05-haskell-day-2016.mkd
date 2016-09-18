@@ -1,0 +1,31 @@
+---
+title: Haskell Day 2016に参加・発表してきました！
+author: Yuji Yamamoto
+tags: Haskell
+date: September 18, 2016
+...
+---
+
+昨日、[Haskell Day 2016](http://connpass.com/event/37892/)に参加し、[Introduction to Stack's Docker integration](/slides/2016-09-17-stack-docker-integration.html)というタイトルで発表してきました。  
+
+- [Introduction to Stack's Docker integration](/slides/2016-09-17-stack-docker-integration.html)
+
+一応slideshareにもアップロードしました。
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/hiP5VqaUQ2rDtp" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/igrep/introduction-to-stacks-docker-integration-1" title="Introduction to stack&#x27;s docker integration (1)" target="_blank">Introduction to stack&#x27;s docker integration (1)</a> </strong> from <strong><a href="//www.slideshare.net/igrep" target="_blank">悠滋 山本</a></strong> </div>
+
+それからtogetterにもまとめを作りました。
+
+- [Haskell Day 2016 #hsd2016 まとめ - Togetterまとめ](http://togetter.com/li/1025781)
+
+各発表の内容については[資料一覧](http://connpass.com/event/37892/presentation/)や上記のtogetterをご覧になっていただけると！
+
+以下、個人的に印象的だったところをtwitterの発言でピックアップします。  
+ほかの方の発言で恐縮ですが...。
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">「&quot;avoid success at all costs&quot;は、「全力で成功を目指す」のを避けるっていう意味であって、「成功を目指す」のを全力で避けるわけではない。ダブルミーニングにしてるのは冗談。」 <a href="https://twitter.com/hashtag/hsd2016?src=hash">#hsd2016</a></p>&mdash; keiichiro shikano λ♪ (@golden_lucky) <a href="https://twitter.com/golden_lucky/status/777062920609894400">2016年9月17日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">やはりHaskellは面白い!<br>情熱を傾ける価値は十分にある。<a href="https://twitter.com/hashtag/hsd2016?src=hash">#hsd2016</a></p>&mdash; lagénorhynque (@lagenorhynque) <a href="https://twitter.com/lagenorhynque/status/777090967635505153">2016年9月17日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+以上、薄っぺらいまとめになってしまいましたが、まもなく[ICFP 2016](http://conf.researchr.org/home/icfp-2016)に向けて出発しなければならないので！
