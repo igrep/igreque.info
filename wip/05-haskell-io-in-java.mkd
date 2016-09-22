@@ -1,0 +1,57 @@
+---
+title: 敢えてJavaで語るHaskellのIO
+author: Yuji Yamamoto
+date: October 25, 2016
+tags: Haskell, Monad, Java
+...
+---
+
+Haskellの`IO`は奇妙です。  
+「純粋な関数だけでプログラムが書けるの？」と多くの方が疑問に思うように、実際のところ、副作用のある操作（入出力。ファイルの読み書きやネットワーク通信など）をしなければ、役に立つプログラムは一切書けません。  
+Haskellではそのものズバリ「`IO`」という機能を使ってそれを実現します。
+
+しかし一方でHaskellは「純粋」なので副作用がない、とも言われます（例えば[Wikipediaのこの辺の説明](https://ja.wikipedia.org/w/index.php?title=Haskell&oldid=59994146#.E5.85.A5.E5.87.BA.E5.8A.9B)）。  
+その辺のややこしい問題についてかの[「プログラミングHaskell」](https://estore.ohmsha.co.jp/titles/978427406781P)の訳者、[山本和彦さんの記事](http://d.hatena.ne.jp/kazu-yamamoto/20090627/1246135829)では、下記のように解説されていました。
+
+> Haskell の IO では、評価と実行を分離して考える。例として、以下の関数を考えよう。
+
+>
+    ```haskell
+    putStr :: String -> IO ()
+    ```
+
+> putStr は、たとえば putStr "Hello World" のように、String を引数に渡して評価すると、IO () という型の何かを返す。
+
+> このように IO a という型、念のため言うが -> などを含まない単体の IO a という型を持つものを Hakell ではアクションと呼ぶ。僕には、カタカナを使って説明した気になっている人は説明が下手だという信念があるので、日本語に直そう。単体の IO a という型を持つものとは、命令書である。
+
+> つまり、こういうことだ。putStr "Hello World" は、「"Hello World" を標準出力に出力しろ」という命令書を作る。これが実行されてはじめて、"Hello World" が出力される。
+
+今回はここでいう「命令書」という概念を、Javaのクラスで例えて説明することで、もっと具体的にとらえ直すということに挑戦したいと思います。  
+あ、今回もJavaで例えていますが、[前回](/posts/2016/04-monad-in-java.html)以上にJavaへの依存性を下げる予定ですので、他のオブジェクト指向な言語で説明してもいいんじゃないんじゃないかなぁもと思います。
+
+# はじめにまとめ
+
+hoge
+
+# 命令「書」
+
+さて、引用した通り、HaskellのIOは命令「書」である、と言えます。
+
+副作用ができる関数オブジェクト、コールバック
+
+```java
+class IO<T1> {
+  private final Callable<T1> internalAction;
+
+  IO(Callable<T1> internalAction){
+    this.internalAction = internalAction;
+  }
+
+  public <T2> IO<T2> then(IO<T2> nextIo){
+  }
+
+  public <T2> IO<T2> then_(Function<T1, IO<T2>> nextIo){
+  }
+}
+```
+
