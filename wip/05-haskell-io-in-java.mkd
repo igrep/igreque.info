@@ -11,7 +11,7 @@ HaskellのIOは奇妙です。
 Haskellではそのものズバリ「IO」という機能を使ってそれを実現します。
 
 しかし一方でHaskellは「純粋」なので副作用が一切ない、とも言われます（例えば[Wikipediaのこの辺の説明](https://ja.wikipedia.org/w/index.php?title=Haskell&oldid=59994146#.E5.85.A5.E5.87.BA.E5.8A.9B)）。  
-その辺のややこしい問題についてかの[「プログラミングHaskell」](https://estore.ohmsha.co.jp/titles/978427406781P)の訳者、[山本和彦さんの記事](http://d.hatena.ne.jp/kazu-yamamoto/20090627/1246135829)では、下記のように解説されていました（原文のままコピペしています）。
+その辺のややこしい問題について、かの[「プログラミングHaskell」](https://estore.ohmsha.co.jp/titles/978427406781P)の訳者、[山本和彦さんの記事](http://d.hatena.ne.jp/kazu-yamamoto/20090627/1246135829)では、下記のように解説されていました（原文のままコピペしています）。
 
 > Haskell の IO では、評価と実行を分離して考える。例として、以下の関数を考えよう。
 
@@ -32,6 +32,9 @@ hogeあ、今回もJavaを使いますが、[前回](/posts/2016/04-monad-in-jav
 # はじめにまとめ
 
 hoge
+
+- Haskellの`IO`は他の言語における「引数をとらない関数オブジェクト」と似てる。
+- ただし、Haskellの`IO`にはプログラマー自らが直接`IO`を実行するAPIがない。
 
 # 命令「書」
 
@@ -86,13 +89,29 @@ readFile :: String -> IO String
 ```
 
 これは、「`String`（文字列型）を受け取って`IO String`という型を返す関数」という意味です。  
-第一引数の`String`はファイル名だとして、はて、`IO String`というのはなんでしょう？  
+第一引数の`String`はファイル名だとして、はて、`IO String`の`String`というのは一体なんの`String`でしょう？  
 これは、`readFile`が返す`IO`（指定された名前のファイルを読み込む関数オブジェクト）を実行した結果
 --- すなわちこのケースで言えば読み込んだファイルの中身 --- です。
 
 `IO`は通常このように、型引数として「実行した結果の型」を明示することで使用します。  
-`IO String`であれば恐らく「ファイルやソケットなどから読んで文字列を返す関数オブジェクト」でしょうし、`IO Bool`であれば例えば「ファイルの有無を調べてあれば`True`, なければ`False`を返す関数オブジェクト」かもしれません。  
+`IO String`であれば恐らく「ファイルやソケットなどから読んで文字列を返す関数オブジェクト」でしょうし、`IO Bool`であれば例えば「ファイルの有無を調べて、ファイルがあれば`True`, なければ`False`を返す関数オブジェクト」かもしれません。  
 Javaに詳しい方は`Callable<String>`などと読み替えていただくとピンと来るでしょう。
+
+# 他の言語の関数オブジェクトとしてのHaskellのIO
+
+さて、上記をより具体的にイメージしやすくするために、Haskellの`IO`っぽいものをJavaで表現してみましょう。
+
+```javascript
+class IO {
+  constructor(func){
+    this.func = func;
+  }
+
+  then(nextIo){
+    
+  }
+}
+```
 
 hoge
 
@@ -104,10 +123,19 @@ class IO<T1> {
     this.internalAction = internalAction;
   }
 
-  public <T2> IO<T2> then(IO<T2> nextIo){
+  public <T2> IO<T2> then_(IO<T2> nextIo){
+    return new IO(() -> {
+      internalAction.call();
+      return nextIo.call();
+    });
   }
 
-  public <T2> IO<T2> returnThen(Function<T1, IO<T2>> nextIo){
+  public <T2> IO<T2> then(Function<T1, IO<T2>> makeNextIo){
+    return new IO(() -> {
+      T1 result = internalAction.call();
+      IO<T2> nextIo = makeNextIo.apply(result);
+      return nextIo.call();
+    });
   }
 }
 ```
