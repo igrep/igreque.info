@@ -47,13 +47,41 @@ hoge
 Haskellのコードになってしまいますが、一応実例をhogeに置きました。ご興味のあるかたはご覧ください。
 
 ```haskell
+import System.IO (withFile, IOMode(ReadMode))
+import qualified Data.ByteString.Char8 as BS
+
+data FileReader =
+  FileReader
+    { path :: String
+    , onOpened :: IO ()
+    , onClosed :: IO ()
+    }
+
+readBy :: FileReader -> IO ()
+readBy reader =
+  let readFiringEvents handle = do
+        onOpened reader
+        contents <- hGetContents handle
+        onClosed reader
+  in
+    withFile (path reader) ReadMode readFiringEvents
+
+
+notifyOpened :: IO ()
+notifyOpened =
+  putStrLn "Opened!"
+
+notifyClosed :: IO ()
+notifyClosed =
+  putStrLn "Closed!"
+
 main :: IO ()
 main = do
   let fileReader =
         FileReader
           { path = "fileReader.hs"
-          , onOpened = 
-          , onClosed = 
+          , onOpened = notifyOpened
+          , onClosed = notifyClosed
           }
 
    content <- readBy fileReader
@@ -99,16 +127,28 @@ Javaに詳しい方は`Callable<String>`などと読み替えていただくと�
 
 # 他の言語の関数オブジェクトとしてのHaskellのIO
 
-さて、上記をより具体的にイメージしやすくするために、Haskellの`IO`っぽいものをJavaで表現してみましょう。
+さて、上記をより具体的にイメージしやすくするために、Haskellの`IO`っぽいものをJavaで表現してみましょう。  
+ここまでに述べた通り、Haskellの`IO`は、他の言語で例えるなら「引数をとらない関数オブジェクトっぽいもの」なので「関数オブジェクトをラップしたクラス」として表現することとします。実際のHaskellの`IO`はプリミティブなものなのでなにかをラップしているなんてことはないのですが、hoge
 
 ```javascript
 class IO {
-  constructor(func){
-    this.func = func;
+  constructor(internalAction){
+    this.__internalAction = internalAction;
   }
 
-  then(nextIo){
-    
+  chain(nextIo){
+    return new IO(() => {
+      this.__internalAction();
+      return nextIo.__internalAction();
+    });
+  }
+
+  then(makeNextIo){
+    return new IO(() => {
+      let result = this.__internalAction();
+      let nextIo = makeNextIo(result);
+      return nextIo.__internalAction();
+    });
   }
 }
 ```
@@ -116,17 +156,17 @@ class IO {
 hoge
 
 ```java
-class IO<T1> {
+public class IO<T1> {
   private final Callable<T1> internalAction;
 
   IO(Callable<T1> internalAction){
     this.internalAction = internalAction;
   }
 
-  public <T2> IO<T2> then_(IO<T2> nextIo){
+  public <T2> IO<T2> chain(IO<T2> nextIo){
     return new IO(() -> {
       internalAction.call();
-      return nextIo.call();
+      return nextIo.internalAction.call();
     });
   }
 
@@ -140,4 +180,9 @@ class IO<T1> {
 }
 ```
 
+詳細に立ち入る前に、hoge
+
 # 純粋な関数とIOしかない世界
+
+
+# メリット
