@@ -43,51 +43,7 @@ hoge
 この記事でいう「オブジェクト」とは「演算の対象になるもの」程度の意味です。[第一級オブジェクト](https://ja.wikipedia.org/wiki/%E7%AC%AC%E4%B8%80%E7%B4%9A%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88)と言い換えてもいいはずでしょう。
 
 つまり、HaskellのIOは「演算の対象になるもの」として変数に格納したり、関数の実行結果として返したり、関数の引数として渡したりできるのです。  
-この性質を利用すると、他の言語でよくやる、コールバックのような機能を実現することもできます。  
-Haskellのコードになってしまいますが、一応実例をhogeに置きました。ご興味のあるかたはご覧ください。
-
-```haskell
-import System.IO (withFile, IOMode(ReadMode))
-import qualified Data.ByteString.Char8 as BS
-
-data FileReader =
-  FileReader
-    { path :: String
-    , onOpened :: IO ()
-    , onClosed :: IO ()
-    }
-
-readBy :: FileReader -> IO ()
-readBy reader =
-  let readFiringEvents handle = do
-        onOpened reader
-        contents <- hGetContents handle
-        onClosed reader
-  in
-    withFile (path reader) ReadMode readFiringEvents
-
-
-notifyOpened :: IO ()
-notifyOpened =
-  putStrLn "Opened!"
-
-notifyClosed :: IO ()
-notifyClosed =
-  putStrLn "Closed!"
-
-main :: IO ()
-main = do
-  let fileReader =
-        FileReader
-          { path = "fileReader.hs"
-          , onOpened = notifyOpened
-          , onClosed = notifyClosed
-          }
-
-   content <- readBy fileReader
-   putStrLn "The content was:"
-   putStrLn content
-```
+この性質を利用すると、他の言語でよくやる、コールバックのような機能を実現することもできます。Haskellのコードになってしまいますが、一応実例をhogeに置きました。ご興味のあるかたはご覧ください。
 
 さて、「変数に格納したり、関数の実行結果として返したり、関数の引数として渡したりできる」ことに加えてコールバックのような使い方もできる、このようにHaskellのIOをとらえると、なんだか他の言語の関数オブジェクトのようにも思えてきませんか？  
 そう、HaskellのIOは、今時な言語ならだいたい実装している、関数オブジェクト（第一級オブジェクトな関数）[^functionObject]とそっくりなのです！
@@ -128,7 +84,7 @@ Javaに詳しい方は`Callable<String>`などと読み替えていただくと�
 # 他の言語の関数オブジェクトとしてのHaskellのIO
 
 さて、上記をより具体的にイメージしやすくするために、Haskellの`IO`っぽいものをJavaで表現してみましょう。  
-ここまでに述べた通り、Haskellの`IO`は、他の言語で例えるなら「引数をとらない関数オブジェクトっぽいもの」なので「関数オブジェクトをラップしたクラス」として表現することとします。実際のHaskellの`IO`はプリミティブなものなのでなにかをラップしているなんてことはないのですが、hoge
+ここまでに述べた通り、Haskellの`IO`は、他の言語で例えるなら「引数をとらない関数オブジェクトっぽいもの」なので「関数オブジェクトをラップしたクラス」として表現することとします。実際のHaskellの`IO`はプリミティブなものなのでなにかをラップしているなんてことはないのですが、実際に動くサンプルを作るために必要なので、ご了承ください。
 
 ```javascript
 class IO {
@@ -163,20 +119,21 @@ public class IO<T1> {
     this.internalAction = internalAction;
   }
 
-  public <T2> IO<T2> chain(IO<T2> nextIo){
-    return new IO(() -> {
+  public <T2> IO<T2> chain(IO<T2> nextIo) {
+    return new IO<>(() -> {
       internalAction.call();
       return nextIo.internalAction.call();
     });
   }
 
-  public <T2> IO<T2> then(Function<T1, IO<T2>> makeNextIo){
-    return new IO(() -> {
+  public <T2> IO<T2> then(Function<T1, IO<T2>> makeNextIo) {
+    return new IO<>(() -> {
       T1 result = internalAction.call();
       IO<T2> nextIo = makeNextIo.apply(result);
-      return nextIo.call();
+      return nextIo.internalAction.call();
     });
   }
+
 }
 ```
 
