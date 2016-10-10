@@ -2,11 +2,15 @@
 /_site/
 *.hi
 *.o
+*.class
 hakyll
 /fonts/
 *cabal.sandbox.config
 
 /.stack-work
+
+.idea/
+*.iml
 
 slidy.js
 slidy.css
