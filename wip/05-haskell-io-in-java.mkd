@@ -92,7 +92,7 @@ class IO {
     this.__internalAction = internalAction;
   }
 
-  chain(nextIo){
+  plus(nextIo){
     return new IO(() => {
       this.__internalAction();
       return nextIo.__internalAction();
@@ -119,16 +119,16 @@ public class IO<T1> {
     this.internalAction = internalAction;
   }
 
-  public <T2> IO<T2> chain(IO<T2> nextIo) {
+  public <T2> IO<T2> plus(IO<T2> nextIo) {
     return new IO<>(() -> {
-      internalAction.call();
+      this.internalAction.call();
       return nextIo.internalAction.call();
     });
   }
 
   public <T2> IO<T2> then(Function<T1, IO<T2>> makeNextIo) {
     return new IO<>(() -> {
-      T1 result = internalAction.call();
+      T1 result = this.internalAction.call();
       IO<T2> nextIo = makeNextIo.apply(result);
       return nextIo.internalAction.call();
     });
@@ -137,9 +137,35 @@ public class IO<T1> {
 }
 ```
 
-詳細に立ち入る前に、hoge
+詳細に立ち入る前に、最も重要な点を述べます。  
+このHaskellの`IO`っぽいものを表現したクラス`IO`は、「関数オブジェクト」と似ていながら、「関数オブジェクト」として**直接実行するAPIを利用者に提供していない**のです。  
+それを表すために今回は、ラップした関数オブジェクト(`internalAction`)を`private`にして、`internalAction`を呼び出すメソッド(`call`)を直接呼べないようにしました。  
+Haskellでは`IO`は「実行するもの」ではなくあくまでも「組み合わせる」ものであり、後に示します「組み合わせる」ための関数（上記のクラスのメソッド）を用いてのみ操作します。
+
+## `IO`を組み合わせる関数
+
+最初に単純な`plus`メソッドについて説明しましょう [^haskell-plus]。
+
+[^haskell-plus]: Haskellに詳しい方であればお気づきだとは思いますが、この`plus`メソッドはHaskellでいうところの`>>`関数です。
+
+```java
+  public <T2> IO<T2> plus(IO<T2> nextIo) {
+    return new IO<>(() -> {
+      this.internalAction.call();
+      return nextIo.internalAction.call();
+    });
+  }
+```
+
+`plus`メソッドは`return new IO<>()`している通り、新しく`IO`を作って返します。`IO`クラスは関数オブジェクトをラップしたものなので、新しく別の関数オブジェクトを作って渡す必要があります。  
+その、新しく作った関数オブジェクトでは何をしているのでしょう？  
+最初に`plus`メソッドを呼んだ`IO`オブジェクト自身を呼び出し(`this.internalAction.call()`)、次に引数として渡された`IO`オブジェクトを呼び出す(`nextIo.internalAction.call()`)、ただそれだけです。  
+まとめると、「`plus`メソッドの呼び出しもとと、引数として与えられた`IO`を**続けて呼び出す新しい`IO`を作る**」、ただそれだけです。
+
+実はこの`plus`メソッド、C#によく似た振る舞いをする演算子があります。
+
+hoge
+
+# 何が嬉しいの？
 
 # 純粋な関数とIOしかない世界
-
-
-# メリット
