@@ -144,9 +144,11 @@ Haskellでは`IO`は「実行するもの」ではなくあくまでも「組み
 
 ## `IO`を組み合わせる関数
 
+### 単純に繋げる: `plus`メソッド
+
 最初に単純な`plus`メソッドについて説明しましょう [^haskell-plus]。
 
-[^haskell-plus]: Haskellに詳しい方であればお気づきだとは思いますが、この`plus`メソッドはHaskellでいうところの`>>`関数です。
+[^haskell-plus]: この`plus`メソッドはHaskellでいうところの`>>`関数です。
 
 ```java
   public <T2> IO<T2> plus(IO<T2> nextIo) {
@@ -157,15 +159,39 @@ Haskellでは`IO`は「実行するもの」ではなくあくまでも「組み
   }
 ```
 
-`plus`メソッドは`return new IO<>()`している通り、新しく`IO`を作って返します。`IO`クラスは関数オブジェクトをラップしたものなので、新しく別の関数オブジェクトを作って渡す必要があります。  
+`plus`メソッドは`return new IO<>()`している通り、新しく`IO`を作って返します。`IO`は関数オブジェクトをラップしたものなので、新しく別の関数オブジェクトを作って渡す必要があります。  
 その、新しく作った関数オブジェクトでは何をしているのでしょう？  
 最初に`plus`メソッドを呼んだ`IO`オブジェクト自身を呼び出し(`this.internalAction.call()`)、次に引数として渡された`IO`オブジェクトを呼び出す(`nextIo.internalAction.call()`)、ただそれだけです。  
-まとめると、「`plus`メソッドの呼び出しもとと、引数として与えられた`IO`を**続けて呼び出す新しい`IO`を作る**」、ただそれだけです。
+まとめると、「`plus`メソッドの呼び出した`IO`と、引数として与えられた`IO`を**続けて呼び出す新しい`IO`を作る**」、ただそれだけです[^cs-plus]。
 
-実はこの`plus`メソッド、C#によく似た振る舞いをする演算子があります。
+[^cs-plus]: 実はこの`plus`メソッド、C#によく似た振る舞いをする演算子があります。名前の通り足し算に使っている`+`演算子です（`plus`メソッドという名前もそこからとりました）。  
+C#では関数オブジェクト（デリゲート）同士を`+`で繋ぐことで、両辺の関数オブジェクトを「続けて実行する」新しい関数オブジェクトを作ることができます。詳細は[MSDNのこちらのページ](https://msdn.microsoft.com/ja-jp/library/ms173175.aspx)などをご覧ください。
+
+### 結果を再利用できるようにしつつ繋げる: `then`メソッド
+
+続けて、もうちょっと複雑な`then`メソッドを紹介しましょう [^haskell-then]。
+
+[^haskell-then]: `then`メソッドはHaskellでいうところのあの`>>=`関数です。今回はMonad自体の話はしませんが、[前回](/posts/2016/04-monad-in-java.html)`Monad`のメソッドとして作成した`then`メソッドと同じ`then`です。`IO`は`Monad`インターフェースを実装したクラス（Haskellの用語で言えば「`Monad`型クラスのインスタンス」）なのです。
+
+```java
+  public <T2> IO<T2> then(Function<T1, IO<T2>> makeNextIo) {
+    return new IO<>(() -> {
+      T1 result = this.internalAction.call();
+      IO<T2> nextIo = makeNextIo.apply(result);
+      return nextIo.internalAction.call();
+    });
+  }
+```
 
 hoge
 
 # 何が嬉しいの？
 
 # 純粋な関数とIOしかない世界
+
+
+# 参考
+
+hoge
+
+
