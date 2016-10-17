@@ -171,7 +171,7 @@ C#では関数オブジェクト（デリゲート）同士を`+`で繋ぐこと
 
 続けて、もうちょっと複雑な`then`メソッドを紹介しましょう [^haskell-then]。
 
-[^haskell-then]: `then`メソッドはHaskellでいうところのあの`>>=`関数です。今回はMonad自体の話はしませんが、[前回](/posts/2016/04-monad-in-java.html)`Monad`のメソッドとして作成した`then`メソッドと同じ`then`です。`IO`は`Monad`インターフェースを実装したクラス（Haskellの用語で言えば「`Monad`型クラスのインスタンス」）なのです。
+[^haskell-then]: `then`メソッドはHaskellでいうところのあの`>>=`関数です。今回はMonad自体の話はしませんが、これは[前回](/posts/2016/04-monad-in-java.html)`Monad`のメソッドとして作成した`then`メソッドを`IO`が実装したバージョンです。`IO`は`Monad`インターフェースを実装したクラス（Haskellの用語で言えば「`Monad`型クラスのインスタンス」）なのです。
 
 ```java
   public <T2> IO<T2> then(Function<T1, IO<T2>> makeNextIo) {
@@ -182,6 +182,14 @@ C#では関数オブジェクト（デリゲート）同士を`+`で繋ぐこと
     });
   }
 ```
+
+まずは`plus`メソッドと同じ部分を列挙します。
+
+1. `plus`メソッドと同様、`return new IO<>()`している通り、新しく`IO`を作って返す。  
+  なので`IO`に渡す関数オブジェクトの中で`IO`を組み合わせることとなる。
+1. `plus`メソッドと同様、最初に`then`メソッドを呼んだ`IO`オブジェクト自身を呼び出し(`this.internalAction.call()`)、次にもう1つの`IO`オブジェクトを呼び出す(`nextIo.internalAction.call()`)。
+
+`plus`メソッドが`IO<T2> nextIo`
 
 hoge
 
