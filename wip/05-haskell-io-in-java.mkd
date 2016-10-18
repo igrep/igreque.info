@@ -189,7 +189,8 @@ C#では関数オブジェクト（デリゲート）同士を`+`で繋ぐこと
   なので`IO`に渡す関数オブジェクトの中で`IO`を組み合わせることとなる。
 1. `plus`メソッドと同様、最初に`then`メソッドを呼んだ`IO`オブジェクト自身を呼び出し(`this.internalAction.call()`)、次にもう1つの`IO`オブジェクトを呼び出す(`nextIo.internalAction.call()`)。
 
-`plus`メソッドが`IO<T2> nextIo`
+大きくことなる点は、`plus`メソッドが`IO<T2> nextIo`を直接受け取っていたのに対して、`then`メソッドが`Function<T1, IO<T2>> makeNextIo`と、「`nextIo`を作る関数」を受けとることに起因します。  
+`makeNextIo`は、`plus`メソッドでは無視していた「呼び出しもとの`IO`の実行結果(`this.internalAction.call()`)」を受けとる(`makeNextIo.apply(result)`)ことで初めて`nextIo`を返します。
 
 hoge
 
