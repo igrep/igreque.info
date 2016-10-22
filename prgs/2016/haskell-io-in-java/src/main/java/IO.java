@@ -23,6 +23,7 @@ public class IO<T1> {
     });
   }
 
+  // 実際に実行するために便宜上必要。
   static void runMain(IO<Void> mainIo) throws Exception {
     mainIo.internalAction.call();
   }
