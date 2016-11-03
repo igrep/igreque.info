@@ -1,3 +1,5 @@
+package info.igreque.the.haskellioinjava;
+
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -8,7 +10,7 @@ public class IO<T1> {
     this.internalAction = internalAction;
   }
 
-  public <T2> IO<T2> chain(IO<T2> nextIo) {
+  public <T2> IO<T2> plus(IO<T2> nextIo) {
     return new IO<>(() -> {
       internalAction.call();
       return nextIo.internalAction.call();
