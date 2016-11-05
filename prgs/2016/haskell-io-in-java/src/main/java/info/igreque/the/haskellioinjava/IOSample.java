@@ -1,14 +1,18 @@
 package info.igreque.the.haskellioinjava;
 
+import static info.igreque.the.haskellioinjava.Prelude.putStrLn;
+import static info.igreque.the.haskellioinjava.Prelude.getLine;
 public class IOSample {
   public static final IO<Void> main =
     Prelude.putStrLn.apply("Nice to meet you!")
-      .plus(Prelude.putStrLn.apply("May I have your name? "))
       .plus(
-        Prelude.getLine
+        putStrLn.apply("May I have your name? ")
+      )
+      .plus(
+        getLine
           .then((name) ->
-            Prelude.putStrLn.apply("Your name is " + name + "?")
-              .plus(Prelude.putStrLn.apply("Nice name!"))
+            putStrLn.apply("Your name is " + name + "?")
+              .plus(putStrLn.apply("Nice name!"))
           )
       );
 }
