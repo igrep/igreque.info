@@ -196,25 +196,97 @@ C#では関数オブジェクト（デリゲート）同士を`+`で繋ぐこと
 
 # 純粋な関数とIOしかない世界
 
-続いて、「Haskellでは`IO`は『実行するもの』ではなくあくまでも『組み合わせる』もの」という認識をより実感していただくために、先ほどJavaで作った`IO`を実際に使ってみましょう。Haskellの（純粋な）関数をJavaの`Function`で、`IO`を先ほど作ったJavaの`IO`に例えて、Haskellのプログラム(メイン module)の世界観を再現してみます。  
-普通のJavaで書けば下記のようなコードになるプログラムを、「純粋な関数とIOしかない世界」観で翻訳します。
-
-※下記を含めこの節に載せたコードは[こちら](https://github.com/igrep/igreque.info/tree/published/prgs/2016/haskell-io-in-java/src/main/java)にあります。全体像に興味のあるかたはどうぞ。
+続いて、「Haskellでは`IO`は『実行するもの』ではなくあくまでも『組み合わせる』もの」という認識をより実感していただくために、先ほどJavaで作った`IO`を実際に使ってみましょう。Haskellの（純粋な）関数をJavaの`Function`で、`IO`を先ほど作ったJavaの`IO`に例えて、Haskellのプログラム(Main モジュール)の世界観を再現してみます。  
+この節では最終的な目標として、普通のJavaで書けば下記のようなコードになるプログラムを、「純粋な関数とIOしかない世界」観で翻訳することを目指します。
 
 ```java
+public class IOSampleInOrdinaryJava {
+  public static void main(String args[]) throws Exception {
+    // 挨拶のあと、名前を尋ねて、
+    System.out.println("Nice to meet you!");
+    System.out.println("May I have your name? ");
+    
+    // 標準入力から名前を取得して、
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    String name = reader.readLine();
+
+    // 名前を誉める
+    System.out.println("Your name is " + name + "?");
+    System.out.println("Nice name!");
+  }
+}
 ```
 
+※上記を含め[この節に載せたコードはこちらhoge](https://github.com/igrep/igreque.info/tree/published/prgs/2016/haskell-io-in-java/src/main/java/info/igreque/the/haskellioinjava/)にあります。全体像に興味のあるかたはどうぞ。
+
 入門書の最初の方に載っていそうな、「ユーザーの名前を（標準入力から）聞いて、名前を誉めつつ画面に表示する」だけのプログラムです。  
-これを`Function`と`IO`だけで再現すると、下記のようになります。
-<!--
-これを`Function`と`IO`だけで再現すると、下記のようになります... と、言いたいところですが、その前にいくつか必要なクラスを別に作らなければなりません。  
-プログラマーがHaskellで書く部分と、そうじゃない、Haskellのコンパイラーが提供してくれる部分という観点で、次のように分割しました。
--->
+これを`Function`と`IO`だけで再現すると、下記のようになります... と、言いたいところですが、その前に一つ重要なパーツを作っておく必要があります。  
+`System.out.println`などの、Javaの普通の入出力処理を先ほど作った`IO`でラップしておきましょう。  
+Haskellの世界には`IO`と純粋な関数しかないのですから、それを表現するにはJavaの普通の入出力処理をすべて`IO`で隠蔽して、プログラマーが直接使わなくてもいいようにしておかなければなりません。
+
+と、いうわけで作ったのが下記の`Prelude.java`です。  
+`Prelude`というのはHaskellが標準で提供してくれるモジュールの一つで、明示的に`import`しなくても使えるようになっています。Javaで言えば`java.lang` パッケージ、Pythonで言えば`__builtin__` モジュールのようなものですね。  
+`Prelude.java`が提供する定数の名前も、Haskellの`Prelude` モジュールに合わせています [^prelude-haskell]。
+
+[^prelude-haskell]: もちろん、実際のHaskellの`Prelude` モジュールはもっとたくさんの関数を提供します。
+
+```java
+public class Prelude {
+  public static final Function<String, IO<Void>> putStrLn =
+    (string) -> new IO<>(() -> {
+      System.out.println(string);
+      return null;
+    });
+
+  public static final IO<String> getLine =
+    new IO<>(() -> {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+      return reader.readLine();
+    });
+}
+```
+
+ご覧の通り、上記の`Prelude`クラスには`static final`な定数しか定義されておりません。  
+これは、hoge
+まずは`Prelude`
+
+```java
+/**
+ * {@code IO} を使用した、単純なサンプルプログラム。
+ * Haskellでプログラムを書く際、プログラマーは下記のように、
+ * {@code Prelude} などで定義した各種IO型の値（putStrLn, getLine）を
+ * 「組み合わせる」ことでmainを作る。
+ */
+
+public class IOSample {
+  /**
+   * プログラマーが作る、実際にHaskellの処理系が実行するプログラムの中身。
+   * CやJavaなどと似たように、mainという名前で宣言された関数
+   * (Haskellの場合はIOオブジェクト)が実行される。
+   *
+   * HaskellにはJavaで言うところのクラスやオブジェクトの区別がないため、
+   * ローカル変数に格納されるものを除き、
+   * 全ての値はstatic finalな定数に格納される、とここでは例えた。
+   */
+  public static final IO<Void> main =
+    putStrLn.apply("Nice to meet you!")
+      .plus(
+        putStrLn.apply("May I have your name? ")
+      )
+      .plus(
+        getLine
+          .then((name) ->
+            putStrLn.apply("Your name is " + name + "?")
+              .plus(putStrLn.apply("Nice name!"))
+          )
+      );
+}
+```
 
 hoge
 
 普通は絶対やらないスタイルなので、当然ながら冗長で実用的な書き方ではありません。  
-もちろんHaskellのプログラム（moduleと呼んだ方が適切ですかね）は、それに特化された文法で、これより遥かにスッキリ書かれているという点はお忘れなく。このプログラムのHaskell版についてはhogeをご覧ください。
+もちろんHaskellのプログラム（moduleと呼んだ方が適切ですかね）は、それに特化された文法で、これより遥かにスッキリ書かれているという点はお忘れなく。[このプログラムのHaskell版についてはhogeこちら](https://github.com/igrep/igreque.info/tree/published/prgs/2016/haskell-io-in-java/src/main/hs/io-sample.hs)をご覧ください。
 
 hoge
 
