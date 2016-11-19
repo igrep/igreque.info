@@ -37,7 +37,7 @@ hoge
     - ただし、Haskellの`IO`にはプログラマー自らが直接`IO`を実行するAPIがない。
     - プログラマーは原則として、`IO`を「組み合わせる」ことでプログラムを組み立てる。
 - Haskellでは関数が入出力を行うかどうかが、型を見るだけで知ることができる。
-- なんだか難しいことを書いたけど、結局のところ見かけ上、Haskellは入出力処理も普通にできると考えた方が分かりやすい。
+- なんだか難しいことを書いたけど、結局のところ**見かけ上、Haskellは入出力処理も普通にできると考えた方が分かりやすいからあんまり気にしないでね**！
 
 # 命令「書」
 
@@ -68,8 +68,7 @@ Haskellの関数型の値は、例えば「`Int -> String`(`Int`型の値を受�
 **引数をとることができない**のです。引数をとるのは「関数型」の役目、ということになっています。  
 例えば、ファイル名を受け取ってそのファイルの中身を読んで返す関数、`readFile`は、以下のような型となっています[^filepath]。
 
-[^filepath]: [実際にドキュメントを読むと](https://hackage.haskell.org/package/base-4.7.0.1/docs/Prelude.html)`readFile`の型は`FilePath -> IO String`となっていますが、`FilePath`は単なる`String`の別名(Rubyで言えばalias)です。  
-個人的に別名をつけるのはあまり好きじゃないのですが、まぁこれで普及してしまっているので仕方ありませんね...。
+[^filepath]: [実際にドキュメントを読むと](https://hackage.haskell.org/package/base-4.7.0.1/docs/Prelude.html)`readFile`の型は`FilePath -> IO String`となっていますが、`FilePath`は単なる`String`の別名(Rubyで言えばalias)です。
 
 ```haskell
 readFile :: String -> IO String
@@ -80,7 +79,7 @@ readFile :: String -> IO String
 これは、`readFile`が返す`IO`（指定された名前のファイルを読み込む関数オブジェクト）を実行した結果
 --- すなわちこのケースで言えば読み込んだファイルの中身 --- です。
 
-`IO`は通常このように、型引数として「実行した結果の型」を明示することで使用します。  
+`IO`はこのように、型引数として「実行した結果の型」を明示することで使用します。  
 `IO String`であれば恐らく「ファイルやソケットなどから読んで文字列を返す関数オブジェクト」でしょうし、`IO Bool`であれば例えば「ファイルの有無を調べて、ファイルがあれば`True`, なければ`False`を返す関数オブジェクト」かもしれません。  
 Javaに詳しい方は`Callable<String>`などと読み替えていただくとピンと来るでしょう。
 
@@ -120,7 +119,7 @@ public class IO<T1> {
 それを表すために今回は、ラップした関数オブジェクト(`internalAction`)を`private`にして、`internalAction`を呼び出すメソッド(`call`)を直接呼べないようにしました。  
 **Haskellでは`IO`は「実行するもの」ではなくあくまでも「組み合わせる」もの**であり、後に示します「組み合わせる」ための関数（上記のクラスのメソッド）を用いてのみ操作します。
 
-[^call-other-languages]: Javaの`Callable`やRubyの`Proc`で言えば文字通り`call`メソッド、JavaScriptやPythonの関数オブジェクトで言えば`()`演算子がそれに該当します。
+[^call-other-languages]: Javaの`Callable`やRubyの`Proc`で言えば文字通り`call`メソッド、JavaScriptやPythonの関数オブジェクトで言えば関数呼び出し演算子 `()`がそれに該当します。
 
 ## `IO`を組み合わせる関数
 
@@ -196,6 +195,8 @@ C#では関数オブジェクト（デリゲート）同士を`+`で繋ぐこと
 
 # 純粋な関数とIOしかない世界
 
+hoge: 長い上この記事で本当に言いたいことが遠回しになってしまうので、省略する？
+
 続いて、「Haskellでは`IO`は『実行するもの』ではなくあくまでも『組み合わせる』もの」という認識をより実感していただくために、先ほどJavaで作った`IO`を実際に使ってみましょう。Haskellの（純粋な）関数をJavaの`Function`で、`IO`を先ほど作ったJavaの`IO`に例えて、Haskellのプログラム(Main モジュール)の世界観を再現してみます。  
 この節では最終的な目標として、普通のJavaで書けば下記のようなコードになるプログラムを、「純粋な関数とIOしかない世界」観で翻訳することを目指します。
 
@@ -205,7 +206,7 @@ public class IOSampleInOrdinaryJava {
     // 挨拶のあと、名前を尋ねて、
     System.out.println("Nice to meet you!");
     System.out.println("May I have your name? ");
-    
+
     // 標準入力から名前を取得して、
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     String name = reader.readLine();
@@ -217,12 +218,14 @@ public class IOSampleInOrdinaryJava {
 }
 ```
 
-※上記を含め[この節に載せたコードはこちらhoge](https://github.com/igrep/igreque.info/tree/published/prgs/2016/haskell-io-in-java/src/main/java/info/igreque/the/haskellioinjava/)にあります。全体像に興味のあるかたはどうぞ。
+※上記を含め[この節に載せたコードはこちらhoge](hoge: 試しやすいよう、独立したリポジトリーに移す)にあります。全体像に興味のあるかたはどうぞ。
 
 入門書の最初の方に載っていそうな、「ユーザーの名前を（標準入力から）聞いて、名前を誉めつつ画面に表示する」だけのプログラムです。  
 これを`Function`と`IO`だけで再現すると、下記のようになります... と、言いたいところですが、その前に一つ重要なパーツを作っておく必要があります。  
 `System.out.println`などの、Javaの普通の入出力処理を先ほど作った`IO`でラップしておきましょう。  
 Haskellの世界には`IO`と純粋な関数しかないのですから、それを表現するにはJavaの普通の入出力処理をすべて`IO`で隠蔽して、プログラマーが直接使わなくてもいいようにしておかなければなりません。
+
+## Prelude.java
 
 と、いうわけで作ったのが下記の`Prelude.java`です。  
 `Prelude`というのはHaskellが標準で提供してくれるモジュールの一つで、明示的に`import`しなくても使えるようになっています。Javaで言えば`java.lang` パッケージ、Pythonで言えば`__builtin__` モジュールのようなものですね。  
@@ -247,8 +250,76 @@ public class Prelude {
 ```
 
 ご覧の通り、上記の`Prelude`クラスには`static final`な定数しか定義されておりません。  
-これは、hoge
-まずは`Prelude`
+これは、HaskellにはJavaで言うところのクラスやオブジェクトの区別がないため、ローカル変数に格納されるものを除き、全ての値はstatic finalな定数に格納されると例えた方が、より実態に近いのではないか、と考えたためです。  
+なお、当たり前ですが、みなさんが実際にHaskellのコードをJavaに翻訳する（という悲しい機会）に出くわしたとしても、こんな効率の悪い翻訳はしないでくださいね。普通に関数はメソッドに変えて、`IO`は使わず直接入出力処理をしましょう。
+
+ともあれ、`Prelude`が提供する各定数について解説しましょう。  
+まずは`Prelude.putStrLn`です。内部で`System.out.println`を使っている通り、標準出力に文字列を書き込むために使います。  
+「Haskellの（純粋な）関数をJavaの`Function`で、`IO`を先ほど作ったJavaの`IO`に」例えるのが今回のミッションなので、出力する文字列は、`Function`の引数として受けとります。  
+これによって、`putStrLn`は「引数として文字列を与えると、文字列を標準出力に書き込む**関数オブジェクトを返す純粋な関数**」であることが明確になりました。  
+なので`putStrLn`は、次のように使います。
+
+```java
+import static Prelude.putStrLn;
+
+...
+
+IO<Void> action = putStrLn.apply("Hello,");
+
+// action.plusメソッドやを呼び出して、後続の IO を追加したりする。
+IO<Void> action2 = action.plus(PutStrLn.apply("world!"));
+// action2は「Hello,」という行の後に「world!」という行を出力するIOとなる
+```
+
+`putStrLn`は`Function`なので、引数を与えて実行する際は`apply`メソッドを使います。ちょっと不格好ですが、まぁ、あくまでもJavaで強引に例えた場合の話なので...。  
+それはさておき、ここで強調しておきたいことが一点あります。  
+`putStrLn.apply("Hello, world!")`が返す値はあくまでも関数オブジェクト(`IO`)なので、`putStrLn.apply("Hello, world!")`という式は副作用を持ちません。  
+そしてプログラマーは`putStrLn`が返した**関数オブジェクト(`IO`)を「組み合わせる」ことでしか使用できない**のです[^call-io]。  
+その結果Haskellでは、プログラマーが書ける範囲内においては、すべての関数が形式上純粋な関数となるのです。
+
+[^call-io]: 今回Javaで書いたサンプルで、実際に組み合わせた`IO`を呼び出す部分はhogeにあります。  
+試しに`putStrLn`などの組み合わせかたを変更してみて、動作を確認するのもよいかもしれません。
+
+hoge: 「関数オブジェクト(`IO`)」と「`IO`オブジェクト」と「`IO`」という表現の使い分け  
+続いて、`Prelude.getLine`です。標準入力から一行取得する関数オブジェクト(`IO`)です。Javaの標準には一つのメソッドでそれに相当するものはないようですが、他の言語でもお馴染みの関数ですよね。
+
+```java
+public class Prelude {
+  // ... 省略 ...
+
+  public static final IO<String> getLine =
+    new IO<>(() -> {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+      return reader.readLine();
+    });
+}
+```
+
+`putStrLn`と異なり、`getLine`は`Function`ではなく単なる`IO`です。そのため引数をなにもうけとりません。  
+取得する文字列はあくまでも「標準入力から」であって、引数からではないのです。
+
+取得した文字列はどのように使うのでしょうか？  
+これもやはり`getLine`と他の`IO`オブジェクトを「組み合わせる」ことで行います。
+
+```java
+import static Prelude.getLine;
+import static Prelude.putStrLn;
+
+...
+
+IO<Void> echo =
+  getLine.then((line) ->
+    putStrLn.apply(line)
+  );
+```
+
+`getLine`が標準入力から取得した文字列は、`then`メソッドに渡した関数に渡されます。  
+`then`メソッドに渡した関数は`getLine`が取得した文字列（上記の場合`line`変数）にアクセスできるので、それを使ってまた別の`IO`オブジェクトを作ることができます。  
+上記の例の場合は、`putStrLn`関数にそのままそれを渡すことにしました。結果、組み合わせてできた`IO`オブジェクト `echo` は、「標準入力から文字列を1行受け取って、受け取った文字列をそのまま標準出力に書き込む関数オブジェクト」となります。
+
+## IOでもっと大きなサンプルを作る
+
+それではいよいよ、`Prelude,java`で定義した各種`IO`を利用して、この節冒頭の「ユーザーの名前を（標準入力から）聞いて、名前を誉めつつ画面に表示する」だけのプログラムを`IO`で翻訳しましょう。  
 
 ```java
 /**
@@ -264,9 +335,6 @@ public class IOSample {
    * CやJavaなどと似たように、mainという名前で宣言された関数
    * (Haskellの場合はIOオブジェクト)が実行される。
    *
-   * HaskellにはJavaで言うところのクラスやオブジェクトの区別がないため、
-   * ローカル変数に格納されるものを除き、
-   * 全ての値はstatic finalな定数に格納される、とここでは例えた。
    */
   public static final IO<Void> main =
     putStrLn.apply("Nice to meet you!")
@@ -286,7 +354,13 @@ public class IOSample {
 hoge
 
 普通は絶対やらないスタイルなので、当然ながら冗長で実用的な書き方ではありません。  
-もちろんHaskellのプログラム（moduleと呼んだ方が適切ですかね）は、それに特化された文法で、これより遥かにスッキリ書かれているという点はお忘れなく。[このプログラムのHaskell版についてはhogeこちら](https://github.com/igrep/igreque.info/tree/published/prgs/2016/haskell-io-in-java/src/main/hs/io-sample.hs)をご覧ください。
+もちろんHaskellのプログラム（moduleと呼んだ方が適切ですかね）は、それに特化された文法で、これより遥かにスッキリ書かれているという点はお忘れなく。[このプログラムのHaskell版についてはhogeこちら](hoge: https://github.com/igrep/haskell-io-in-java/src/main/hs/io-sample.hs)をご覧ください。
+
+hoge
+
+# それで結局Haskellは副作用がある式を書けるの？書けないの？
+
+Haskellの`IO`はあくまでも「組み合わせる」
 
 hoge
 
