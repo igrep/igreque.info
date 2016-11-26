@@ -1,6 +1,6 @@
 % Introduction to Stack's Docker Integration
 % Yuji Yamamoto (山本悠滋)
-% 2016-09-23 Haskell Day 2016
+% 2016-09-17 Haskell Day 2016
 
 # Nice to meet you! (\^-\^)
 
