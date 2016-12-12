@@ -11,7 +11,7 @@ date: December 11, 2016
 
 めげている場合ではありません。掲題通り、Haskellでプリキュアを実装しました。  
 何をいっているんだお前はと思うかたもいらっしゃるかもしれませんが、要はプリキュアの各作品の変身シーンの台詞や設定などを収録したライブラリーです。  
-似たようなものは各言語に存在します。過去には[ACME::PrettyCure](https://github.com/kan/p5-acme-prettycure)をはじめ、[Pycure](https://github.com/drillbits/pycure)[Clocure](https://gist.github.com/kaosf/67639b8a7d33cd0d14ff)などが作られました。  
+似たようなものは各言語に存在します。過去には[ACME::PrettyCure](https://github.com/kan/p5-acme-prettycure)をはじめ、[Pycure](https://github.com/drillbits/pycure)や[Clocure](https://gist.github.com/kaosf/67639b8a7d33cd0d14ff)などが作られました。  
 そしてもちろん当Advent Calendarの主催にしてフルスタックキュアエンジニア、sue445さんの[rubicure](https://github.com/sue445/rubicure)も忘れては行けません。その他の実装は[こちらのまとめ](http://qiita.com/sue445/items/b41a4f5bdca46f1736c3)をご覧ください。
 
 今回私が作ったプリキュア実装は[typesafe-precure](https://github.com/igrep/typesafe-precure)といいます。[hackage](http://hackage.haskell.org/package/typesafe-precure)にも先ほど上げました！
@@ -48,6 +48,7 @@ $ cabal install typesafe-precure unicode-show
 ## 使用例
 
 **注意**:
+
 - GHCi上で日本語を`show`する場合、[unicode-show](https://github.com/nushio3/unicode-show)を利用してください。
 - 下記の出力結果は私が手で見た目を整えています。
 
@@ -81,9 +82,9 @@ ghci> purificationSpeech (CureMiracle_Ruby, CureMagical_Ruby) (LinkleStick Linkl
 ghci> :{
 ghci> let scene = do
 ....>       say "この罪を抱いたまま、もう一度、グランプリンセスを目指す！"
-....>       transform Towa (PrincessPerfume DressUpKey_Scarlet) $ \scarlet -> do
-....>         transform scarlet (PrincessPerfume DressUpKey_Phoenix) $ \scarletModeElegant -> do
-                purify scarletModeElegant (ScarletViolin DressUpKey_Phoenix)
+....>       scarlet <- transform Towa (PrincessPerfume DressUpKey_Scarlet)
+....>       scarletModeElegant <- transform scarlet (PrincessPerfume DressUpKey_Phoenix)
+            purify scarletModeElegant (ScarletViolin DressUpKey_Phoenix)
 ghci> :}
 ghci> :t scene
 scene :: ACME.PreCure.Monad.PreCureMonad ()
@@ -142,7 +143,7 @@ ghci> printEpisode scene
     - そのためYes! プリキュア5が変身するときは`transform (Nozomi, Rin, Urara, Komachi, Karen) PinkyCatch`です。実際にはピンキーキャッチュは5つ使っているので、ちょっと不自然に聞こえるかもしれません。
     - 使い勝手よりも正しさを重視、とは言いましたが、この件については今でも悩んでいます。
 - キュアエコーの変身アイテムは「プリキュアになりたいという思い (`FeelingToBePreCure`)」です。もうちょっと適切な表現があれば教えてください。`NonItemPurification`と同様に`NonItemTransformation`を作るつもりはありません。
-- Go! プリンセスプリキュアは最後に作ったためか、勢い余って大半のドレスアップキーとその浄化技を実装してしまいました。キュアスカーレットのドレスアップキーの組み合わせが思いの外複雑で難しかったです。これだけはBlu-rayも見返せてよかった。
+- Go! プリンセスプリキュアは最後に作ったためか、勢い余って大半のドレスアップキーとその浄化技を実装してしまいました。キュアスカーレットのドレスアップキーの組み合わせが思いの外イレギュラーで難しかったです。これだけはBlu-rayも見返せてよかった。
 
 # みなさんにお願い: 変身や浄化技・必殺技の台詞を募集します！
 
