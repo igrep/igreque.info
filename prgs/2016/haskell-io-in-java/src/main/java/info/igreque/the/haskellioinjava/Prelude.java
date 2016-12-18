@@ -5,8 +5,9 @@ import java.io.InputStreamReader;
 import java.util.function.Function;
 
 /**
- * Haskellのコンパイラーが提供してくれる部分のうち、
- * 「Prelude」と呼ばれるHaskellの組み込みmodule（の一部）を再現した。
+ * Haskellの処理系が提供してくれる部分のうち、
+ * 「Prelude」と呼ばれるHaskellの組み込みモジュール（の一部）を、
+ * Javaにおける同等な処理ををラップすることで再現した。
  * IOSampleと同様に、提供する関数はすべてpublic static finalな定数として提供している。
  */
 

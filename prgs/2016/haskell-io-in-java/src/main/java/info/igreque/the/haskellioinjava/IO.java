@@ -3,6 +3,11 @@ package info.igreque.the.haskellioinjava;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
+/**
+ * HaskellのIOをそれっぽくシミュレートするクラスライブラリー。
+ * 実態は単なるCallableのラッパー
+ */
+
 public class IO<T1> {
   private final Callable<T1> internalAction;
 
