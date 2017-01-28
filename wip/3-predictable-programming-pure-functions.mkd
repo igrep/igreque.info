@@ -1,5 +1,5 @@
 ---
-title: 関数型プログラミングから予測可能プログラミングへ: 純粋な関数
+title: "関数型プログラミングから予測可能プログラミングへ: 純粋な関数"
 author: Yuji Yamamoto
 tags: Haskell
 date: August 29, 2015

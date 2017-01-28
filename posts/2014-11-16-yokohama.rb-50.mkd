@@ -1,5 +1,5 @@
 ---
-title: #Yokohamarb 50回目で発表したけど残念な出来だったので私を変えたN冊を今更紹介する。
+title: "#Yokohamarb 50回目で発表したけど残念な出来だったので私を変えたN冊を今更紹介する。"
 author: Yuji Yamamoto
 tags: Perl, 反社会学講座
 ...
