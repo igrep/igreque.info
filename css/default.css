@@ -88,8 +88,11 @@ nav #bar {
 /* article header */
 
 article h1.title {
+  margin-top: 0.5em;
   font-size: 170%;
   margin-bottom: 0.4em;
+  border-bottom: none;
+  border-left: none;
 }
 
 article h1.subtitle {
@@ -98,6 +101,8 @@ article h1.subtitle {
   font-style: italic;
   margin-top: 0;
   margin-left: 2.5em;
+  border-bottom: none;
+  border-left: none;
 }
 
 article .history {
@@ -107,15 +112,23 @@ article .history {
 /* article body */
 
 h1 {
+  margin-top: 2.5em;
   font-size: 150%;
+  border-left: solid 5px #c11;
+  padding-left: 3px;
 }
 
 h2 {
+  margin-top: 1.5em;
   font-size: 130%;
+  border-left: solid 3px #c11;
+  padding-left: 3px;
 }
 
 h3 {
   font-size: 115%;
+  border-left: solid 2px #c11;
+  padding-left: 3px;
 }
 
 ol,ul {
