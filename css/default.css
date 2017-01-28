@@ -12,7 +12,9 @@ body {
 }
 
 @media (min-width: 720px) {
-  body { width: 700px; }
+  body {
+    width: 700px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -32,11 +34,17 @@ a:link {
 }
 
 a:visited {
-  color: #666;
+  color: #a11;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+#container {
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 5px;
 }
 
 /* navigation bar and header */
