@@ -44,7 +44,7 @@ a:hover {
 #container {
   border-radius: 8px;
   background-color: #fff;
-  padding: 5px;
+  padding: 0 5px 5px;
 }
 
 /* navigation bar and header */
