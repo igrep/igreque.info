@@ -1,8 +1,8 @@
 ---
 title: HaskellのIOは他の言語でいうところの関数オブジェクトとよく似てるよ、という話
 author: Yuji Yamamoto
-date: January 28, 2017
 tags: Haskell, Monad, Java
+date: January 28, 2017
 ...
 ---
 
