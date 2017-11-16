@@ -10,7 +10,7 @@
 
 # はじめまして！ (\^-\^)
 
-- 今年4月末から[日本Haskellユーザーグループ](https://haskell.jp/)というコミュニティーグループを立ち上げ、その発起人の一人として活動しております。
+- 今年3月末から[日本Haskellユーザーグループ](https://haskell.jp/)というコミュニティーグループを立ち上げ、その発起人の一人として活動しております。
     - 愛称: Haskell-jp
 - 詳しくは後ほどしゃべりますが、日本にHaskellを広めるためにいろいろやっております。
 
@@ -119,7 +119,7 @@ Haskell-jpらしさって？
 
 # [Haskell-jpもくもく会](https://haskell-jp.connpass.com/)
 
-- 重要: [次回は9月10（日）](https://haskell-jp.connpass.com/event/64567/)
+- 重要: [次回は9月10日（日）](https://haskell-jp.connpass.com/event/64567/)
 - (;\^ω\^)  
   学生枠を設けてますが、今回に限って学生枠が集まりすぎてうれしい悲鳴を上げています。
 
@@ -165,14 +165,10 @@ Haskell-jpらしさって？
 # [相互リンク集](https://haskell.jp/blog/posts/links.html)
 
 - Haskell好きな人が、
-- Haskellについて書いたページに、
+- Haskellについて書いたWebサイトに、
     - （サイト全体の一部でOK）
 - こんなバナー→ <img width="234" src="https://haskell.jp/img/supported-by-haskell-jp.svg" alt="Supported By Haskell-jp."> を張ってもらい、
 - それを一覧にしたもの
-
-# [相互リンク集](https://haskell.jp/blog/posts/links.html)
-
-- とりあえず作ったもののその後の運用に悩み、若干頓挫気味 （´・ω・\`）
 
 # そのほか、特にやる気はあること
 
