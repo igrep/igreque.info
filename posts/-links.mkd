@@ -7,16 +7,19 @@ date: July 16, 2016
 ---
 
 # 割と頻繁に使うウェブサービス
+
 - [Google+: Yuji Yamamoto](https://plus.google.com/u/0/108459635886859360319/posts)
 - [Twitter: \@igrep](https://twitter.com/igrep)
 - [Facebook: igrep](https://www.facebook.com/igrep)
 - [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
 - [GitHub: igrep](https://github.com/igrep)
-- [Gitlab: igrep](https://gitlab.com/u/igrep)
+- [GitLab: igrep](https://gitlab.com/u/igrep)
 - [Qiita: igrep](http://qiita.com/igrep)
 
 # すごく好きなもの
+
 ## コンピュータ関連
+
 - [Haskell](http://www.haskell.org/haskellwiki/Haskell)
 - [Elm](http://elm-lang.org/)
 - [Vim](http://www.vim.org/)
@@ -25,14 +28,18 @@ date: July 16, 2016
 - [Xperia Z4 Tablet](http://www.sony.jp/tablet/products/Z4/)
 
 ## アニメ・漫画関連
+
 - [プリキュア](http://www.toei-anim.co.jp/tv/precure/)
 - [ポムポムプリン](http://www.sanrio.co.jp/character/pompompurin/)
 
 # 経歴
-- 現職：[GMOクリックホールディングス](https://www.gmo-click.com/)
-- 前職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
-- 前々職：ひみつ。
+
+- 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
+- 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
+- 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
+- 前々々職：ひみつ。
 - いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/academics/faculties/letters/major/socio_info/)
 
 # 昔のブログ
+
 - [発展途上猿人](http://blog.livedoor.jp/igrep/)
