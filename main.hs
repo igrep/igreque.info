@@ -48,6 +48,7 @@ main = hakyll $ do
   idRules "slides/styles/*.css"
   idRules "slides/scripts/*.js"
   -- ^ For slides written in HTML
+  idRules "other/**"
 
 idRules :: Pattern -> Rules ()
 idRules pat =
@@ -119,11 +120,11 @@ indexRules tags =
 
 taggedPostsRules :: Tags -> Rules ()
 taggedPostsRules tags =
-  tagsRules tags $ \tag pattern -> do
+  tagsRules tags $ \tag ptn -> do
     route idRoute
     let title = "Posts tagged " ++ tag
     compile $ do
-      list <- postList tags pattern recentFirst
+      list <- postList tags ptn recentFirst
       makeItem ""
         >>= loadAndApplyTemplate "templates/posts.html"
             ( constField "title" title
