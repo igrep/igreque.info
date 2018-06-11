@@ -1,8 +1,8 @@
 ---
 title: External Links related to me
 author: Yuji Yamamoto
-tags: SNS, Git, Haskell, Vim, Elm
-date: July 16, 2016
+tags: SNS, Git, Haskell, Vim
+date: June 11, 2018
 ...
 ---
 
@@ -15,15 +15,28 @@ date: July 16, 2016
 - [GitHub: igrep](https://github.com/igrep)
 - [GitLab: igrep](https://gitlab.com/u/igrep)
 - [Qiita: igrep](http://qiita.com/igrep)
+- [\@igrep\@qiitadon.com](https://qiitadon.com/@igrep)
+- [\@igrep\@precure.ml](https://precure.ml/@igrep)
+
+# 執筆履歴
+
+- エンジニアHub:
+    - [Haskellらしさって？「型」と「関数」の基本を解説！【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/08/25/110000)
+    - [実践編！Haskellらしいアプリケーション開発。まず型を定義すべし【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/09/11/110000)
+    - [発展編！ Haskellで「型」のポテンシャルを最大限に引き出すには？【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/10/03/110000)
+- Haskell-jp Blog:
+    - [CLIアプリのE2Eテストを行うためのライブラリー main-testerをリリースしました](https://haskell.jp/blog/posts/2018/main-tester.html)
+    - [WindowsでHaskellを扱う時によく遭遇するエラーと対処法](https://haskell.jp/blog/posts/2017/windows-gotchas.html)
+    - [タイプセーフプリキュア！を支える技術 その2](https://haskell.jp/blog/posts/2017/typesafe-precure2.html)
+    - など
+
 
 # すごく好きなもの
 
 ## コンピュータ関連
 
 - [Haskell](http://www.haskell.org/haskellwiki/Haskell)
-- [Elm](http://elm-lang.org/)
 - [Vim](http://www.vim.org/)
-- [Hakyll](http://jaspervdj.be/hakyll/)
 - [アジャイルサムライ](http://ssl.ohmsha.co.jp/cgi-bin/menu.cgi?ISBN=978-4-274-06856-0)
 - [Xperia Z4 Tablet](http://www.sony.jp/tablet/products/Z4/)
 
@@ -35,6 +48,7 @@ date: July 16, 2016
 # 経歴
 
 - 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
+    - [現在IIJイノベーションインスティテュートに出向中](https://www.iij-ii.co.jp/members/yuji-yamamoto.html)
 - 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
 - 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
 - 前々々職：ひみつ。
