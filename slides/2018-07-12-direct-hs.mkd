@@ -1,0 +1,280 @@
+% 第1回daab勉強会 発表
+% Yuji Yamamoto (山本悠滋)
+% 2018-07-13
+
+
+# はじめまして！ (\^-\^)
+
+- [山本悠滋](https://twitter.com/igrep) ([\@igrep](https://twitter.com/igrep))
+- Haskell歴 ≅ プリキュアおじさん歴 ≅ 約6年。
+- ちょっと前まで趣味Haskellerだったが今は仕事でもほぼHaskell @ [IIJ-II](https://www.iij-ii.co.jp/) 😄
+- igrep.elというEmacsプラグインがありますが無関係です！
+
+# 宣伝 hask(\_ \_)eller
+
+- 去年から[日本Haskellユーザーグループ](https://haskell.jp/)というコミュニティーグループを立ち上げ、その発起人の一人として活動しております。
+    - 愛称: Haskell-jp
+- [Slackのワークスペース](https://haskell-jp.slack.com/)や[Subreddit](https://www.reddit.com/r/haskell_jp/)、[ブログ](https://haskell.jp/)、[Wiki](http://wiki.haskell.jp/)など、いろいろ運営しております。
+
+# 今日のテーマ
+
+<div class="takahashiLike">
+メッセージ送信どうしてる？
+</div>
+
+# 今日のテーマ
+
+<div class="takahashiLike">
+メッセージ送信どうしてる？  
+　\_\_∧\_\_\_\_\_\_  
+（Haskellで！）
+</div>
+
+# 今日話すこと
+
+- [direct-hs](https://github.com/iij-ii/direct-hs)というHaskell製**非公式**クライアントライブラリーを作っています。
+    - daabが裏で使っている[direct-js](https://github.com/lisb/direct-js)というライブラリーから影響を受けてこの名前に。
+- daabよりもいい感じに書けるライブラリーになったので、軽く紹介します。
+
+
+# おことわり hask(\_ \_)eller
+
+- ※あんまり本来のテーマと関係がなくてすみません...。
+- ※サンプルコードや言及しているGitHubのURLは開発中のものです。仕様は予告なく変更されることがあります。
+
+# 🤔課題:
+
+- 1つのbot (1つのdirect4b.comへの接続)で複数の人と同時に会話する
+
+# 例: おなじみ「日報bot」
+
+![](/imgs/2018-07-13-nippo-bot1.png)
+
+# 例: おなじみ「日報bot」
+
+その現実
+
+![](/imgs/2018-07-13-nippo-bot2.png)
+
+- ➡️同時に複数のユーザーの会話が始まる可能性がある
+
+# 何が問題？
+
+- ユーザーごとに異なって管理される「状態」がある
+- 日報botの場合
+    - どのユーザーからも「報告します」というwake wordを受け付ける状態
+    - 「報告します」と発言したユーザーから行った業務を聞く状態
+    - 業務の報告を終えたユーザーから達成度を聞く状態
+
+# daab だと
+
+こんな感じ？
+
+```js
+// ユーザーごとの状態を管理する連想配列
+const statusByUser = {};
+
+// ユーザーごとの状態を表すenum的なもの
+const LISTENING_JOBS = 0;
+const LISTENING_ACHIEVEMENT = 1;
+```
+
+# daab だと
+
+こんな感じ？
+
+```js
+// 「報告」と発言したユーザーの状態を更新
+robot.respond(/報告/, (res) => {
+    statusByUser[res.message.user.name] = LISTENING_JOBS;
+    res.replay("今日はどんな業務をしましたか？");
+});
+```
+
+# daab だと
+
+こんな感じ？
+
+```js
+// 業務を報告したユーザーの業務を追加
+robot.respond(/.*/, (res) => {
+    const user = res.message.user.name;
+    if (statusByUser[res.message.user.name] === LISTENING_JOBS){
+        logJob(user, res.match[0]);
+    };
+    // ...
+});
+```
+
+# daab だと
+
+こんな感じ？
+
+```js
+// 「。」と発言したユーザーに達成度を尋ねる
+robot.respond(/。/, (res) => {
+    if (statusByUser[res.message.user.name] === LISTENING_JOBS){
+        statusByUser[res.message.user.name] = LISTENING_ACHIEVEMENT;
+    }
+    res.send({
+        question: "達成度はどれくらいですか？",
+        options: [/* ... */]
+    });
+});
+```
+
+# daab だと
+
+- いちいちユーザーがどの状態にあるか確認しないといけない
+- 会話の流れがわかりづらい
+
+# direct-hs だと
+
+※詳しくは[こちら](https://github.com/iij-ii/direct-hs-examples/blob/d528e77c6dd4d27748192e4d5508f11f99e70d43/src/nippo.hs#L26-L66)  
+※抜粋した上で、本質的でない部分を削っています。雰囲気だけ感じ取ってください。
+
+```haskell
+-- 「報告」を含むメッセージを受け取ったら
+-- 「Channel」を通したユーザーとの会話を始める
+handleCreateMessage client (D.Txt txt)
+  | "報告" `T.isInfixOf` txt =
+    forkIO (D.withChannel client nippo)
+```
+
+# direct-hs だと
+
+全体の流れが把握しやすい！
+
+```haskell
+nippo chan = do
+    jobs <- askJobs       -- 業務を尋ねて
+    logJobs jobs          -- 業務を記録して
+    eval <- askEvaluation -- 評価を尋ねて
+    logEvaluation eval    -- 評価を記録して
+    bye                   -- さようならの挨拶
+```
+
+# direct-hs だと
+
+```haskell
+-- 業務を訪ね始める
+askJobs = do
+    D.send chan (D.Txt "今日はどんな業務をしましたか？")
+    askJobsLoop []
+```
+
+# direct-hs だと
+
+```haskell
+-- 業務を訪ね始める
+askJobsLoop jobs = do
+    -- 「Channel」に紐付いた相手からのメッセージだけを受信
+    msg <- D.recv chan
+
+    -- 「。」と相手が回答するまで尋ね続ける
+    case msg of
+        D.Txt "。" -> return jobs
+        D.Txt job  ->
+            askJobsLoop (job:jobs)
+```
+
+# direct-hs だと
+
+```haskell
+-- 評価を記録し始める
+askEvaluation = do
+    D.send chan (D.SelectQ "達成度はどれくらいですか？" ["100","50","0"])
+    recvLoop
+```
+
+# direct-hs だと
+
+```haskell
+recvLoop = do
+    msg <- D.recv chan
+
+    -- 数値を選んだときのメッセージ以外はエラー
+    case msg of
+      D.SelectA _ _ ans -> return ans
+      _                 -> do
+          D.send chan (D.Txt "数値を選んでください。")
+          recvLoop
+```
+
+# direct-hs だと
+
+```haskell
+bye = D.send chan (D.Txt "気をつけてお帰りください。")
+```
+
+# direct-hs だと
+
+- 「会話の流れ」に従って順番に命令を書くことができる
+    - 別のユーザーとの会話は独立したHaskellのスレッドで処理できる
+    - Node.jsと異なり、スレッドを自由に生やしたり終了を待ったりできる
+        - async/awaitなんて特別な構文も要らない！
+- 「会話の流れ」に無関係なメッセージが来たときもちゃんと処理できる
+    - 例: 達成度を数値で聞いているのにほかのメッセージを送った場合に、「数値を選んでください。」とエラーメッセージを送る
+
+# 仕組み
+
+wake wordを受け取る前
+
+![](/imgs/2018-07-13-nippo-bot-channel-1.png)
+
+- ➡️すべての発言は一つのスレッドで受け付ける
+
+# 仕組み
+
+誰かからwake wordを受け取った時
+
+![](/imgs/2018-07-13-nippo-bot-channel-2.png)
+
+- ➡️wake wordを発言した人専用のスレッド(Channel)を作る
+
+# 仕組み
+
+誰かからwake wordを受け取った後
+
+![](/imgs/2018-07-13-nippo-bot-channel-3.png)
+
+- ➡️受け取ったメッセージのTalk IDとUser IDが一致した場合、該当するChannelに流す（会話が終了すると元に戻る）
+
+# 所感
+
+- 本当にそこまで必要なのか？
+    - 😅これからbotを作って考えましょう。
+    - 😥実運用しているbotはまだ作れてません...。
+
+# おことわり
+
+- 😰Botkitにある「Conversation」という概念が割と近いものを実装しているらしいので、別にHaskellでなければならないというものでもなさそう
+    - 😤でも、hubotベースの既存のdaab SDKよりは（多分）書きやすいはず！
+
+# その他、JavaScriptではできなくてHaskellだからできたこと
+
+メッセージにちゃんと型をつけたよ！
+
+- 直和型を使い、メッセージの種類ごとに利用できる値を区別
+    - メッセージの種類が`stamp`のときは`stamp_set`, `stamp_index`からスタンプの情報を取り出す
+    - メッセージの種類が`yesno`のときは`response`から回答を取り出す
+    - みたいなルールを型レベルで強制できる！**間違っていたらコンパイルエラー**に！
+
+# おまけ
+
+direct4bコマンドを作りました。  
+シェルスクリプトなどに組み込んで使うことを想定しています。
+
+インストール例・使用例（要: [Stack](https://docs.haskellstack.org/en/stable/README/)）
+
+```
+$ git clone https://github.com/iij-ii/direct-hs.git
+$ stack install
+$ echo こんにちは、世界！ | direct4b -- send <TALK_ID>
+```
+
+# まとめ
+
+- [direct-hs](https://github.com/iij-ii/direct-hs)というHaskell製**非公式**クライアントライブラリーを作っています。
+- daabと異なり「会話の流れ」に従って順番に命令を書くことができます。
+- Haskellの「直和型」という機能を使うことで、APIの使い方が間違っていた場合に、実行するまでもなくコンパイルエラーにすることができます。
