@@ -19,7 +19,7 @@ date: July 17, 2018
 
 こちら👇です。
 
-[第1回daab勉強会 発表](http://localhost:8000/slides/2018-07-12-direct-hs.html)
+[第1回daab勉強会 発表](/slides/2018-07-12-direct-hs.html)
 
 direct-hsという、Haskell製の非公式なdirectクライアントライブラリーを作っているので、それを紹介しました。  
 kazuさんが作った`Channel`機能にフォーカスを当てて紹介したところ、やはり需要のある機能だというフィードバックをいただけたのでよかったです😁。  
