@@ -5,7 +5,7 @@
 # はじめまして！ (\^-\^)
 
 - [山本悠滋](https://twitter.com/igrep) ([\@igrep](https://twitter.com/igrep))
-- Haskell歴 ≅ プリキュアおじさん歴 ≅ 約6年。
+- Haskell歴 ≒ プリキュアおじさん歴 ≒ 約6年。
 - ちょっと前まで趣味Haskellerだったが今は仕事でもほぼHaskell @ [IIJ-II](https://www.iij-ii.co.jp/) 😄
 - igrep.elというEmacsプラグインがありますが無関係です！
 
