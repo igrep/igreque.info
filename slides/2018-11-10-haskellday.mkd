@@ -1,0 +1,74 @@
+% 「失敗しながら学ぶHaskell入門」について
+% Yuji Yamamoto (山本悠滋)
+% 2018-11-10 Haskell Day 2018
+
+
+# はじめまして！ (\^-\^)
+
+- [山本悠滋](https://twitter.com/igrep) ([\@igrep](https://twitter.com/igrep))
+- Haskell歴 ≒ プリキュアおじさん歴 ≒ 約6年。
+- ちょっと前まで趣味Haskellerだったが今は仕事でもほぼHaskell @ [IIJ-II](https://www.iij-ii.co.jp/) 😄
+- igrep.elというEmacsプラグインがありますが無関係です！
+
+# 宣伝 hask(\_ \_)eller
+
+- 去年から[日本Haskellユーザーグループ](https://haskell.jp/)というコミュニティーグループを立ち上げ、その発起人の一人として活動しております。
+    - 愛称: Haskell-jp
+- [Slackのワークスペース](https://haskell-jp.slack.com/)や[Subreddit](https://www.reddit.com/r/haskell_jp/)、[ブログ](https://haskell.jp/)、[Wiki](http://wiki.haskell.jp/)など、いろいろ運営しております。
+
+# 今日のハンズオンの際必要なもの
+
+- GHC ([`stack`](https://haskellstack.org) `setup`コマンドでインストールするのを推奨します）
+- 「失敗しながら学ぶHaskell入門」
+- ~~下記のコマンドでインストール~~  
+  ```
+  stack install makeMistakesToLearnHaskell
+  ```
+  ※**まだ公開してませんので今は次のページの方法で！**
+
+<!--
+TODO: 公開後、正しい方法に差し替え
+-->
+
+# 現状のインストール方法
+
+```
+git clone https://github.com/haskell-jp/makeMistakesToLearnHaskell
+cd makeMistakesToLearnHaskell
+stack install
+```
+
+# 「失敗しながら学ぶHaskell入門」
+
+- 英語名 「Make Mistakes to Learn Haskell」
+- Node.js界隈では有名な[workshopper](https://github.com/workshopper/workshopper)にインスパイアされて作った。
+
+# 使い方
+
+課題の一覧を出す（特に引数を与えなければ一覧が表示されます）
+
+```
+mmlh
+```
+
+# 使い方
+
+課題1の内容を表示する
+
+```
+mmlh show 1
+```
+
+# 使い方
+
+課題の回答をテストする
+
+```
+mmlh verify your_answer.hs
+```
+
+※最後に表示した課題のテストをします。
+
+# 見所
+
+TODO
