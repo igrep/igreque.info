@@ -21,7 +21,7 @@
 \(1\) [Stack](https://docs.haskellstack.org/en/stable/README/)
 
 - LinuxやMacなどUnix系の人は  
-  `curl -sSL https://get.haskellstack.org/ | sh`
+  `curl -sSL https://get.haskellstack.org/ | sh`  
   でインストールするか、
 
 # 今日のハンズオンの際必要なもの
@@ -31,7 +31,7 @@
 - Windowsの人は[Windows 64-bit Installer](https://get.haskellstack.org/stable/windows-x86_64-installer.exe)で。
 - Chocolateyをお使いの方は  
   `choco install haskell-stack`  
-で。
+  で。
 
 # 今日のハンズオンの際必要なもの
 
