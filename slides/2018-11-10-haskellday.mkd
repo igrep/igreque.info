@@ -41,7 +41,19 @@ stack install
 # 「失敗しながら学ぶHaskell入門」
 
 - 英語名 「Make Mistakes to Learn Haskell」
-- Node.js界隈では有名な[workshopper](https://github.com/workshopper/workshopper)にインスパイアされて作った。
+- Node.js界隈では有名な[workshopper](https://github.com/workshopper/workshopper)にインスパイアされて作った
+
+# 「失敗しながら学ぶHaskell入門」
+
+大事にしていること:
+
+- 実際にHaskell製のアプリケーションを作る
+- 型エラーを始め、GHCの出すエラーメッセージに慣れる
+
+# 見所
+
+- ユーザーの解答とGHCが出すエラーメッセージを解析して、  
+  **解答のヒント**を出す機能が！
 
 # 使い方
 
@@ -61,7 +73,7 @@ mmlh show 1
 
 # 使い方
 
-課題の回答をテストする
+課題の解答をテストする
 
 ```
 mmlh verify your_answer.hs
@@ -69,6 +81,15 @@ mmlh verify your_answer.hs
 
 ※最後に表示した課題のテストをします。
 
-# 見所
+# デモ
 
-TODO
+```
+mmlh
+mmlh show 1
+
+stack exec runhaskell single-quote.hs
+mmlh verify single-quote.hs
+
+stack exec runhaskell right.hs
+mmlh verify right.hs
+```
