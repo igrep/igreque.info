@@ -18,19 +18,40 @@
 
 # 今日のハンズオンの際必要なもの
 
-- GHC ([`stack`](https://haskellstack.org) `setup`コマンドでインストールするのを推奨します）
-- 「失敗しながら学ぶHaskell入門」
+\(1\) [Stack](https://docs.haskellstack.org/en/stable/README/)
+
+- LinuxやMacなどUnix系の人は  
+  `curl -sSL https://get.haskellstack.org/ | sh`
+  でインストールするか、
+
+# 今日のハンズオンの際必要なもの
+
+\(1\) [Stack](https://docs.haskellstack.org/en/stable/README/)
+
+- Windowsの人は[Windows 64-bit Installer](https://get.haskellstack.org/stable/windows-x86_64-installer.exe)で。
+- Chocolateyをお使いの方は  
+  `choco install haskell-stack`  
+で。
+
+# 今日のハンズオンの際必要なもの
+
+\(2\) 「失敗しながら学ぶHaskell入門」
+
 - ~~下記のコマンドでインストール~~  
   ```
   stack install makeMistakesToLearnHaskell
   ```
-  ※**まだ公開してませんので今は次のページの方法で！**
+- ※**まだ公開してませんので今は次のページの方法で！**
 
 <!--
 TODO: 公開後、正しい方法に差し替え
 -->
 
-# 現状のインストール方法
+# 今日のハンズオンの際必要なもの
+
+\(2\) 「失敗しながら学ぶHaskell入門」
+
+現状のインストール方法
 
 ```
 git clone https://github.com/haskell-jp/makeMistakesToLearnHaskell
@@ -82,6 +103,9 @@ mmlh verify your_answer.hs
 ※最後に表示した課題のテストをします。
 
 # デモ
+
+発表時に発表者がコピペする予定のコードです。  
+これをそのまま貼り付けても動きません。あしからず。
 
 ```
 mmlh
