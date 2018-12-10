@@ -1,0 +1,186 @@
+% GHC 8.x勉強会 QuantifiedConstraints編
+% Yuji Yamamoto (山本悠滋)
+% 2018-12-07
+
+# GHC 8.6.1から入った`QuantifiedConstraints`
+
+- [GHC Users Guide](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-QuantifiedConstraints)
+    - 大半の例はここからコピペ・微修正しています
+- 論文 [Quantified Class Constraints](https://i.cs.hku.hk/~bruno//papers/hs2017.pdf)
+- HIW 2018の[Generalized Abstract GHC.Generics](https://icfp18.sigplan.org/event/hiw-2018-papers-generalized-abstract-ghc-generics)でも言及があった
+
+# 何ができるようになるか
+
+- contextに列挙するconstraintの中でさらに一段入れ子のcontextが書けるようになった！
+
+# どゆこと？
+
+```haskell
+data Rose f x = Branch x (f (Rose f x))
+
+instance (Eq a, forall b. Eq b => Eq (f b)) => Eq (Rose f a) where
+  (Branch x1 rs1) == (Branch x2 rs2) = x1 == x2 && rs1 == rs2
+```
+
+# どゆこと？
+
+```haskell
+instance (Eq a, forall b. Eq b => Eq (f b)) => ...
+```
+
+の、`forall b. Eq b => Eq (f b)`の箇所！
+
+# 何がうれしい？
+
+こんな感じの型があって、`Eq`のインスタンスを定義したい
+
+```haskell
+data Rose f x = Branch x (f (Rose f x))
+```
+
+# 何がうれしい？
+
+これはよくない！
+
+```haskell
+instance (Eq a, Eq (f (Rose f a))) => Eq (Rose f a)
+  where
+    (Branch x1 c1) == (Branch x2 c2)
+       = x1==x1 && c1==c2
+```
+
+- インスタンスの解決が停止しない恐れがある！  
+  （UndecidableInstancesを有効にすればできちゃう場合もある）
+
+# 何がうれしい？
+
+`QuantifiedConstraints`を有効にすると！
+
+<!--
+:set -XQuantifiedConstraints
+-->
+
+```haskell
+instance (Eq a, forall b. Eq b => Eq (f b)) => Eq (Rose f a)
+  where
+    (Branch x1 c1) == (Branch x2 c2)
+       = x1 == x1 && c1 == c2
+```
+
+# 何がうれしい？
+
+`QuantifiedConstraints`を有効にすると！
+
+- contextに列挙するconstraintの中でconstraintが書けるようになる
+- 例えば👇もOK。  
+  ```haskell
+  f :: (Eq a, forall b. Eq b => Eq (f b)) => Rose f a -> Rose f a -> Bool
+  f t1 t2 = not (t1 == t2)
+  ```
+
+# 何がうれしい？
+
+もっとうれしそうな例:  
+
+- 従来の[`MonadTrans`](http://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Class.html#t:MonadTrans)型クラス  
+  ```haskell
+  class MonadTrans t where
+    lift :: Monad m => m a -> t m a
+  ```
+
+# 何がうれしい？
+
+```haskell
+class MonadTrans t where
+  lift :: Monad m => m a -> t m a
+```
+
+# 何がうれしい？
+
+従来の`MonadTrans`だと、👇の`MonadTrans`が定義できない！
+
+<!--
+:set -XKindSignatures
+:set -XPolyKinds
+:m + Control.Monad.Trans.Class Data.Kind
+
+:{
+newtype Comp
+    (t1 :: ((* -> *) -> * -> *))
+    (t2 :: ((* -> *) -> * -> *))
+    (m :: Type -> Type) a =
+    Comp { runComp :: t1 (t2 m) a }
+:}
+-->
+
+```haskell
+newtype Comp t1 t2 m a = Comp { runComp :: t1 (t2 m) a }
+
+instance (MonadTrans t1, MonadTrans t2) => MonadTrans (Comp t1 t2) where
+  lift = Comp . lift . lift
+```
+
+# 何がうれしい？
+
+`lift`の第1引数が守るべき`Monad m`を満たせない！
+
+```
+• Could not deduce (Monad (t2 m)) arising from a use of ‘lift’
+  from the context: (MonadTrans t1, MonadTrans t2)
+    bound by the instance declaration at <interactive>:53:10-66
+  or from: Monad m
+    bound by the type signature for:
+      lift :: forall (m :: * -> *) a. Monad m => m a -> Comp t1 t2 m a
+```
+
+# 何がうれしい？
+
+これならできる！👍
+
+```haskell
+instance
+  (MonadTrans t1, MonadTrans t2, forall m. Monad m => Monad (t2 m))
+  -- (MonadTrans t1, MonadTrans t2, forall m. Monad m)
+  => MonadTrans (Comp t1 t2)
+ where
+  lift = Comp . lift . lift
+```
+
+<!--
+:m +Control.Monad.Trans.Reader Control.Monad.Trans.Writer Control.Monad.Trans.State Control.Monad.IO.Class
+type RS a = Comp (ReaderT Char) (StateT Int) (WriterT String IO) a
+:{
+act :: RS ()
+act = lift . liftIO $ putStrLn "hello"
+:}
+-->
+
+# 何がうれしい？
+
+そもそも、👇のように書くこともできる！
+
+```
+class (forall m. Monad m => Monad (t m)) => MonadTrans' t where
+  lift :: Monad m => m a -> (t m) a
+```
+
+# ちょっと不思議な点
+
+```haskell
+forall m. Monad m  
+```
+
+みたいに書くと、型変数`m`は  
+
+```haskell
+lift = Comp . lift . lift  
+```
+
+の中では有効でないように読めるけど、実際には有効らしい。
+
+- `forall m.`を消すとエラーになってしまう
+- 事情があってそういう仕様にした模様
+
+# [Generalized Abstract GHC.Generics](https://icfp18.sigplan.org/event/hiw-2018-papers-generalized-abstract-ghc-generics)での応用
+
+力尽きたのでコピペは省略。時間が余ったらPDFを開きながら紹介しよう！
