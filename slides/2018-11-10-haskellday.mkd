@@ -1,7 +1,6 @@
-% 「失敗しながら学ぶHaskell入門」について
+% Haskell Dayへようこそ
 % Yuji Yamamoto (山本悠滋)
 % 2018-11-10 Haskell Day 2018
-
 
 # はじめまして！ (\^-\^)
 
@@ -16,48 +15,39 @@
     - 愛称: Haskell-jp
 - [Slackのワークスペース](https://haskell-jp.slack.com/)や[Subreddit](https://www.reddit.com/r/haskell_jp/)、[ブログ](https://haskell.jp/)、[Wiki](http://wiki.haskell.jp/)など、いろいろ運営しております。
 
+# 宣伝 hask(\_ \_)eller
+
+Sponsored by:
+
+<a href="https://www.iij.ad.jp/">
+<img width="600" height="346" src="/imgs/Internet_Initiative_Japan_logo.svg" alt="IIJ - Internet Initiative Japan">
+</a>
+
+# 会場諸注意
+
+- 🚭喫煙スペースはございません。  
+  電子タバコを含め、**喫煙はご遠慮**ください
+- ⚠帰宅の際は必ずVisitor cardをIIJ社員のスタッフに返却してください
+    - 🆔社員証を首から提げています
+
+# 会場諸注意（続き）
+
+- 入場できる時間帯は、原則として**休憩時間中のみ**と致します
+    - そのほかの時間帯に入場が必要な場合は、Twitterにて[\@haskell_jp](https://twitter.com/haskell_jp)を含めてtweetするか、
+    - [connpassのイベントページ](https://haskell-jp.connpass.com/event/92617/)の「イベントへのお問い合わせ」をご利用ください
+- 懇親会以外で発生したゴミは、お持ち帰りください
+
+# 会場諸注意（続き）
+
+- 📸写真撮影を[\@kakkun61](https://github.com/kakkun61)氏が行います
+    - こちらは、後ほど[Haskell-jp Blog](https://haskell.jp/blog/)にて、**公開**します
+    - 顔が写るのが嫌だという方はご連絡を！
+- 📹午後からのセッションについて、[ログミー](https://logmi.jp/)というウェブメディアが撮影・録音します
+    - こちらは文字起こしのためなので、顔が映ると言ったことはありません
+
 # 今日のハンズオンの際必要なもの
 
-\(1\) [Stack](https://docs.haskellstack.org/en/stable/README/)
-
-- LinuxやMacなどUnix系の人は  
-  `curl -sSL https://get.haskellstack.org/ | sh`  
-  でインストールするか、
-
-# 今日のハンズオンの際必要なもの
-
-\(1\) [Stack](https://docs.haskellstack.org/en/stable/README/)
-
-- Windowsの人は[Windows 64-bit Installer](https://get.haskellstack.org/stable/windows-x86_64-installer.exe)で。
-- Chocolateyをお使いの方は  
-  `choco install haskell-stack`  
-  で。
-
-# 今日のハンズオンの際必要なもの
-
-\(2\) 「失敗しながら学ぶHaskell入門」
-
-- ~~下記のコマンドでインストール~~  
-  ```
-  stack install makeMistakesToLearnHaskell
-  ```
-- ※**まだ公開してませんので今は次のページの方法で！**
-
-<!--
-TODO: 公開後、正しい方法に差し替え
--->
-
-# 今日のハンズオンの際必要なもの
-
-\(2\) 「失敗しながら学ぶHaskell入門」
-
-現状のインストール方法
-
-```
-git clone https://github.com/haskell-jp/makeMistakesToLearnHaskell
-cd makeMistakesToLearnHaskell
-stack install
-```
+[README](https://github.com/haskell-jp/makeMistakesToLearnHaskell/blob/master/README.md)を見ながら説明します。
 
 # 「失敗しながら学ぶHaskell入門」
 
@@ -102,18 +92,13 @@ mmlh verify your_answer.hs
 
 ※最後に表示した課題のテストをします。
 
-# デモ
+# ハンズオンの課題が終わったら
 
-発表時に発表者がコピペする予定のコードです。  
-これをそのまま貼り付けても動きません。あしからず。
+- ❓メンターの人に、Haskellについて何でも質問してみよう！
+- 🚶[Haskellの歩き方](https://wiki.haskell.jp/Hikers%20Guide%20to%20Haskell)を読もう！
+- 🍱お昼ご飯へ！
 
-```
-mmlh
-mmlh show 1
+# それでは！ hask(\_ \_)eller
 
-stack exec runhaskell single-quote.hs
-mmlh verify single-quote.hs
-
-stack exec runhaskell right.hs
-mmlh verify right.hs
-```
+🙋何かわからないことがあれば、勇気を出して手を挙げてください！  
+🙇みなさんの質問が、メンターの方にとっての勉強になることもあります。
