@@ -9,7 +9,7 @@ packages:
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
-  []
+- hakyll-4.12.5.1@sha256:d1948b265e6628bcb6875571212f9acefe23179c73ca4f87f417b290ff381ca6
 
 # Override default flag values for local packages and extra-deps
 flags: {}
