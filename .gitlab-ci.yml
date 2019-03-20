@@ -23,8 +23,9 @@ build:
 pages:
   script:
     - stack exec hakyll build
+    - mv _site public
   artifacts:
     paths:
-      - _site
+      - public
   only:
     - master
