@@ -3,7 +3,8 @@ image: haskell:latest
 before_script:
   - apt-get update && apt-get install xz-utils make
   - export STACK_ROOT=`pwd`/.stack
-  - stack build
+  # Save build cache even when it fails.
+  - stack build || true
 
 cache:
   paths:
