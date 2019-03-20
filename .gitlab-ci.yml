@@ -14,6 +14,9 @@ cache:
 build:
   script:
     - stack exec hakyll build
+  artifacts:
+    paths:
+      - _site
   except:
     - master
 
