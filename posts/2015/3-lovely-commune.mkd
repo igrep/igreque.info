@@ -27,7 +27,7 @@ ElmとプリキュアとSVGのAdvent Calendarの記事ということで、
 </div>
 
 はい、みんな大好き私も大好き、「ドキドキ！プリキュア」のキュアハートの変身シーンですね。  
-こちらで使用されている<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">**ソレ**</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+こちらで使用されている<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">**ソレ**</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />をスマホで再現できるよう、
 [elm-svg](https://github.com/evancz/elm-svg/)と[Animate.css](http://daneden.github.io/animate.css/)という
 ライブラリを主に使って頑張りました。
@@ -57,7 +57,7 @@ PCなど、横長の画面でアクセスする際はハートが画面全体に
 
 今回作った（作っている）のは現在の「Go! プリンセスプリキュア」から数えて2代前のプリキュア、
 「ドキドキ！プリキュア」の変身アイテム、
-その名も「<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">ラブリーコミューン</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+その名も「<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">ラブリーコミューン</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />」のシミュレーターです。  
 先ほどの動画の通り、「キュアラビーズ」という特別な宝石をセットしてから「**プリキュア！ラブリンク！**」と叫び、LOVEを描くとプリキュアに変身できます。
 
@@ -68,13 +68,13 @@ PCなど、横長の画面でアクセスする際はハートが画面全体に
 更には「Go! プリンセスプリキュア」にタイムラインが盛り上がる中、
 Elmを始めフロントエンド周りへの興味がふつふつと湧き上がりましたので、習作としてちょうどいいだろうと思って作ってみました。
 
-[^tablet]: ちなみに、ドキドキ！プリキュアには「<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00EVJR0RC/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00EVJR0RC&amp;linkCode=as2&amp;tag=poe02-22">マジカルラブリーパッド</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00EVJR0RC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+[^tablet]: ちなみに、ドキドキ！プリキュアには「<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00EVJR0RC/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00EVJR0RC&amp;linkCode=as2&amp;tag=poe02-22">マジカルラブリーパッド</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00EVJR0RC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />」というタブレットをモチーフにしたアイテムもありました。  
 こちらは、「画面に触れなくても操作できる！」のが売りなので、再現するには何かしらウェアラブル端末と組み合わせるといいかもしれません。私はやりませんよ！
 
 なお、今回は実際のアニメで使用されている（つまり、動画で描かれている）ラブリーコミューンの振る舞いに近づけるよう作成しています。  
-そのため<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">お金で買える方のラブリーコミューン</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
-/>とは微妙に振る舞いが異なる部分があるかと思いますが、お金で買える方はさっきからしつこくアフィリエイトタグを貼っている通り<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">まだAmazonで買える</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+そのため<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">お金で買える方のラブリーコミューン</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+/>とは微妙に振る舞いが異なる部分があるかと思いますが、お金で買える方はさっきからしつこくアフィリエイトタグを貼っている通り<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">まだAmazonで買える</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />ので、どうぞ買ってください。
 
 # Elm的な解説
@@ -113,7 +113,7 @@ Nativeライブラリ用のドキュメントもなく、エラーが起きて�
 
 # SVGとかCSSとかの解説
 
-SVGに関しては技術的に特筆すべき点はございません！普通に<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">実物</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+SVGに関しては技術的に特筆すべき点はございません！普通に<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">実物</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
 />を購入して写真を撮り、Inkscapeでトレースして`path`として作成し、elm-svgで使えるよう書き換えただけです。  
 充分に単純な図形なので、自動でトレースすると余計なノードが増えて鬱陶しかったので手でやった、といった点ぐらいでしょうか。  
 最後に触れます、課題の「指（あるいはマウスカーソル）でなぞった位置に合わせてハートの色を塗る量を変える」の実装ができたらまたその時ググった情報などを説明します！
@@ -131,8 +131,8 @@ TODO: まとめて英訳してGitHubのIssueに書き写す。
   知人にもアドバイスを頂けたおかげで方法は概ね検討がついたので、次の機会に。
 - ハートの部分以外のデザイン。  
   シャルルちゃん、ラケルちゃん、ランスちゃん、ダビィちゃん、全員のバージョンを作る。  
-  <a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00FOHRG8S/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00FOHRG8S&amp;linkCode=as2&amp;tag=poe02-22">イラレ</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00FOHRG8S" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-  を買って金で解決しましょう。そのためにわざわざ<a rel="nofollow" href="http://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">実物</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
+  <a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00FOHRG8S/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00FOHRG8S&amp;linkCode=as2&amp;tag=poe02-22">イラレ</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00FOHRG8S" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+  を買って金で解決しましょう。そのためにわざわざ<a rel="nofollow" href="https://www.amazon.co.jp/gp/product/B00ARAFLI4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B00ARAFLI4&amp;linkCode=as2&amp;tag=poe02-22">実物</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=B00ARAFLI4" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"
   />を買ったのですから。
 - ハートの部分のデザイン。  
   アニメのものにより近い模様にして、輪郭線も消せるようにする。

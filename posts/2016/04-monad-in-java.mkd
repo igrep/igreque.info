@@ -931,7 +931,7 @@ Monadはセミコロン、つまり文と文を繋ぐもの、「各文の間に
 例えば`Maybe` Monadであれば、各文の間に「結果が`Nothing`でないかどうかチェックし、`Nothing`であれば次の文の実行をやめる」という処理がありますし、State Monadであれば、「前の文で書き換えた状態を、次の文に渡す」という処理があります。
 他のMonadをご存じであれば、それも考えてみてください。各Monadへの理解がいっそう深まることでしょう。
 
-[^context]: 例えば<a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />の211ページの「本章で説明するモナドは、端的には『文脈を伴う計算』同士を組み合わせ可能にするしくみです」という文。
+[^context]: 例えば<a href="https://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22">関数プログラミング実践入門</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />の211ページの「本章で説明するモナドは、端的には『文脈を伴う計算』同士を組み合わせ可能にするしくみです」という文。
 
 繰り返しになりますが、最後にまとめをもう一度挙げておきます。
 
