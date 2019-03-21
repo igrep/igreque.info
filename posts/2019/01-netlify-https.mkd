@@ -1,0 +1,55 @@
+---
+title: Netlifyに移行してhttpsにしました。
+author: Yuji Yamamoto
+date: March 21, 2019
+...
+---
+
+当ウェブサイト the.igreque.info は、長年[ServersMan@VPS](https://dream.jp/vps/)のEntryプランを使って配信していたのですが、このたび[Netlify](https://www.netlify.com/)に移行しました。  
+何かしらウェブアプリを動かしたいな、と思って買ったVPSでしたが、結局Apacheを動かすのにしか使いませんでしたね...😰。  
+メンテナンスも面倒なので、近々廃止します。  
+もしウェブアプリを配信したくなったら、今度はやっぱりHerokuかなぁ。
+
+また、それに伴い、すべてのページのURLをhttpsに移行しました。時代の要請ですね。  
+わずかながら集めていたはてなブックマークも0になってしまいましたが、まぁ、心機一転ということで。
+
+# 簡単にやったことを。
+
+Netlify, かねがね噂には聞いてましたが、確かにものすごく簡単でした。  
+特に独自ドメインのTLSの設定があまりにも楽でびっくり。  
+Netlifyでウェブサイトを作り、その際に発行されたドメイン<small>（このサイトの場合 `youthful-lalande-e23790.netlify.com.`）</small>に対してお持ちのドメインをCNAMEとして割り当てた上で、Netlifyの管理画面から「Add domain alias」して、割り当てたドメインを入力する、それだけでした<small>（私の記憶が間違ってなければ😓）</small>。  
+
+あとは自動でLet's Encryptから取得・更新してくれるみたいです（少し時間がかかるので待ちましょう）。
+
+# デプロイ方法
+
+デプロイに関しては、手元のマシンで[`netlify`コマンド](https://www.netlify.com/docs/cli/)を使ってデプロイするだけにしました。  
+CIサーバーにやらせる方がより今どきのベストプラクティスに近いんでしょうけども、まぁどうせ私一人しか編集しないサイトだし、VPSの頃からリポジトリーにコミットしてない変更をバンバンrsyncでデプロイする習慣があった私としては、こちらの方がやりやすいですしね。
+
+こんな👇感じのシェルスクリプトでデプロイしています。
+
+```bash
+#!/bin/bash
+
+set -eu
+
+stack exec hakyll -- build
+
+cat <<END > _site/_redirects
+# Redirect default Netlify subdomain to primary domain
+https://youthful-lalande-e23790.netlify.com/* https://the.igreque.info/:splat 301!
+END
+
+netlify deploy --prod --dir=_site/
+```
+
+`cat <<END > _site/_redirects`で始まる行がポイントです。  
+Netlifyにデプロイするディレクトリーのルートに`_redirects`というファイルを置いて上記の内容を書くと、`https://youthful-lalande-e23790.netlify.com/`へのアクセスをすべて`https://the.igreque.info/`にリダイレクトしてくれるようになります。  
+`Netlify`が発行したデフォルトのドメイン`youthful-lalande-e23790.netlify.com.`にアクセスされるのを防ぐための措置です。
+
+今回のようにデプロイスクリプトに組み入れることで、`hakyll clean`して`_site`ディレクトリーを消してしまっても、デプロイの際に必ず設定されます<small>（手元のマシンでデプロイする以上、私が間違えてしまうリスクを0にはできませんが😅）</small>。
+
+# おわりに
+
+[Haskell-jp](https://haskell.jp/)を立ち上げて以来、Haskellに関することは原則すべて[Haskell-jp Blog](https://haskell.jp/blog/)に掲載すると決断したため、あまり書くことはなくなってしまいましたが、今後も気が向いたときに更新します。  
+何か要望や間違いの指摘などありましたら[GitHubのリポジトリー](https://github.com/igrep/igreque.info/)のIssueまでどうぞ。
