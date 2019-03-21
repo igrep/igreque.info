@@ -60,6 +60,8 @@ main = hakyll $ do
   -- ^ For slides written in HTML
   idRules "other/**"
 
+  idRules "_redirects"
+
 idRules :: Pattern -> Rules ()
 idRules pat =
   match pat $ do

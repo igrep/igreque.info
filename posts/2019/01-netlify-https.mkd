@@ -35,19 +35,12 @@ set -eu
 
 stack exec hakyll -- build
 
-cat <<END > _site/_redirects
-# Redirect default Netlify subdomain to primary domain
-https://youthful-lalande-e23790.netlify.com/* https://the.igreque.info/:splat 301!
-END
-
 netlify deploy --prod --dir=_site/
 ```
 
-`cat <<END > _site/_redirects`で始まる行がポイントです。  
-Netlifyにデプロイするディレクトリーのルートに`_redirects`というファイルを置いて上記の内容を書くと、`https://youthful-lalande-e23790.netlify.com/`へのアクセスをすべて`https://the.igreque.info/`にリダイレクトしてくれるようになります。  
-`Netlify`が発行したデフォルトのドメイン`youthful-lalande-e23790.netlify.com.`にアクセスされるのを防ぐための措置です。
-
-今回のようにデプロイスクリプトに組み入れることで、`hakyll clean`して`_site`ディレクトリーを消してしまっても、デプロイの際に必ず設定されます<small>（手元のマシンでデプロイする以上、私が間違えてしまうリスクを0にはできませんが😅）</small>。
+~~`cat <<END > _site/_redirects`で始まる行がポイントです。~~  
+後でよく考えたら「普通にHakyllの設定を変えて`_site`にコピーできるな...」と気づいたので`_redirects`の設定はデプロイスクリプトではなくHakyllにやらせることにしました😅。  
+間違いを防ぐという意味ではこちらの方が確実でしょうし...。
 
 # おわりに
 
