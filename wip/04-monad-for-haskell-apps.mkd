@@ -123,7 +123,7 @@ action :: Monad m => m b
     - これまでに挙げた様々なMonadを、各アプリケーションやライブラリ専用に組み合わせたものが多い。
         - あるいは、実装は独自だが本質的に他のMonadと似たものか。
     - 後はSTMやEvalなど、並列処理や並行処理用に作られたやつとか。
-        - こちらについて詳しくは<a href="http://www.amazon.co.jp/gp/product/4873116899/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4873116899&amp;linkCode=as2&amp;tag=poe02-22">Haskellによる並列・並行プログラミング</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4873116899" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を参照されたし。
+        - こちらについて詳しくは<a href="http://www.amazon.co.jp/gp/product/4873116899/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4873116899&amp;linkCode=as2&amp;tag=poe02-22">Haskellによる並列・並行プログラミング</a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4873116899" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />を参照されたし。
 
 # Monadの一般的な使い方
 

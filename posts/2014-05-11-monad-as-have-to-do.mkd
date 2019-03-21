@@ -13,7 +13,7 @@ tags: Haskell, Monad
 やっぱりSlideshareにもアップロードしました。
 slidyを使うと印刷するだけでPDFにできるから便利ですね！
 
-<iframe src="http://www.slideshare.net/slideshow/embed_code/34534060" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="https://www.slideshare.net/slideshow/embed_code/34534060" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 
 うわぁ小さくて見づれー。本番ではブラウザで拡大率調整してたしなぁ。
 早くslidyのcss整えないと。
