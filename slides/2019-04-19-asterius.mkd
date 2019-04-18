@@ -1,0 +1,108 @@
+% AsteriusでHaskellの関数をJSから呼べるようにしてみた（けど失敗）
+% Yuji Yamamoto (山本悠滋)
+% 2019-04-19 Emscripten & WebAssembly night !! #7
+
+# はじめまして！ (\^-\^)
+
+- [山本悠滋](https://twitter.com/igrep) ([\@igrep](https://twitter.com/igrep))
+- Haskell歴 ≒ プリキュアおじさん歴 ≒ 約7年。
+- 趣味Haskeller兼仕事Haskeller @ [IIJ-II](https://www.iij-ii.co.jp/) 😄
+- igrep.elというEmacsプラグインがありますが無関係です！
+
+# 宣伝 hask(\_ \_)eller
+
+- 2017年から[日本Haskellユーザーグループ](https://haskell.jp/)というコミュニティーグループを立ち上げ、その発起人の一人として活動しております。
+    - 愛称: Haskell-jp
+- [Slackのワークスペース](https://join.slack.com/t/haskell-jp/shared_invite/enQtNDY4Njc1MTA5MDQxLTAzZGNkZDlkMWYxZDRlODI3NmNlNTQ1ZDc3MjQxNzg3OTg4YzUzNmUyNmU5YWVkMjFmMjFjYzk1OTE3Yzg4ZTM)や[Subreddit](https://www.reddit.com/r/haskell_jp/)、[ブログ](https://haskell.jp/)、[Wiki](http://wiki.haskell.jp/)など、いろいろ運営しております。
+
+# Topics and Summary
+
+※From this slide, written in English to show the developer of Asterius.
+
+- 🔍What Asterius is.
+- ⚙️How Asterius works.
+- 💪I tried to run a function I wrote in Haskell before on a browser.
+    - 😥But in vail due to a bug of Asterius's FFI.
+
+# 🔍What Asterius is:
+
+- [A Haskell to WebAssembly compiler](https://github.com/tweag/asterius).
+- Still in heavy development.
+- All GHC features except Template Haskell and IO should work.
+- Provides FFI to call JavaScript from Haskell, and Haskell from JavaScript, vice versa.
+    - Call JavaScript functions to perform some IOs.
+- Now provides `ahc-cabal` command to build a module dependent on external packages.
+
+# 👍Asterius's Pros
+
+- Output wasm is relatively small (considering it contains a runtime of Haskell).
+    - Empty project:
+        - 36KB (only `.wasm` file).
+        - 168KB (including uncompressed `.mjs` files).
+    - 😕My app:
+        - 1.9MB (only `.wasm` file).
+        - 2.1MB (including uncompressed `.mjs` files).
+
+# 👍Asterius's Pros (cont)
+
+- Available with HEAD of GHC!
+    - Forked from GHC. But the diff from original GHC is so small that the developer can rebase regularly.
+
+# 👎Asterius's Cons
+
+- Still very unstable and buggy.
+- IO and Template Haskell aren't available.
+    - Call JavaScript functions to perform some IOs.
+    - Currently no wrappers around JavaScript functions are provided...
+- Only works on V8 (The runtime JavaScript modules depend on `BigInt`).
+
+# ⚙️How Asterius works
+
+Ref: [IR types and transformation passes](https://tweag.github.io/asterius/ir/)
+
+1. Wrap the fork of GHC with a frontend plugin:
+    - Convert `.cmm` files to `AsteriusModule`.
+1. `ahc-ld` (dedicated linker) links for WASM.
+
+# ⚙️How Asterius works (cont)
+
+3. `ahc-dist` makes it executable.
+    - With [binaryen](https://github.com/WebAssembly/binaryen) or [wasm-toolkit](https://github.com/tweag/asterius/tree/master/wasm-toolkit), validate and convert the modules to WASM module.
+    - Copy JavaScript modules required at runtime.
+    - Emit the entry JavaScript module to run the `main` function of the source Haskell file.
+
+# How I tried to run my function with Asterius
+
+[The target app](https://github.com/igrep/igrep-cashbook/tree/master/hs2):
+
+- Parse a simple line-separated file to sum up my expenditure.
+- Tried to export the core function typed as  
+  `FilePath -> Text -> Text` using FFI.
+
+# How I tried to run my function with Asterius (cont)
+
+🔥I had to drop some dependent packages to compile my code...
+
+- To avoid to depend on Template Haskell and IO.
+- 😨If any of the dependency depends on them, fails to build.
+
+# How I tried to run my function with Asterius (cont)
+
+- But avoiding IO is actually easy by believing in types!
+- Haskell is *very* good at writing pure functions!
+- In Haskell, IO is always explicitly typed as `IO`:
+    - Easily detect which functions do IO, then split them out!
+    - ✨Impure functions don't spark joy!
+
+# Result
+
+- Successfully built a module exporting the core function.
+- But finally got stuck by [a bug of FFI](https://github.com/tweag/asterius/issues/105).
+    - The `foreign export javascript`ed function doesn't return the expected result!
+- Perhaps I can avoid by not using `foreign export javascript`, but left so far.
+
+# ✅Summary
+
+- Asterius is a Haskell to WebAssembly compiler.
+- Now we can run various Haskell code on a browser!
+    - But currently we have to drop much code to compile...
