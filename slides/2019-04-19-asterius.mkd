@@ -28,7 +28,7 @@
 
 - [A Haskell to WebAssembly compiler](https://github.com/tweag/asterius).
 - Still in heavy development.
-- All GHC features except Template Haskell and IO should work.
+- All GHC features except Template Haskell and most standard IO functions should work.
 - Provides FFI to call JavaScript from Haskell, and Haskell from JavaScript, vice versa.
     - Call JavaScript functions to perform some IOs.
 - Now provides `ahc-cabal` command to build a module dependent on external packages.
@@ -51,17 +51,22 @@
 # 👎Asterius's Cons
 
 - Still very unstable and buggy.
-- IO and Template Haskell aren't available.
+- Most standard IO functions and Template Haskell aren't available.
     - Call JavaScript functions to perform some IOs.
-    - Currently no wrappers around JavaScript functions are provided...
-- Only works on V8 (The runtime JavaScript modules depend on `BigInt`).
+    - Currently few wrappers around JavaScript functions are provided unless declaring `foreign import javascript` explicitly...
+
+# 👎Asterius's Cons (cont)
+
+- Only works on V8 and SpiderMonkey
+    - The runtime JavaScript modules depend on `BigInt`.
+    - Use Firefox Nightly or Chrome!
 
 # ⚙️How Asterius works
 
 Ref: [IR types and transformation passes](https://tweag.github.io/asterius/ir/)
 
 1. Wrap the fork of GHC with a frontend plugin:
-    - Convert `.cmm` files to `AsteriusModule`.
+    - Convert `.cmm` files to `AsteriusModule` (custom object format for Asterius).
 1. `ahc-ld` (dedicated linker) links for WASM.
 
 # ⚙️How Asterius works (cont)
