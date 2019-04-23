@@ -1,0 +1,27 @@
+---
+title: My ChangeLog for age 30.
+author: Yuji Yamamoto
+date: April 23, 2019
+...
+---
+
+去年は書かなかった上、某勉強会で発表資料を作るのに忙しかった関係で遅くなってしまいましたが、おかげさまで、今年も新しい年齢の山本悠滋をリリースすることができましたので、アナウンスいたします！  
+みなさんお祝いありがとうございます！ついに30歳です！
+
+数年前、私が好きなプリキュア歌手である吉田仁美さんが、同じ30歳になる際のバースデイライブにて「20代がとっても楽しかったので、30代もきっと楽しくなると思う」みたいな趣旨の言葉を仰っていたのが印象に残っています。私も胸を張ってそう言える20代にできたと思います！
+
+# Changes Since Age 29
+
+- 知人に紹介いただいた結婚相談所にて、婚活を始めました。おかげさまで結構たくさんの女性に出会ったものの、依然として成婚には至っておりません。
+- Haskellでお仕事をするようになり、いろいろ細かいライブラリーを公開するようになりました:
+    - 趣味で公開しただけでも[fakefs](http://hackage.haskell.org/package/fakefs), [main-tester](http://hackage.haskell.org/package/main-tester), [substring-parser](http://hackage.haskell.org/package/substring-parser)などがあります。
+- [初めて自分用のAndroidアプリを作りました](https://qiita.com/igrep/items/253f8b4f91ef8a252030)。あいにくGoogle Playには公開してませんが...。
+- [IIJ-IIのウェブサイトに、私のページ](https://www.iij-ii.co.jp/members/yuji-yamamoto.html)を作っていただけました！
+- [Haskell Day 2018](https://haskell-jp.connpass.com/event/92617/)という大きめのイベントを初めて運営できました！  
+  関係者のみなさまの協力に感謝します！
+
+# Know Issues
+
+- 引き続き彼女がいません😥。
+- Haskellを書くことに満足してきたら、次はClojureなど他の言語を書く時間がなくて困っています。
+    - Haskellで書きたいアプリもたくさんありますけど！
