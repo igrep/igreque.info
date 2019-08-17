@@ -1,0 +1,101 @@
+% Simulate Bind with Indexed Applicative
+% Yuji Yamamoto (山本悠滋)
+% 2019-08-23 HIW 2019
+
+# Nice to meet you! (\^-\^)
+
+- [Yuji Yamamoto](https://twitter.com/igrep) ([\@igrep](https://twitter.com/igrep))
+- Software Developer at [IIJ Innovation Institute, Inc.](https://www.iij-ii.co.jp/) 😄
+- One of the founders of [Japan Haskell User Group (a.k.a. Haskell-jp)](https://haskell.jp/)
+
+# Topics and Summary
+
+- What `Monad` can do but `Applicative` cannot, and vice versa.
+- Simulate bind `(>>=)` with `IxState` and keep your DSL bind-free.
+    - Represent reference to (the result of) an action by [`Symbol`](http://hackage.haskell.org/package/base-4.12.0.0/docs/GHC-TypeLits.html#t:Symbol).
+    - Interpret the actions as `IxState` with an extensible record when executing.
+- Example: Tiny DSL with interpreter with printer.
+- Example: regex-applicative with capturing feature.
+
+# What `Monad` can do but `Applicative` cannot.
+
+- Bind `>>=`!
+- hoge: ![Applicative can't bind!](/imgs/2019-08-23-no-bind.png)
+
+# What `Applicative` can do but `Monad` cannot.
+
+Several things. Today I focus on:
+
+- Scan all execution paths!
+
+# What `Applicative` can do but `Monad` cannot.
+
+For example...
+
+# What `Applicative` can do but `Monad` cannot.
+
+Why?
+
+```
+do
+  x <- fa
+  -- ... x can be used anywhere!
+```
+
+# What `Applicative` can do but `Monad` cannot.
+
+Why?
+
+```
+do
+  x <- fa
+  -- x can be used to decide whether fb or fc is executed.
+  -- But your DSL interpreter (e.g. Free Monad) doesn't know
+  -- *both* fb and fc can be executed.
+  y <- if x >= 0 then fb else fc
+```
+
+# What `Applicative` can do but `Monad` cannot.
+
+Why?
+
+```
+do
+  x <- fa
+  -- Actions following fa can be decided dynamically by x.
+  -- So your DSL interpreter (e.g. Free Monad) has
+  -- completely no idea of what's executed next.
+  -- nextActionsTable :: [(x, m ())]
+  case lookup x nextActionsTable of
+      Just nextAction -> nextAction
+      Nothing -> defaultAction
+```
+
+# What `Applicative` can do but `Monad` cannot.
+
+Why?
+
+- `Monad` can choose which execution paths to go by the results of the actions, thanks to `>>=`.
+- In other words, `Monad` can't grasp **all possibly-executed actions**.
+    - But `Applicative` can do that!
+
+# What `Applicative` can do but `Monad` cannot.
+
+Scanning all paths is useful for...
+
+- [optparse-applicative](http://hackage.haskell.org/package/optparse-applicative):
+    - Generate `--help` of the *all* available options by scanning them.
+- [regex-applicative](http://hackage.haskell.org/package/regex-applicative) (Regex as an EDSL in Haskell):
+    - Compile *all* operations of a regular expression into an NFA by scanning them.
+
+# Goal
+
+I want to add some bind-like feature to those `Applicative`s anyway!
+
+# Simulate bind `(>>=)` with Indexed Applicative
+
+# Keep Your DSL bind-free 🚳!
+
+# Example: Tiny DSL with interpreter with printer.
+
+# ✅Summary
