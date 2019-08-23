@@ -96,6 +96,7 @@ Required Types etc:
 - Some extensible record library.
     - Here I use [extensible](https://hackage.haskell.org/package/extensible) package.
 - `RebindableSyntax` if you make the EDSL available with `do` syntax.
+- `OverloadedLables`
 
 # Simulate `(>>=)` with IxApplicative and Extensible Record
 
@@ -130,7 +131,22 @@ data Exp a where
 
 # Simulate `(>>=)` with IxApplicative and Extensible Record
 
-Add extensible records as type arguments:
+(Before) Add extensible records as type arguments:
+
+```haskell
+data Exp                                                         a where
+  Hask :: a -> Exp       a
+  Succ :: Exp       Int -> Exp       Int
+  (:<) :: Exp       Int -> Exp       Int -> Exp       Bool
+
+  Fmap :: (a -> b) -> Exp       a -> Exp       b
+  Ap   :: Exp       (a -> b) -> Exp       a -> Exp       b
+  Then :: Exp       a -> Exp       b -> Exp       b
+```
+
+# Simulate `(>>=)` with IxApplicative and Extensible Record
+
+(After) Add extensible records as type arguments:
 
 ```haskell
 data Exp (xs :: [Assoc Symbol Type]) (ys :: [Assoc Symbol Type]) a where
