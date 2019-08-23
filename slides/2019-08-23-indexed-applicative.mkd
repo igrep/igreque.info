@@ -260,10 +260,6 @@ merge = Map.unionWith (+)
 one k = Map.singleton (symbolVal $ fieldNameToProxy k) 1
 ```
 
-# Running the Examples
-
-Demonstrate here!
-
 # More Useful Examples
 
 <small>I failed to implement in time...😞</small>
