@@ -1,1 +1,1 @@
-stack exec haykyll server
+stack exec hakyll server
