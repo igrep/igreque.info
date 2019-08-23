@@ -289,3 +289,4 @@ one k = Map.singleton (symbolVal $ fieldNameToProxy k) 1
 
 - With `IxApplicative`, we can add a bind-like feature to our DSLs.
 - Even with the bind-like feature, the EDSL still have **execution path entirely traversable**.
+- Example project is available at <https://gitlab.com/igrep/bind-in-indexed-applicative>.
