@@ -90,7 +90,7 @@ postRulesOf ptn tags =
         >>= relativizeUrls
 
 slideRules :: Rules ()
-slideRules = match "slides/**.mkd" $ do
+slideRules = match "slides/*.md" $ do
     route   $ setExtension ".html"
     compile $
       getResourceString >>=

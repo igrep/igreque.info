@@ -96,7 +96,6 @@ Required Types etc:
 - Some extensible record library.
     - Here I use [extensible](https://hackage.haskell.org/package/extensible) package.
 - `RebindableSyntax` if you make the EDSL available with `do` syntax.
-- `OverloadedLables`
 
 # Simulate `(>>=)` with IxApplicative and Extensible Record
 
@@ -131,22 +130,7 @@ data Exp a where
 
 # Simulate `(>>=)` with IxApplicative and Extensible Record
 
-(Before) Add extensible records as type arguments:
-
-```haskell
-data Exp                                                         a where
-  Hask :: a -> Exp       a
-  Succ :: Exp       Int -> Exp       Int
-  (:<) :: Exp       Int -> Exp       Int -> Exp       Bool
-
-  Fmap :: (a -> b) -> Exp       a -> Exp       b
-  Ap   :: Exp       (a -> b) -> Exp       a -> Exp       b
-  Then :: Exp       a -> Exp       b -> Exp       b
-```
-
-# Simulate `(>>=)` with IxApplicative and Extensible Record
-
-(After) Add extensible records as type arguments:
+Add extensible records as type arguments:
 
 ```haskell
 data Exp (xs :: [Assoc Symbol Type]) (ys :: [Assoc Symbol Type]) a where
@@ -276,6 +260,10 @@ merge = Map.unionWith (+)
 one k = Map.singleton (symbolVal $ fieldNameToProxy k) 1
 ```
 
+# Running the Examples
+
+Demonstrate here!
+
 # More Useful Examples
 
 <small>I failed to implement in time...😞</small>
@@ -289,4 +277,3 @@ one k = Map.singleton (symbolVal $ fieldNameToProxy k) 1
 
 - With `IxApplicative`, we can add a bind-like feature to our DSLs.
 - Even with the bind-like feature, the EDSL still have **execution path entirely traversable**.
-- Example project is available at Git**L**ab <https://gitlab.com/igrep/bind-in-indexed-applicative>.
