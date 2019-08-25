@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/master/doc/yaml_configuration.md
 
 # Specifies the GHC version and set of packages available (e.g., lts-3.5, nightly-2015-09-21, ghc-7.10.2)
-resolver: lts-13.13
+resolver: lts-14.2
 
 # Local packages, usually specified by relative directory name
 packages:
@@ -9,8 +9,7 @@ packages:
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
-- hakyll-4.12.5.1@sha256:d1948b265e6628bcb6875571212f9acefe23179c73ca4f87f417b290ff381ca6
-- lrucache-1.2.0.1@sha256:18fc3d7052012c7ab3cd395160f34b53c5e1ec5379cc45185baf35b90ffadc2e
+- hakyll-4.12.5.2@sha256:435eec729639a4bf0d58f3c7c71929600f4130f10241275d5e7df856cc8aae90,8677
 
 # Override default flag values for local packages and extra-deps
 flags: {}
