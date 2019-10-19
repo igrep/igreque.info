@@ -136,7 +136,9 @@ Just 15
 もうちょっと複雑な例: まずは部品作り
 
 ```haskell
-> schemeRe = ((++) <$> string "http" <*> (string "s" <|> pure "")) <* string "://"
+> schemeRe =
+    ((++) <$> string "http" <*> (string "s" <|> pure ""))
+      <* string "://"
 ```
 
 - マッチ結果を`<$>`や`<*>`で`Origin`関数一つ一つの引数に割り当てる
