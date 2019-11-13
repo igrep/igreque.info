@@ -521,7 +521,7 @@ if | x == 1    -> "a"
 
 繰り返しになりますが...
 
-- [日本Haskellユーザーグループ](https://haskell.jp/)の[Slackワークスペース](https://join-haskell-jp-slack.herokuapp.com/)や[Subreddit](https://www.reddit.com/r/haskell_jp/)もあります！
+- [日本Haskellユーザーグループ](https://haskell.jp/)の[Slackワークスペース](https://haskell.jp/signin-slack.html)や[Subreddit](https://www.reddit.com/r/haskell_jp/)もあります！
 - StackoverflowやteratailでHaskellタグをつけて質問すると、転送される[Slackのチャンネル](https://haskell-jp.slack.com/messages/C707P67R7/convo/C7Y71415W-1510496739.000024/)もあります！
 - 再度の宣伝失礼！ hask(\_ \_)eller
 

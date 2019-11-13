@@ -13,7 +13,7 @@
 
 - 2017年から[日本Haskellユーザーグループ](https://haskell.jp/)というコミュニティーグループを立ち上げ、その発起人の一人として活動しております。
     - 愛称: Haskell-jp
-- [Slackのワークスペース](https://join.slack.com/t/haskell-jp/shared_invite/enQtNDY4Njc1MTA5MDQxLWY1ZDVhZjIzMGE1MDMzZDAyNGZmYTU5M2VlODg5NTNmY2QwNGU1NjJjMjYzN2VjZmRjMDNiNGU0NjI5NDdlMTc)や[Subreddit](https://www.reddit.com/r/haskell_jp/)、[ブログ](https://haskell.jp/)、[Wiki](http://wiki.haskell.jp/)など、いろいろ運営しております。
+- [Slackのワークスペース](https://haskell.jp/signin-slack.html)や[Subreddit](https://www.reddit.com/r/haskell_jp/)、[ブログ](https://haskell.jp/)、[Wiki](http://wiki.haskell.jp/)など、いろいろ運営しております。
 
 # 📝今日話すこと
 

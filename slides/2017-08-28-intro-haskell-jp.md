@@ -64,7 +64,7 @@ Haskell-jpらしさって？
 
 - いろいろしゃべったり質問したり、フィードを流したりしてます
 - リンク先は[SlackArchive](http://slackarchive.io/)を利用した発言ログ
-- 登録は[こちら](https://join-haskell-jp-slack.herokuapp.com/)から。
+- 登録は[こちら](https://haskell.jp/signin-slack.html)から。
 
 # [Slackチーム](https://haskell-jp.slackarchive.io/)
 
