@@ -33,10 +33,10 @@
 
 # ⚠️おことわり
 
-- ここでいう「cabal」は「[cabal-install](http://hackage.haskell.org/package/cabal-install)」のことです
+- 🙇ここでいう「cabal」は「[cabal-install](http://hackage.haskell.org/package/cabal-install)」のことです
     - いわゆる「cabalコマンド」
     - [Cabal](hackage.haskell.org/package/Cabal)というcabal-installが使っているライブラリーも同じ名前なので注意
-- 基本的にcabal-install 3.0を前提としています
+- 🙇基本的にcabal-install 3.0を前提としています
 
 # 👍👍今はcabalでもstackでもどっちでもいいんじゃないかな！
 
@@ -46,32 +46,33 @@
 
 # cabalに対するstackのいいところ
 
-- エラーメッセージが優しい
-- hpackの組み込みサポート
-- 気の利いたオプションがある
-- GHCのインストールが楽ちん
+- 🤗エラーメッセージが優しい
+- 📦hpackの組み込みサポート
+- 😏気の利いたオプションがある
+- ⏬GHCのインストールが楽ちん
 
 # cabalに対するstackのいいところ
 
-- エラーメッセージが優しい
-    - cabalは特にcabalファイルの構文エラーがわかりづらい
-        - stack側にぴったり相当するものがないので単純比較はできない
-        - hpackを使えばそのわかりづらさに遭うリスクも減る
-    - stackは「このパッケージは今のresolverにないからこの行をstack.yamlに書いてね！」と教えてくれる、などなど
+🤗エラーメッセージが優しい
+
+- cabalは特にcabalファイルの構文エラーがわかりづらい
+    - stack側にぴったり相当するものがないので単純比較はできない
+    - hpackを使えばそのわかりづらさに遭うリスクも減る
+- stackは「このパッケージは今のresolverにないからこの行をstack.yamlに書いてね！」と教えてくれる、などなど
 
 # cabalに対するstackのいいところ
 
-hpackの組み込みサポート
+📦hpackの組み込みサポート
 
 - 前述のcabalファイルのわかりづらさに付き合う必要がなくなる
 - hpackはcabalよりもDRYに書きやすい
     - でも、cabalも「common stanza」機能を実装したのでその差は縮まった
     - [cabal-fmt](http://hackage.haskell.org/package/cabal-fmt)ができたことでmoduleの列挙も半自動化できる
-- 個人的にはcabalに慣れて欲しい気持ち
+- 🙏個人的にはcabalに慣れて欲しい気持ち
 
 # cabalに対するstackのいいところ
 
-気の利いたオプションがある
+😏気の利いたオプションがある
 
 - `--file-watch`
     - ファイルを監視して自動でリビルド！
@@ -82,32 +83,32 @@ hpackの組み込みサポート
 
 # cabalに対するstackのいいところ
 
-GHCのインストールが楽ちん
+⏬GHCのインストールが楽ちん
 
 - ご存知のとおり、`stack build`するだけで、必要なGHCがインストールされてなければ自動でインストール
 - GHCのインストールしたいだけの時は`stack setup`
 
 # stackに対するcabalのいいところ
 
-- enable executable static
-- 開発版のGHCでも！
-- Backpack使うなら必須
-- 一つのcabalファイルに複数のライブラリーが！
-- 実はStackageの恩恵を受けるのも簡単
+- ❄️enable executable static
+- 🚧開発版のGHCでも！
+- ◀️Backpack使うなら必須
+- 📚一つのcabalファイルに複数のライブラリーが！
+- ⭐️実はStackageの恩恵を受けるのも簡単
 
-# enable executable static
+# ❄️enable executable static
 
 - `cabal build --enable-executable-static`
 - 昨今のはやり、シングルバイナリーが簡単に作れる！
 - ⚠️ただし、主にglibcの都合で結局実行時にglibcが必要になってしまうケースがあるので注意
     - [GNU ldで一部をスタティックリンクにする](https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/)
 
-# 開発版のGHCでも！
+# 🚧開発版のGHCでも！
 
 - `-w`（または`--with-compiler`）オプションで使いたいGHCへのパスを明示すれば、いつでも好きなGHCを使える！
 - cabal 2.xだと`--with-ghc`オプションのようです
 
-# Backpack使うなら必須
+# ◀️Backpack使うなら必須
 
 Backpack: GHC 8.2から追加された機能
 
@@ -117,13 +118,13 @@ Backpack: GHC 8.2から追加された機能
     - 型クラスだとより筋力💪が必要なケースをすっきりできるみたいだけど...
 - [stackは当分サポートしそうにない](https://github.com/commercialhaskell/stack/issues/2540)
 
-# 一つのcabalファイルに複数のライブラリーが！
+# 📚一つのcabalファイルに複数のライブラリーが！
 
 - [Multiple public libraries in a package · Issue #4206 · haskell/cabal](https://github.com/haskell/cabal/issues/4206)
 - cabal 3.0からサポート
 - 恐らく前述のBackpackのためにもあってしかるべき機能
 
-# 一つのcabalファイルに複数のライブラリーが！
+# 📚一つのcabalファイルに複数のライブラリーが！
 
 例えば`aeson`パッケージを作ったとき:
 
@@ -131,7 +132,7 @@ Backpack: GHC 8.2から追加された機能
 - `Value`型のインスタンスのためのパッケージを作ったり
 - などなど、今まで分かれていた関連するパッケージを、一つのパッケージのライブラリーとして配布できる
 
-# 実はStackageの恩恵を受けるのも簡単
+# ⭐️実はStackageの恩恵を受けるのも簡単
 
 例えばLTS 14.16に書かれているバージョンのパッケージを使いたいとき:
 
@@ -141,13 +142,13 @@ curl https://www.stackage.org/lts-14.16/cabal.config > cabal.project.freeze
 
 - たったこれだけ！
 
-# 実はStackageの恩恵を受けるのも簡単
+# ⭐️実はStackageの恩恵を受けるのも簡単
 
 コツ:
 
 - `cabal v2-build`を実行する前に`cabal v2-update`しておくと、[Hackage Metadata Revision](https://github.com/haskell-infra/hackage-trustees/blob/master/revisions-information.md)の問題を回避できます
-- stackはこの辺を自動で解決してくれるようなのでやっぱりstackの方がフレンドリー
-    - 正確には、stackageにパッケージが入ったtarballのチェックサムなど、より詳細な情報を書くことで解決している
+- stackはこの辺の問題がそもそも起こらないようにうまいこと管理しているようなのでやっぱりstackの方がフレンドリー
+    - 具体的には、Stackageにパッケージが入ったtarballのチェックサムなど、より詳細な情報を書くことで解決している
 
 # 敢えて両方使えばいいんじゃないかな！
 
@@ -158,8 +159,9 @@ curl https://www.stackage.org/lts-14.16/cabal.config > cabal.project.freeze
 
 # おまけ: かつてのcabalのいけてなかったところ
 
-- 「同じパッケージの同じバージョンは<small>（一つのパッケージDBにつき）</small>一つまで！」という制約が...
-- hoge
+- 「同じパッケージの同じバージョンは<small>（一つのパッケージDBにつき）</small>一つまで！」という制約が
+- 🤔なぜそれではダメ？
+    - 「同じパッケージの同じバージョン」かつ、「どのパッケージのどのバージョンを使ってビルドしたか」の**組み合わせも一通りだけ**、という制約もあるから
 
 # おまけ: かつてのcabalのいけてなかったところ
 
