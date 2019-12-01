@@ -648,7 +648,7 @@ NTTデータ
 今回は↓を使います！
 
 - [関数プログラミング実践入門 ──簡潔で，正しいコードを書くために](http://gihyo.jp/book/2014/978-4-7741-6926-2)
-- <a href="http://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_il?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;ASIN=4774169269&amp;Format=_SL110_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=poe02-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+- <a href="https://www.amazon.co.jp/gp/product/4774169269/ref=as_li_ss_il?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=4774169269&amp;linkCode=as2&amp;tag=poe02-22"><img border="0" src="https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;ASIN=4774169269&amp;Format=_SL110_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=poe02-22" ></a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=poe02-22&amp;l=as2&amp;o=9&amp;a=4774169269" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
 
 # これから使う予定のテキスト
 
