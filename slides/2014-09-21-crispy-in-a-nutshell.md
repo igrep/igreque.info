@@ -1,6 +1,9 @@
-% Crispy in a Nutshell
-% 山本悠滋
-% 2014-09-21 Ruby Hiroba
+---
+title: Crispy in a Nutshell
+author: 山本悠滋
+date: 2014-09-21 Ruby Hiroba
+
+---
 
 # はじめまして！
 

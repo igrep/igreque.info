@@ -1,6 +1,9 @@
-% regex-applicative: 内部DSLとしての正規表現
-% Yuji Yamamoto (山本悠滋)
-% 2019-10-18 Regex Festa
+---
+title: "regex-applicative: 内部DSLとしての正規表現"
+author: Yuji Yamamoto (山本悠滋)
+date: 2019-10-18 Regex Festa
+
+---
 
 # はじめまして！ 👋😄
 

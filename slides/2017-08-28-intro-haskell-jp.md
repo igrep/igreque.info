@@ -1,6 +1,9 @@
-% Haskell入門者LT会 ゲスト発表
-% Yuji Yamamoto (山本悠滋)
-% 2017-08-28
+---
+title: Haskell入門者LT会 ゲスト発表
+author: Yuji Yamamoto (山本悠滋)
+date: 2017-08-28
+
+---
 
 # はじめまして！ (\^-\^)
 

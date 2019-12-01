@@ -1,6 +1,9 @@
-% substring-parserでcure-index.jsonを移行した話
-% Yuji Yamamoto (山本悠滋)
-% 2018/08/18 プリキュアハッカソン NewStage
+---
+title: substring-parserでcure-index.jsonを移行した話
+author: Yuji Yamamoto (山本悠滋)
+date: 2018/08/18 プリキュアハッカソン NewStage
+
+---
 
 # はじめまして！ (\^-\^)
 

@@ -1,6 +1,9 @@
-% HaskellでAndroidアプリを書いてみた
-% Yuji Yamamoto (山本悠滋)
-% 2017-11-18 DevFest Shikoku 2017
+---
+title: HaskellでAndroidアプリを書いてみた
+author: Yuji Yamamoto (山本悠滋)
+date: 2017-11-18 DevFest Shikoku 2017
+
+---
 
 # はじめまして！ (\^-\^)
 

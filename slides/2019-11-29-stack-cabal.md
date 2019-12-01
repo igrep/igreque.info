@@ -1,6 +1,9 @@
-% 最近のstackとcabalについて簡単に
-% YAMAMOTO Yuji (山本悠滋)
-% 2019-11-29 Gotanda.hs #1 @HERP
+---
+title: 最近のstackとcabalについて簡単に
+author: YAMAMOTO Yuji (山本悠滋)
+date:  2019-11-29 Gotanda.hs #1 @HERP
+
+---
 
 # はじめまして！ 👋😄
 

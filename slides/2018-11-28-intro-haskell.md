@@ -1,6 +1,11 @@
-% なぜHaskellを学ぶか・使うか
-% Yuji Yamamoto (山本悠滋)
-% 2018-11-28 Haskell Day 2018
+---
+title: なぜHaskellを学ぶか・使うか
+author: Yuji Yamamoto (山本悠滋)
+date: 2018-11-28
+
+---
+
+※この資料は、社内勉強会で使用したものです。
 
 # はじめまして！ (\^-\^)
 

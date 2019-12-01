@@ -1,6 +1,9 @@
-% Introduction to Stack's Docker Integration
-% Yuji Yamamoto (山本悠滋)
-% 2016-09-17 Haskell Day 2016
+---
+title: Introduction to Stack's Docker Integration
+author: Yuji Yamamoto (山本悠滋)
+date: 2016-09-17 Haskell Day 2016
+
+---
 
 # Nice to meet you! (\^-\^)
 

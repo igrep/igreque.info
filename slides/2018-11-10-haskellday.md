@@ -1,6 +1,9 @@
-% Haskell Dayへようこそ
-% Yuji Yamamoto (山本悠滋)
-% 2018-11-10 Haskell Day 2018
+---
+title: Haskell Dayへようこそ
+author: Yuji Yamamoto (山本悠滋)
+date: 2018-11-10 Haskell Day 2018
+
+---
 
 # はじめまして！ (\^-\^)
 

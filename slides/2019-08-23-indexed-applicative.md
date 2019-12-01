@@ -1,6 +1,9 @@
-% Simulate Bind with IxApplicative
-% Yuji Yamamoto (山本悠滋)
-% 2019-08-23 HIW 2019
+---
+title: Simulate Bind with IxApplicative
+author: Yuji Yamamoto (山本悠滋)
+date: 2019-08-23 HIW 2019
+
+---
 
 # Nice to meet you! (\^-\^)
 

@@ -1,6 +1,12 @@
-% Monad as "Things to Do"
-% Yuji Yamamoto
-% 2015-05-24
+---
+title: Monad as "Things to Do"
+author: Yuji Yamamoto
+date: 2015-05-24
+
+---
+
+This slide was planned to be used for the Lightning Talk of LambdaConf 2015.  
+But I missed the chance.😞
 
 # Nice to meet you!
 

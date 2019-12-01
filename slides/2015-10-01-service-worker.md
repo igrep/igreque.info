@@ -1,6 +1,9 @@
-% Service WorkerとFacebookに遊ばれてました
-% 山本悠滋
-% 2015-10-01 表参道.rb #5
+---
+title: Service WorkerとFacebookに遊ばれてました
+author: 山本悠滋
+date: 2015-10-01 表参道.rb #5
+
+---
 
 # こんにちは！
 
