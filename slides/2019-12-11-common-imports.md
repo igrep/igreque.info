@@ -41,7 +41,9 @@ import A ( import module M1 )
 # 実現するとできそうなこと(1)
 
 - 自作`Prelude`で「どのモジュールをどう`qualified`して`import`するか」を明示できるようになる
-    - `RIO`ではstrictな`ByteString`とlazyな`ByteString`を同じモジュールからexportするために[`type LByteString = ByteString`](http://hackage.haskell.org/package/rio-0.1.12.0/docs/RIO-Prelude-Types.html#t:LByteString)なるものを定義しているが、そんな必要もなくなる！
+    - `RIO`ではstrictな`ByteString`とlazyな`ByteString`を同じモジュールからexportするために  
+      [`type LByteString = ByteString`](http://hackage.haskell.org/package/rio-0.1.12.0/docs/RIO-Prelude-Types.html#t:LByteString)  
+      なるものを定義しているが、そんな必要もなくなる！
     - ➡️`Prelude`作りがもっとお手軽に！
 
 # 実現するとできそうなこと(1)
