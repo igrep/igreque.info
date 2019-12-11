@@ -95,9 +95,10 @@ First class modules:
 
 - `ExportModuleNames`: exportするときの構文の意味を変えよう
     - module `M` changes to exports the name M as a module binding.
+        - 非互換な修正！
     - module `M(a, b, .. c)` exports M and some of its names.
     - module `M(..)` exports M and all of its names.
-    - 山本悠滋注: `qualified`したときの説明がないよ！exampleには出てるのに！
+    - ~~山本悠滋注: `qualified`したときの説明がないよ！exampleには出てるのに！~~
 
 # Local modules v.s. First class modules
 
@@ -109,7 +110,7 @@ Local modulesが変えようとしている構文:
 export_item ::= ... | [ 'qualified' ] 'module' conid [ export_spec ]
 ```
 
-- 🤔「First class modules」側の提案と大して変わらない？
+- ~~🤔「First class modules」側の提案と大して変わらない？~~
 
 # Local modules v.s. First class modules
 
