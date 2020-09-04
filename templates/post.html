@@ -8,6 +8,11 @@
   <div class="tags">Tagged as: $prettytags$.</div>
   $endif$
   <div class="history"><a href="https://github.com/igrep/igreque.info/commits/master/$path$">変更履歴</a></div>
+  $if(canonicalUrl)$
+  <p>
+    この記事は、<a href="$canonicalUrl$">こちらのページ</a>にも同時投稿しています。
+  </p>
+  $endif$
   $body$
 </article>
 <hr id="divide_footer">
