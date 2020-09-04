@@ -1,0 +1,84 @@
+---
+title: Google Shopping Listにいつも買うものを自動で追加する
+author: YAMAMOTO Yuji
+date: September 2, 2020
+tags: JavaScript
+qiitaTags: JavaScript, ブックマークレット
+canonicalUrl: https://qiita.com/igrep/items/3587734f9458ff16349a
+...
+---
+
+# あらまし
+
+Google Shopping Listにいつも買うものをワンクリックで追加する、テンプレート機能的なものを実装するために以下のスクリプトを書きました。
+
+[Function to a given item to Google Shopping List. Paste the code in the DevTools' console!](https://gist.github.com/igrep/a41d2f9678621b5bb5e5e0d7c79ae6e5)
+
+適当に編集してブックマークレットにするなりして用法用量を守りながらお使いください。
+
+# 動機
+
+コロナ禍によって外出をできるだけ減らす努力をした結果、食料の買い出しが週一回程度になった。  
+➡️ 毎度決まって買うものがはっきりしてきた。  
+➡️ 同じものを繰り返し買い物リストに追加するのは面倒だし、テンプレート機能的なのがほしい。  
+➡️ Google Homeから使うのが一番楽なのはなんやかんや[Google Shopping List](https://shoppinglist.google.com/)だよな  
+➡️ でもGoogle Shopping Listは超シンプルだしそんな機能実装しないかー、APIもないしなー  
+➡️ 💪ないなら作るか！
+
+# ⚠️注意事項⚠️
+
+この手の、公開されたAPIを使用しないスクリプトにおいては半ば常識的なことですが、念のため。
+
+- Google Shopping ListのHTML・JavaScriptの内部構造に直接依存した作りになっています。  
+  そのため、Google Shopping Listの構造が変わった場合、いつの間にか動かなくなってしまう恐れがあります。
+- この関数を使ってあまりにもたくさんのアイテムを同時に追加すると、Googleさんに怒られてしまう可能性があります。  
+  まぁ、個人が一度の買い物で買うものをまとめて追加する分には全く問題ないとは思いますが。
+
+# できたもの
+
+こういう関数ができました。
+
+```javascript
+const input = document.getElementsByClassName("listItemInput")[0];
+const form = document.getElementsByClassName("addForm")[0];
+
+function addItem(name){
+  input.dispatchEvent(new Event("focus"));
+  input.value = name;
+  input.dispatchEvent(new Event("input"));
+  form.dispatchEvent(new Event("submit"));
+}
+```
+
+動作確認はGoogle ChromeとFirefox<small>（ともにWindows版）</small>で行いましたが、残念ながらFirefoxでは動きませんでした😞。  
+なぜか「追加できた！」と思った直後にページがリロードされてその後追加する前に戻ってしまうんですよねぇ。
+
+手元でDevToolsを使って試していたときは、思いのほかうまく行かず時間がかかってしまいました。  
+しかしでき上がったものは👆のとおり極めて単純ですね。  
+必要なイベントを必要な要素に擬似的に発火しつつ、フォームに指定した文字列を突っ込んでいるだけです。
+
+# 使い方
+
+後は次のように`addItem`関数を呼び出すコードを適当に追記して、行儀良くするために`function`で囲いつつ、ブックマークレットとして保存・クリックするだけです（[参考](https://qiita.com/aqril_1132/items/b5f9040ccb8cbc705d04)）。
+
+```javascript
+(function(){
+const input = document.getElementsByClassName("listItemInput")[0];
+const form = document.getElementsByClassName("addForm")[0];
+
+function addItem(name){
+  input.dispatchEvent(new Event("focus"));
+  input.value = name;
+  input.dispatchEvent(new Event("input"));
+  form.dispatchEvent(new Event("submit"));
+}
+
+addItem("牛乳");
+addItem("納豆");
+addItem("チーズ");
+addItem("豆腐");
+// ...
+})();
+```
+
+Enjoy!!
