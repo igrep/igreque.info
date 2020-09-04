@@ -1,7 +1,7 @@
 ---
 title: Google Shopping Listにいつも買うものを自動で追加する
 author: YAMAMOTO Yuji
-date: September 2, 2020
+date: September 4, 2020
 tags: JavaScript
 qiitaTags: JavaScript, ブックマークレット
 canonicalUrl: https://qiita.com/igrep/items/3587734f9458ff16349a
