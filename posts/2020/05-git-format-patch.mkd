@@ -1,0 +1,84 @@
+---
+title: git format-patchなどで複数のコミットを別のリポジトリーに変換して移植する
+author: YAMAMOTO Yuji
+date: October 20, 2020
+tags: git
+qiitaTags: git
+canonicalUrl:
+...
+---
+
+今日やったことのメモです。
+
+# 要件
+
+`REAMDE.md`という名前のファイルをリポジトリーAに作っていくつかコミットしたが、事情が変わり別のリポジトリーBに同じ内容の変更を加えたい。しかし以下の懸念事項が:
+
+- コミットメッセージやdiffの内容は極力維持したい
+- ただし、リポジトリーBにはすでに`README.md`というファイルがあるので`CODE_OF_CONDUCT.md`というファイルにリネームした状態でコミットしたことにしたい
+
+# 使ったコマンドのバージョン
+
+```bash
+> git --version
+git version 2.24.1.windows.2
+
+> perl --version
+
+This is perl 5, version 28, subversion 1 (v5.28.1) built for x86_64-msys-thread-multi
+```
+
+# 1. `git format-patch`で各コミットをpatchファイルとして書き出す
+
+参考: [`git show`を使用して複数のコミットにまたがってパッチを作成して適用する](https://stackoverrun.com/ja/q/3457923)
+
+今回はmasterブランチから生やした各コミットを、patchファイルとして再利用したかったので`git format-patch`コマンドを次のように使った:
+
+```bash
+git format-patch master
+```
+
+これで、masterから現在の最新のコミット（つまり`HEAD`）までの各コミットが、連番がファイル名の先頭に着いた`.patch`ファイルとして書き出される。
+
+# 2. リポジトリーAの`README.md`をリポジトリーBに`CODE_OF_CONDUCT.md`としてコピーする
+
+`git format-patch`で作った`patch`ファイルは、例えリポジトリーが異なろうと`git am`コマンドでコミットとして適用できるはずだが、そのためには、適用するコミットのうち、最初のコミットが変更を加えるファイルが、不整合しない状態で存在していなければならない。
+つまり今回の場合、変更を加える前のリポジトリーAにおける`README.md`が、リポジトリーBにおいて、変換後の名前、`CODE_OF_CONDUCT.md`として、あらかじめコミットされている必要がある。
+
+そこでリポジトリーAにおいて`README.md`に変更を加える前の状態、masterブランチに戻って、リポジトリーBに`CODE_OF_CONDUCT.md`としてコピー・コミットした:
+
+```bash
+# リポジトリーAでの作業
+cd /path/to/repository-a
+git checkout master
+cp README.md /path/to/repository-b/CODE_OF_CONDUCT.md
+
+# リポジトリーBでの作業
+cd /path/to/repository-b/
+git add CODE_OF_CONDUCT.md
+git commit -m"Add CODE_OF_CONDUCT.md"
+```
+
+# 3. `git format-patch`で作成したパッチファイルを一括置換する
+
+今度は、最初に`git format-patch`コマンドで書き出した`README.md`に対する各patchファイルを、`CODE_OF_CONDUCT.md`向けに変換しよう。
+やり方は単純で、`perl`コマンドで`README.md`と書かれていた部分を`CODE_OF_CONDUCT.md`に書き換えれば良い<small>（もちろんsedでもなんでもいい）</small>:
+
+```bash
+perl -i.bk -pe 's/README.md/CODE_OF_CONDUCT.md/g' *.patch
+```
+
+当然、コミット内容に`README.md`という文字列が含まれている場合はその部分まで変換されてしまうので少し気を遣う必要があるが、今回は特に気にする必要がなかったので、思いっきり一括置換した。
+`-i.bk`というオプションでバックアップファイルを作るかはお好みで。
+
+# 4. `git am`コマンドでリポジトリーBに適用する
+
+あとは、変換した`.patch`ファイルをリポジトリーBに移して`git am`すればよい:
+
+```
+mv *.patch /path/to/repository-b/
+cd /path/to/repository-b/
+git am *.patch
+```
+
+以上！
