@@ -4,7 +4,7 @@ author: YAMAMOTO Yuji
 date: October 20, 2020
 tags: git
 qiitaTags: git
-canonicalUrl:
+canonicalUrl: https://qiita.com/igrep/items/acf0b1e4f1917f9c636c
 ...
 ---
 
