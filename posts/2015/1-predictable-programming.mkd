@@ -155,7 +155,7 @@ GHCが十分に普及した、人気の高い処理系であるためである�
 # おことわり
 
 何か間違いや質問、気になる点があった場合、
-<a href="mailto:whosekiteneverfly@gmail.com">whosekiteneverfly@gmail.com</a>
+<a href="mailto:igrep@n.email.ne.jp">igrep@n.email.ne.jp</a>
 にメールを送るか、[このブログを管理しているGitHubのリポジトリ](https://github.com/igrep/igreque.info)に
 [Issue](https://github.com/igrep/igreque.info/issues/new)を送っていただきたい。
 

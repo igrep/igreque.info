@@ -3,7 +3,7 @@ version:           0.0.0
 license:           MIT
 -- license-file:      LICENSE
 author:            YAMAMOTO Yuji
-maintainer:        YAMAMOTO Yuji <whosekiteneverfly@gmail.com>
+maintainer:        YAMAMOTO Yuji <igrep@n.email.ne.jp>
 synopsis:          My blog generator powered by hakyll.
 description:       My blog generator powered by hakyll.
 category:          Web
