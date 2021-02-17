@@ -36,8 +36,6 @@ main = hakyll $ do
 
   cssRules
   -- ^ Compressed CSS
-  idRules "fonts/**"
-  -- ^ Fonts
   idRules "imgs/**"
   -- ^ Images
   postRulesOf postsPattern tags

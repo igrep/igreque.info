@@ -1,10 +1,5 @@
 /* global */
 
-@font-face {
-  font-family: 'VL Gothic';
-  src: url(/fonts/VL-Gothic-Regular.woff) format("woff");
-}
-
 body {
   font-family: 'VL PGothic', 'メイリオ', sans-serif;
   margin: 0px auto 0px auto;
@@ -161,7 +156,7 @@ p.caption {
 /* source code */
 
 pre, code {
-  font-family: 'VL Gothic', monospace;
+  font-family: 'VL PGothic', monospace;
   font-size: 90%;
 }
 
