@@ -18,6 +18,8 @@ date: December 11, 2016
 
 以下、READMEの和訳も兼ねて特徴を紹介します。
 
+**⚠️注意⚠️** ver. 0.8.0.1 より、変身アイテムに装備品（`Mofurun`に対する`LinkleStoneDia`など）を付ける場合の仕様が変わり、この日本語版READMEに書いてあるサンプルコードは動かなくなりました。新しい方法については英語のみですが[最新のREADME](https://github.com/igrep/typesafe-precure/blob/master/README.md)をご覧ください。
+
 # タイプセーフプリキュア！
 
 プリキュアの変身と浄化技の、型安全な実装。  
