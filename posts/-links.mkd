@@ -1,30 +1,35 @@
 ---
 title: External Links related to me
-author: Yuji Yamamoto
-tags: SNS, Git, Haskell, Vim
-date: June 11, 2018
+author: YAMAMOTO Yuji
+tags: SNS, Haskell, WebAssembly, Neovim, Vim
+date: July 10, 2021
 ...
 ---
 
 # 割と頻繁に使うウェブサービス
 
-- [Google+: Yuji Yamamoto](https://plus.google.com/u/0/108459635886859360319/posts)
 - [Twitter: \@igrep](https://twitter.com/igrep)
 - [Facebook: igrep](https://www.facebook.com/igrep)
 - [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
 - [GitHub: igrep](https://github.com/igrep)
-- [GitLab: igrep](https://gitlab.com/u/igrep)
 - [Qiita: igrep](http://qiita.com/igrep)
-- [\@igrep\@qiitadon.com](https://qiitadon.com/@igrep)
 - [\@igrep\@precure.ml](https://precure.ml/@igrep)
 
 # 執筆履歴
 
+- Software Design:
+    - [2021年3月号 「第2特集 言語の壁を越えWebの可能性を広げる WebAssembly入門 第1章：ブラウザ上で動く新たな言語 WebAssemblyの登場の経緯と利用方法」](https://gihyo.jp/magazine/SD/archive/2021/202103)
 - エンジニアHub:
     - [Haskellらしさって？「型」と「関数」の基本を解説！【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/08/25/110000)
     - [実践編！Haskellらしいアプリケーション開発。まず型を定義すべし【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/09/11/110000)
     - [発展編！ Haskellで「型」のポテンシャルを最大限に引き出すには？【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/10/03/110000)
+- IIJエンジニアブログ:
+    - [プログラマとしてPower Automateでローコード開発した所感](https://eng-blog.iij.ad.jp/archives/6746)
+    - [Haskell社内勉強会とHaskell学習ツールの紹介](https://eng-blog.iij.ad.jp/archives/3467)
+    - [HIW 2018・Haskell Symposium 2018に行ってきた](https://eng-blog.iij.ad.jp/archives/2125)
 - Haskell-jp Blog:
+    - [Writer Monadで気軽にMonad則を破る](https://haskell.jp/blog/posts/2020/break-monad-law-with-writer.html)
+    - [regex-applicative: 内部DSLとしての正規表現（ブログ記事版）](https://haskell.jp/blog/posts/2019/regex-applicative.html)
     - [CLIアプリのE2Eテストを行うためのライブラリー main-testerをリリースしました](https://haskell.jp/blog/posts/2018/main-tester.html)
     - [WindowsでHaskellを扱う時によく遭遇するエラーと対処法](https://haskell.jp/blog/posts/2017/windows-gotchas.html)
     - [タイプセーフプリキュア！を支える技術 その2](https://haskell.jp/blog/posts/2017/typesafe-precure2.html)
@@ -36,14 +41,20 @@ date: June 11, 2018
 ## コンピュータ関連
 
 - [Haskell](http://www.haskell.org/haskellwiki/Haskell)
-- [Vim](http://www.vim.org/)
-- [アジャイルサムライ](http://ssl.ohmsha.co.jp/cgi-bin/menu.cgi?ISBN=978-4-274-06856-0)
-- [Xperia Z4 Tablet](http://www.sony.jp/tablet/products/Z4/)
+- [WebAssembly](https://webassembly.org/)
+- [Neovim](https://neovim.io/)
+- [アジャイルサムライ](https://shop.ohmsha.co.jp/shopdetail/000000001901/)
+- [マインドマップから始めるソフトウェアテスト](https://gihyo.jp/book/2019/978-4-297-10506-8)
 
-## アニメ・漫画関連
+## アニメ・漫画関連など
 
 - [プリキュア](http://www.toei-anim.co.jp/tv/precure/)
 - [ポムポムプリン](http://www.sanrio.co.jp/character/pompompurin/)
+- [ブリーフ＆トランクス](http://briefandtrunks.com/)
+- [かぐや様は告らせたい](https://amzn.to/3hWnrbx)
+- [からかい上手の高木さん](https://amzn.to/3e4SSzg)
+- [こみっくがーるず](https://amzn.to/3AY8AGr)
+- [政宗くんのリベンジ](https://amzn.to/3yO5AdL)
 
 # 経歴
 
