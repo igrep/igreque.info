@@ -1,5 +1,5 @@
 ---
-title: External Links related to me
+title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
 date: July 10, 2021
