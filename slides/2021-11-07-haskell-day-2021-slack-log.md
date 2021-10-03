@@ -14,7 +14,7 @@ date:  2021-11-07 Haskell Day 2021
 
 # 📝今日話すこと
 
-- 「Haskell-jp」として開発しているHaskell製アプリケーション「slack-log」を紹介します
+- 「Haskell-jp」として開発しているHaskell製アプリケーション「[slack-log](https://github.com/haskell-jp/slack-log/)」を紹介します
     - 開発の背景や、
     - 機能の紹介、
     - 細かい実装などを、淡々と。
@@ -455,6 +455,6 @@ saveUsersList = do
 - slack-logは、名前のとおりSlackのメッセージを保存するアプリケーション
     - GitHub Pagesなどで閲覧できるよう、HTMLとして出力する機能もあり
 - butcherというパッケージを使うことで、サブコマンドやコマンドラインオプションの処理を簡単に実現している
-- slack-webパッケージでSlackのWeb APIを利用する際は、`ReaderT` Monad Transformerの使い方を抑えておこう！
+- slack-webパッケージでSlackのWeb APIを利用する際は、`ReaderT` Monad Transformerの使い方を押さえておこう！
     - とりあえず使うだけなら都度``(`runReaderT` apiConfig) someApiFunc``というイディオムを使えば良い
 - 👍Contribution Welcome!
