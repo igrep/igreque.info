@@ -83,11 +83,11 @@ date: 2015-09-03 表参道.rb #4
 - Iさん「σ(ﾟ･ﾟ\*) うーん...」
 - Iさん「そういえばすぐ気づいてコメントアウトしてますね...」
 
-<div class="incremental">
+<p class="incremental">
 `＿人人人人人人人人人人人人人人人人人人人人＿`
 `＞  すぐ気づいてコメントアウトしてますね  ＜`
 `￣Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y￣`
-</div>
+</p>
 
 # その1: 見えない500
 
@@ -133,11 +133,11 @@ date: 2015-09-03 表参道.rb #4
 
 - この不思議ビヘイビアに挑むべくImageMagickのChangeLog探検すると...
 
-<div class="incremental">
+<p class="incremental">
 > 2010-09-13  6.6.4-2 Cristy  <quetzlzacatenango@image...>
 >
 > \* **Don't negate** the geometry offset for the `-extent` option.
-</div>
+</p>
 
 - なんかそれっぽい記録が。
 
@@ -159,9 +159,9 @@ date: 2015-09-03 表参道.rb #4
 
 - [RMagickのドキュメント](https://rmagick.github.io/image2.html#extent)では、
 
-<div class="incremental">
+<p class="incremental">
 > The upper-left corner of the new image is positioned at **-x**, **-y**.
-</div>
+</p>
 
 - と、すでに負の数で指定することが仕様であるかのように書かれているという現実...。
 
@@ -220,11 +220,11 @@ date: 2015-09-03 表参道.rb #4
 
 - 僕「さぁ、ステージングでも確認するよ〜」
 
-<div class="incremental">
-`＿人人人人人人人人人人人人人人人人人人人＿`
-`＞  突然のActiveRecord::RecordNotUnique  ＜`
-`￣Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y￣`
-</div>
+<p class="incremental">
+＿人人人人人人人人人人人人人人人人人人人＿
+＞  突然のActiveRecord::RecordNotUnique  ＜
+￣Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y￣
+</p>
 
 # その4: ありえへんキー 2
 
@@ -279,9 +279,9 @@ date: 2015-09-03 表参道.rb #4
 - 突如大量に落ちるspec
 - 問題の`truncate`メソッドを呼ぶところで
 
-<div class="incremental">
+<p class="incremental">
 > wrong number of arguments (1 for 0)
-</div>
+</p>
 
 - なる謎のエラーが。
 
