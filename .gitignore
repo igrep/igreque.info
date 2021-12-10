@@ -2,6 +2,7 @@
 /_site/
 *.hi
 *.o
+*.exe
 *.class
 hakyll
 /fonts/
