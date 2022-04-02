@@ -2,7 +2,7 @@
 title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
-date: July 10, 2021
+date: April 2, 2022
 ...
 ---
 
@@ -61,7 +61,7 @@ date: July 10, 2021
 # 経歴
 
 - 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
-    - [現在IIJイノベーションインスティテュートに出向中](https://www.iij-ii.co.jp/members/yuji-yamamoto.html)
+    - [現在IIJイノベーションインスティテュートに出向中](https://www.iijlab.net/members/yuji-yamamoto.html)
 - 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
 - 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
 - 前々々職：ひみつ。
