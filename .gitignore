@@ -13,3 +13,6 @@ hakyll
 .idea/
 *.iml
 /qiita-access-token
+
+/works/*
+!/works/resignation.html

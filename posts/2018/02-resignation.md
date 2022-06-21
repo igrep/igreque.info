@@ -11,13 +11,13 @@ date: April 17, 2018
 
 と、言うわけでHTMLで書いたので、せっかくなんでテンプレートを共有致します！
 
-[resignation.html](/other/resignation.html)
+[resignation.html](/works/resignation.html)
 
 中身はごく単純なHTMLファイルです。  
 CSSもHTMLの中に直接書いているので、
 
 ```
-wget http://the.igreque.info/other/resignation.html
+wget http://the.igreque.info/works/resignation.html
 ```
 
 と、コマンドで取得することもできるでしょう。
