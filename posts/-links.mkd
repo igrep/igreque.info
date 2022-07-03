@@ -2,7 +2,7 @@
 title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
-date: April 2, 2022
+date: July 3, 2022
 ...
 ---
 
@@ -48,6 +48,7 @@ date: April 2, 2022
 - [Neovim](https://neovim.io/)
 - [アジャイルサムライ](https://shop.ohmsha.co.jp/shopdetail/000000001901/)
 - [マインドマップから始めるソフトウェアテスト](https://gihyo.jp/book/2019/978-4-297-10506-8)
+- [正規表現技術入門](https://gihyo.jp/book/2015/978-4-7741-7270-5)
 
 ## アニメ・漫画関連など
 
