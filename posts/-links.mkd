@@ -26,6 +26,7 @@ date: April 2, 2022
     - [実践編！Haskellらしいアプリケーション開発。まず型を定義すべし【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/09/11/110000)
     - [発展編！ Haskellで「型」のポテンシャルを最大限に引き出すには？【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/10/03/110000)
 - IIJエンジニアブログ:
+    - [mrubyを通じてWebAssemblyの未来を想う～新しいウェブサービスの開発課程にて](https://eng-blog.iij.ad.jp/archives/10875)
     - [プログラマとしてPower Automateでローコード開発した所感](https://eng-blog.iij.ad.jp/archives/6746)
     - [Haskell社内勉強会とHaskell学習ツールの紹介](https://eng-blog.iij.ad.jp/archives/3467)
     - [HIW 2018・Haskell Symposium 2018に行ってきた](https://eng-blog.iij.ad.jp/archives/2125)
@@ -61,7 +62,7 @@ date: April 2, 2022
 # 経歴
 
 - 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
-    - [現在IIJイノベーションインスティテュートに出向中](https://www.iijlab.net/members/yuji-yamamoto.html)
+    - [所属: 技術研究所 技術開発室](https://www.iijlab.net/members/yuji-yamamoto.html)
 - 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
 - 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
 - 前々々職：ひみつ。
