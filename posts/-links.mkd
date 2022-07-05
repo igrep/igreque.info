@@ -2,7 +2,7 @@
 title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
-date: July 3, 2022
+date: July 5, 2022
 ...
 ---
 
@@ -12,7 +12,7 @@ date: July 3, 2022
 - [Facebook: igrep](https://www.facebook.com/igrep)
 - [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
 - [GitHub: igrep](https://github.com/igrep)
-- [Qiita: igrep](http://qiita.com/igrep)
+- [Zenn: igrep](https://zenn.dev/igrep)
 - [\@igrep\@precure.ml](https://precure.ml/@igrep)
 - [YAMAMOTO Yuji: 山本悠滋にマシュマロを投げる | マシュマロ](https://marshmallow-qa.com/igrep)
 - [YAMAMOTO Yuji: 山本悠滋さんのご縁箱ページ | °˖✧ご縁箱✧˖°](https://goenbako.com/igrep)
@@ -22,6 +22,7 @@ date: July 3, 2022
 - Software Design:
     - [2021年3月号 「第2特集 言語の壁を越えWebの可能性を広げる WebAssembly入門 第1章：ブラウザ上で動く新たな言語 WebAssemblyの登場の経緯と利用方法」](https://gihyo.jp/magazine/SD/archive/2021/202103)
 - エンジニアHub:
+    - [WebAssembly入門 ─ Webフロントエンドの現実的なユースケースを知り、Wasm製アプリケーションを体験してみよう！](https://eh-career.com/engineerhub/entry/2022/07/04/093000)
     - [Haskellらしさって？「型」と「関数」の基本を解説！【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/08/25/110000)
     - [実践編！Haskellらしいアプリケーション開発。まず型を定義すべし【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/09/11/110000)
     - [発展編！ Haskellで「型」のポテンシャルを最大限に引き出すには？【第二言語としてのHaskell】](https://employment.en-japan.com/engineerhub/entry/2017/10/03/110000)
