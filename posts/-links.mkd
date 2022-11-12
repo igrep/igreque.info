@@ -6,7 +6,7 @@ date: July 5, 2022
 ...
 ---
 
-# 割と頻繁に使うウェブサービス
+# 利用している主なウェブサービス
 
 - [Twitter: \@igrep](https://twitter.com/igrep)
 - [Facebook: igrep](https://www.facebook.com/igrep)
@@ -16,6 +16,15 @@ date: July 5, 2022
 - [\@igrep\@precure.ml](https://precure.ml/@igrep)
 - [YAMAMOTO Yuji: 山本悠滋にマシュマロを投げる | マシュマロ](https://marshmallow-qa.com/igrep)
 - [YAMAMOTO Yuji: 山本悠滋さんのご縁箱ページ | °˖✧ご縁箱✧˖°](https://goenbako.com/igrep)
+
+# 経歴
+
+- 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
+    - [所属: 技術研究所 技術開発室](https://www.iijlab.net/members/yuji-yamamoto.html)
+- 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
+- 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
+- 前々々職：ひみつ。
+- いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/academics/faculties/letters/major/socio_info/)
 
 # 執筆履歴
 
@@ -60,15 +69,6 @@ date: July 5, 2022
 - [からかい上手の高木さん](https://amzn.to/3e4SSzg)
 - [こみっくがーるず](https://amzn.to/3AY8AGr)
 - [政宗くんのリベンジ](https://amzn.to/3yO5AdL)
-
-# 経歴
-
-- 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
-    - [所属: 技術研究所 技術開発室](https://www.iijlab.net/members/yuji-yamamoto.html)
-- 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
-- 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
-- 前々々職：ひみつ。
-- いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/academics/faculties/letters/major/socio_info/)
 
 # 昔のブログ
 
