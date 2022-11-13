@@ -2,7 +2,7 @@
 title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
-date: July 5, 2022
+date: November 13, 2022
 ...
 ---
 
@@ -16,6 +16,8 @@ date: July 5, 2022
 - [\@igrep\@precure.ml](https://precure.ml/@igrep)
 - [YAMAMOTO Yuji: 山本悠滋にマシュマロを投げる | マシュマロ](https://marshmallow-qa.com/igrep)
 - [YAMAMOTO Yuji: 山本悠滋さんのご縁箱ページ | °˖✧ご縁箱✧˖°](https://goenbako.com/igrep)
+- [YouTubeチャンネル すがすがC言語](https://www.youtube.com/channel/UCECj2wf_fmxcyiiPn0_pnsA)
+    - 現状人を集めるつもりのないチャンネルですが一応
 
 # 経歴
 
@@ -65,6 +67,7 @@ date: July 5, 2022
 - [プリキュア](http://www.toei-anim.co.jp/tv/precure/)
 - [ポムポムプリン](http://www.sanrio.co.jp/character/pompompurin/)
 - [ブリーフ＆トランクス](http://briefandtrunks.com/)
+- 音ゲー: 主に[グルミク](https://d4dj.bushimo.jp/)、たまに[ボルテ](https://p.eagate.573.jp/game/sdvx/vi/)など
 - [かぐや様は告らせたい](https://amzn.to/3hWnrbx)
 - [からかい上手の高木さん](https://amzn.to/3e4SSzg)
 - [こみっくがーるず](https://amzn.to/3AY8AGr)
