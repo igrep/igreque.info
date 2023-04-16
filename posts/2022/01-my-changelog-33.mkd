@@ -15,7 +15,7 @@ date: April 16, 2022
 - [YouTubeでライブコーディングの配信](https://www.youtube.com/channel/UCECj2wf_fmxcyiiPn0_pnsA)を行うようになりました。基本的には社内勉強会の延長でやっているものでしかないので、特に再生数などにはこだわらず、自分の好きなように運営したいと思います。
 - 以前から関心が深かった、フロントエンド関係の知識をじわじわと身につけています。今は[Svelte](https://svelte.jp/)と[Qwik](https://qwik.builder.io/guide/overview)というフレームワークに関心を持っています。
 
-# Know Issues
+# Known Issues
 
 - 引き続き彼女がいません😢
 - 昼間のやる気低下がつらい😪。以前から眠くて仕事にならないことは毎日のようにありましたが、ここ数ヶ月如実に感じています。もっと効率よく仕事したいですね。

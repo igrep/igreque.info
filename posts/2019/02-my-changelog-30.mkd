@@ -20,7 +20,7 @@ date: April 23, 2019
 - [Haskell Day 2018](https://haskell-jp.connpass.com/event/92617/)という大きめのイベントを初めて運営できました！  
   関係者のみなさまの協力に感謝します！
 
-# Know Issues
+# Known Issues
 
 - 引き続き彼女がいません😥。
 - Haskellを書くことに満足してきたら、次はClojureなど他の言語を書く時間がなくて困っています。
