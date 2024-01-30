@@ -2,22 +2,25 @@
 title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
-date: April 18, 2023
+date: January 28, 2024
 ...
 ---
 
 # 利用している主なウェブサービス
 
-- [Twitter: \@igrep](https://twitter.com/igrep)
+- [Bluesky: igreque.info](https://bsky.app/profile/igreque.info)
+- [Misskey: \@igrep\@rhythmisskey.games](https://rhythmisskey.games/@igrep)
 - [Facebook: igrep](https://www.facebook.com/igrep)
-- [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
 - [GitHub: igrep](https://github.com/igrep)
 - [Zenn: igrep](https://zenn.dev/igrep)
-- [\@igrep\@precure.ml](https://precure.ml/@igrep)
+- [Mastodon: \@igrep\@precure.ml](https://precure.ml/@igrep)
+- [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
 - [YAMAMOTO Yuji: 山本悠滋にマシュマロを投げる | マシュマロ](https://marshmallow-qa.com/igrep)
 - [YAMAMOTO Yuji: 山本悠滋さんのご縁箱ページ | °˖✧ご縁箱✧˖°](https://goenbako.com/igrep)
 - [YouTubeチャンネル すがすがC言語](https://www.youtube.com/channel/UCECj2wf_fmxcyiiPn0_pnsA)
     - 現状人を集めるつもりのないチャンネルですが一応
+- [Twitter（現X）: \@igrep](https://twitter.com/igrep)
+    - なるべく前述のBlueskyやMisskeyでご連絡ください。詳しくは[「今後のSNS運用方針について: Blueskyになるべく移行します」](/posts/2024/01-sns.html)を。
 
 # 経歴
 
