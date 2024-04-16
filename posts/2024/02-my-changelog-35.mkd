@@ -1,0 +1,49 @@
+---
+title: My ChangeLog for age 35.
+author: YAMAMOTO Yuji
+date: April 16, 2024
+...
+---
+
+おかげさまで、今年も新しい年齢、35歳の山本悠滋をリリースすることができました！  
+35歳の山本悠滋は、誕生日を迎える1週間ちょい前から風邪気味で喉の痛みに苦しんでますが、社会を支えるみなさまのお陰で幸せに暮らせています。
+
+# Changes Since Age 34
+
+- [33歳の誕生日](/posts/2022/01-my-changelog-33.html)に開発を始めた[custardというプログラミング言語](https://github.com/custard-lang/custard)は、小さいながら自分用のアプリケーションをいくつか作る程度にはできました。まだまだ素のJSより体験は悪い感じなので、これからもボチボチ進めます。
+    - どういう完成度であれ、今年こそJSConf JPで発表したいですね。
+- [新しく始めたオンライン勉強会](https://www.youtube.com/playlist?list=PLRVf2pXOpAzJ-OTJhS1VayvRLm2K7iB2v)は、中々続けるのが厳しい感じです😥
+    - 詳しくは「[一人でも勉強会したいだけの人生だった](/slides/2023-12-13-one-plus)」をご覧ください。
+    - すごくやりたいネタがあるので次回も話したいですが、いつになるやら。
+- Twitter（現X）からBlueSkyに主なSNSを移行しました。
+    - 詳しくは「[今後のSNS運用方針について: Blueskyになるべく移行します](http://localhost:3000/posts/2024/01-sns.html)」をご覧ください。
+- MDNの翻訳コミュニティーに参加したのをきっかけに、MDNの翻訳の流れを紹介する動画を作りました。まぁまぁ公表だったようでよかったです
+    - <https://twitter.com/igrep/status/1767755044336918664>
+    - <https://www.youtube.com/watch?v=KxMmm98emKw>
+- 定理証明支援系に興味を持ち始め、Leanの勉強会を始めました。隔週月曜日にDiscordでやっています
+    - 例: <https://connpass.com/event/313196/>
+- Meta Quest 3を購入し、VRChatでたまに遊んでいます。まぁ元々3D酔いしやすい体質もあり、こちらは本当に「たまに」ですが...。
+    - <https://vrchat.com/home/user/usr_5f266345-6cec-4a10-904e-a03731f379e5>
+- [りずみすきー](https://rhythmisskey.games/)という、音ゲーマーが集まるMisskeyのサーバーに参加し、触発されていろんなアーケードの音ゲーを盛んにやるようになりました。チュウニズムとIIDX、DDRが特にお気に入り。
+    - <https://rhythmisskey.games/notes/9s1b5aqak7>
+    - <https://rhythmisskey.games/notes/9rss8lplst>
+- グルミクも、「1歩進んで0.9歩くらい下がる」のを繰り返しながら力を付けていて、まだまだギリギリですが今年に入って2季連続で段位認定六段をクリアできました
+    - <https://rhythmisskey.games/notes/9rhhinpp7i>
+    - <https://rhythmisskey.games/notes/9rl7sk7z0l>
+
+# Known Issues
+
+- 引き続き彼女がいません😢
+    - 結婚相談所での活動は、去年6月からとら婚コネクトにて再開しましたが、あまりうまく行っておらず、諸事情により来月から3ヶ月間休会します。
+
+# Migration Guide
+
+十分に互換性があるので特に必要なことはありません。引き続き投稿に「いいね」とかよいリアクションがあるとうれしいです！
+
+# Additional Notes
+
+- 例年通り、custard🍮と言えば今年もプリン先輩をキャラクター大賞におけるハイランカーにしたいです！**是非是非一票を！**
+    - <https://ranking.sanrio.co.jp/characters/pompompurin/>
+    - それともちろん、誕生日おめでとう！！！🎉
+
+![Sanrio+の会員向け画面より。ありがとう！！！](/imgs/2024-04-16-purin-birthday.png "今日はぼくたち2人のお誕生日だね、おめでとう！！プレゼントを受け取ってね♡")
