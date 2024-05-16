@@ -11,7 +11,7 @@ date: May 16, 2024
 
 <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:ccikl4jnjjzzap7ifyvce7d7/app.bsky.feed.post/3ksjner62nk2p" data-bluesky-cid="bafyreibmfwc3k6pumdmcnxlddwwpfo3yz4nvgflf7zey6ipnjowvuzkqja"><p lang="ja">My new gear...<br><br><a href="https://bsky.app/profile/did:plc:ccikl4jnjjzzap7ifyvce7d7/post/3ksjner62nk2p?ref_src=embed">[image or embed]</a></p>&mdash; YAMAMOTO Yuji （HN: すがすがC言語） (<a href="https://bsky.app/profile/did:plc:ccikl4jnjjzzap7ifyvce7d7?ref_src=embed">@igreque.info</a>) <a href="https://bsky.app/profile/did:plc:ccikl4jnjjzzap7ifyvce7d7/post/3ksjner62nk2p?ref_src=embed">May 15, 2024 at 20:58</a></blockquote><script async src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
 
-どのページか名指しは避けますが、前情報を調べたときは特に具体的な方法も書かれておらず、ただただ「弐寺のコントローラーでやるのもおすすめ」みたいな情報しかなかったので「取りあえず挿せば使えるのかな？」と思って軽い気持ちで買ってみたら思ったより難しかったので、ハマったことをメモしておきます。
+どのページか名指しは避けますが、前情報を調べたときは特に具体的な方法も書かれておらず、ただただ「弐寺のコントローラーでやるのもおすすめ」みたいな情報しかなかったので「取りあえず挿せば使えるのかな？」と思い、軽い気持ちで買ってみたら思ったより難しかったので、ハマったことをメモしておきます。
 
 # USBポートによっては認識されない
 
@@ -21,4 +21,5 @@ date: May 16, 2024
 
 無事Windowsに認識されたらしいことが分かっても、ダンマクカグラのコントローラー設定画面ではどう設定すればいいか分かりませんでした。Steamのコントローラー設定画面でもサポートされていない様子でしたし。
 
-止むなくあれこれ調べていると、[「JoyToKey」](https://joytokey.net/ja/)を見つけました。いや、実際には大昔に使っていたので思い出した、というべきかも知れません。これを使って、各ボタンをキーボードのS・D・F・J・K・Lに割り当てれば、問題なく弐寺コンでダンマクカグラできました！🎉もうしばらく使って、今度ライセンスを買おうと思います！
+止むなくあれこれ調べていると、[「JoyToKey」](https://joytokey.net/ja/)を見つけました。いや、実際には大昔に使っていたので思い出した、というべきかも知れません。これを使って、各ボタンをキーボードのS・D・F・J・K・Lに割り当てれば、問題なく弐寺コンでダンマクカグラできました！🎉  
+もうしばらく使って、今度ライセンスを買おうと思います！
