@@ -24,11 +24,12 @@ date: January 28, 2024
 
 # 経歴
 
-- 現職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
-    - [所属: 技術研究所 技術開発室](https://www.iijlab.net/members/yuji-yamamoto.html)
-- 前職：[GMOクリックホールディングス](https://www.gmo-click.com/)
-- 前々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
-- 前々々職：ひみつ。
+- 現在: [求職中](/posts/2024/04-iij-unknown.html)
+- 前職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
+    - 所属: 技術研究所 技術開発室
+- 前々職：[GMOクリックホールディングス](https://www.gmo-click.com/)
+- 前々々職：[Sansan株式会社](http://www.sansan.com/)にて契約社員。
+- 前々々々職：ひみつ。
 - いた大学：[中央大学文学部人文社会学科社会情報学専攻](http://www.chuo-u.ac.jp/academics/faculties/letters/major/socio_info/)
 
 # 執筆履歴
