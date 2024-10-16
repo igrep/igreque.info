@@ -1,0 +1,74 @@
+---
+title: "低スペックChromebookで音ゲー（グルミク）はキツかった: ASUS Chromebook CM30 Detachable使った感想"
+author: YAMAMOTO Yuji
+date: October 14, 2024
+tags: 音ゲー, グルミク
+...
+---
+
+# 🖼️背景: Macbook Airが重い
+
+先般[Pixel Tabletでグルミクをプレイした感想みたいな記事](/posts/2023/02-pixel-tablet-ipad.html)を書いたとおり、私はずっと[グルミク](https://d4dj-groovymix.jp/)という音ゲーをタブレットでプレイしています<small>（結局その後Pixel Tabletは売却してしまいましたが）</small>。
+
+その際毎日欠かさずプレイしていると困るのが、ノートPCとの持ち運びです。世の中の多くの人は出掛ける際ノートPCとタブレット、**どちらか一方**だけを運べば事足りるのかも知れませんが、私の場合、特に旅行など長時間外出する場合、ノートPCとタブレット**両方**が必須となります。旅行中でも毎日少しはグルミクしたいし、少しはプログラムも書きたいからです。しかし現状、私にとってまともな開発環境とまともにグルミクをプレイする環境両方を備えた端末は、残念ながらありません[^history]。なので、やむを得ずiPadとノートPCを持ち歩いていました。
+
+[^history]: 色々試した記録が「[Nestboxでスマホを開発環境にするまで](https://zenn.dev/igrep/articles/2023-08-nestbox)」や「[山本悠滋の「1人以上で勉強会」 第2回 お出かけ時の開発環境個人史とiPadとRasPiで開発する話を語らせてください](https://zenn.dev/igrep/articles/2023-06-03-one-plus)」にあります。なお、NestboxはAndroid 14で使えなくなってしまいましたし、RasPiは手持ちのものだと最近はメモリー不足で開発には使えなくなってしまいました😥。それでなくても色々不便な点がありましたしね。次に試すとしたら、タッチパネル付きで高速なWindows PC上でのAndroidの仮想マシンでしょうか。でも手元のデスクトップPCで[BlueStacks 5](https://www.bluestacks.com/ja/index.html)を使ってグルミクを動かしてみたところどうもカクつくようなので、あまり期待しない方がいいでしょう。
+
+しかし、メインのノートとして使用しているMacbook Airは、13インチと小さい方のモデルですが、それでもiPad (11インチ)と一緒に持つと重たく感じます。そこで、Macbook Airが担う「開発環境」の部分をなんとか代わることができる小さなノートPCとして、今回掲題の[ASUS Chromebook CM30 Detachable](https://www.asus.com/jp/laptops/for-home/chromebook/asus-chromebook-cm30-detachable-cm3001/)を購入しました。
+
+<blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:ccikl4jnjjzzap7ifyvce7d7/app.bsky.feed.post/3l3pdhznh3l2e" data-bluesky-cid="bafyreifdknclug5hprqvq2ftoqnlg6aywzafh6qt5e3euwn7o5457sayza"><p lang="ja">こんな状況だがmy new gear...<br><br><a href="https://bsky.app/profile/did:plc:ccikl4jnjjzzap7ifyvce7d7/post/3l3pdhznh3l2e?ref_src=embed">[image or embed]</a></p>&mdash; YAMAMOTO Yuji （HN: すがすがC言語） (<a href="https://bsky.app/profile/did:plc:ccikl4jnjjzzap7ifyvce7d7?ref_src=embed">@igreque.info</a>) <a href="https://bsky.app/profile/did:plc:ccikl4jnjjzzap7ifyvce7d7/post/3l3pdhznh3l2e?ref_src=embed">2024年9月9日 16:03</a></blockquote><script async src="https://embed.bsky.app/static/embed.js" charset="utf-8"></script>
+
+重量は諸々合わせても1kgを切り、体感的にも[手持ちのMacbook Air](https://support.apple.com/ja-jp/111883)より大分軽く感じられました。サイズ的にiPadと一緒に運びやすいのもいいですね。
+
+# 📜スペック
+
+- CPU: MediaTek Kompanio 520 (8186)
+- メモリー: 8 GB
+- ストレージ: eMMC 128 GB
+- ディスプレイ: 10.5 インチ
+- 重量（本体・キーボード・カバー込み）: 988g
+- 購入価格: 59,980円（税込）[^point]
+
+[^point]: ポイントを使った価格しか記録が見当たらなかったので、覚えている価格です。ちなみに、執筆時点では大分値上がりしているようです💸。
+
+開発環境であれなんであれ、とかくメモリーの少なさは利用の障壁になりがちです。それと、小さめのノートPCらしくSDカードスロットもないので、ストレージも増やしづらいでしょう。なので、両方とも比較的豊富な上位のモデルにしました。それでも足りなくなるケースはありそうです<small>（し、後述の通り実際メモリー不足と思しき事象に出遭いました）</small>が、どうにか間に合わせています。
+
+# ⚒️開発環境として使った感想
+
+Chromebookは、現在（普通の）LinuxをインストールしてLinuxのアプリケーションを動かす機能を、公式にサポートしています。お陰ですんなりNeovimやらGitやらNode.jsやらをインストールして使うことができました。[crouton](https://github.com/dnschneid/crouton)なんて入れていたのが懐かしいですね。これで[custard](https://github.com/custard-lang/custard)を旅行先でも開発できるぞ...と思いきや、Neovim始め必要なものを諸々を立ち上げ`npm install`したところで、メモリー不足なのかフリーズしてしまいました😱。幸い、Neovimごとシャットダウンさせて再起動しつつ、バックグラウンドで動かすアプリケーションを減らすなどしていれば`npm install`も終わり、何とか開発できるようになりました。とは言えテストの実行はやはり少し遅いし、今後のユースケース次第では足りなくなることもあるでしょうし、不安は残りますが...。
+
+# 🎹音ゲーをプレイした感想
+
+Chromebookは、Linuxのアプリケーションに加えてAndroidのアプリケーションさえも動かすことができます。ってことで、「ワンチャンこれでグルミクが動けば、iPadさえ持ち歩く必要がなくなって1台だけで済むかも？」と期待してグルミクをインストールしてみました。...が、動くは動くものの、どんなに低スペック向けに設定を変えても、肝心の音ゲーをプレイする画面が全体的にもっさりしていて、とてもプレイしたくなるものではありませんでした😑。まあ、低価格で低スペックなマシンですし、これはやむを得ないでしょう。
+
+しかし、Chromebookより少し前に買った[ローエンドのAndroidスマホ](https://jp.sharp/k-tai/products/aquos-wish4/)でも、演出を切ったりすれば十分プレイできています。こちらはもっと安価で、メモリーも4GBしかないのに。CPUやGPUの性能差なのか、Chromebook上のAndroidランタイムによるオーバーヘッドなのか、今ひとつ原因が分からないので、ベンチマークして軽く検証してみようと思います。技術よりの話になりそうなので、別の記事としてZennに投稿しました。
+
+- [ChromebookのAndroidランタイムでゲームが遅かった理由を探ってみる](https://zenn.dev/igrep/articles/2024-10-3-chromebook-benchmark)
+
+# 🚄起動速度に関して
+
+Chromebookは名前のとおりChromeを動かすための端末です。加えてよく知られているとおり、OSを立ち上げてすぐにChromeまで起動できるという特徴を持っています。しかしながら、スマホを始めスリープからすぐ復帰してブラウザーを起動できる端末を別途持っている私<small>（を含む現代の多くの人）</small>にとってみれば、それはさほど大きなメリットではありません。その上この端末は、スリープさせていると電源ランプが点滅するじゃありませんか。見かけ上電源ONのままにしておくのを推奨していないようで、昨今のスマホなどのように「使わないときはスリープ」というスタイルに適していないように見えます。その癖電源アダプターを挿すとスイッチ押さなくても勝手に起動するし。困ったものです😥。
+
+起動速度に関してもう一つ付け加えると、ChromebookはOSの起動速度は謳い文句のとおり申し分ないものの、起動した後、最初にAndroidアプリやLinuxのVMを立ち上げる際は、数秒待たされます。私はこのPCで<small>（前述の通り）</small>NeovimなどLinuxのアプリを動かしたり、KeePass2AndroidやDropboxなどのAndroidアプリ[^android]をよく使うので、OSの起動が速いだけではあまりメリットに感じられないのです。
+
+[^android]: なんでLinux版のKeePassXCではなくKeePass2Androidなのかというと、Dropboxに置いたkdbxファイルを簡単に同期できるからです。Dropbox公式のクライアントはArmのLinux向けには提供されていないので、KeePassXCでは不便なのです。それとなんでブラウザー版ではなくAndroid版のDropboxアプリを使うのかというと、試した限り大量のファイルを含むフォルダーを開いた際、ブラウザー版ではフリーズしてしまったからです。
+
+# 💻ハードウェアとしてのさわり心地
+
+カバーを装着して閉じると、「安物だなあ」という印象を特に感じます。磁石でしっかり固定されるかと思いきや、キーボードと本体を繋ぐパーツがペラッペラで、キーボードを動かすと少しズレます。持ち運んでいるうちに劣化して切れてしまわないか心配になります。
+
+キーボード自体の打ち心地はまずまずですが、トラックパッドが非常に固く、クリックしにくいです。通常のクリックであれば軽く叩くだけでよいのですが、ドラッグアンドドロップはそうも行かず、数回繰り返すだけで指が痛くなります。スマホのように長押しでドラッグアンドドロップを開始する、みたいな機能があればいいのですが、PC向けのウェブサイトにそうした機能はまずないので、この点は改善してほしいです。
+
+# 総評
+
+軽量で持ち運びやすいので、旅行先における最小限の開発環境としては役に立ちました。ただ総じて性能不足で、工夫すればなんとか使える程度のものです。普通にウェブサービスを使うだけでもその非力さを感じることはしばしばあり、快適にできるならもっとお金を出すのになぁと思います。思えば日本で販売されているChromebookはいずれも低スペックで低価格なものばかりです。どうせAndroidアプリの開発やLinuxアプリを動かすのにも使えるようにしてるんなら、もっと高スペックなものも出して欲しいと常々思います。普通にウェブアプリケーションを使っていても重いと感じることがあるのに。まあ、いずれの用途も結局普通のノートPCでカバーできてしまうから、そのあたりと競争したくないんでしょうけどね...。起動速度だってスリープさせていればそれほど重要ではないし、LinuxだってWSL2が今はありますし。
+
+しかし、昨今求めているような快適さのマシンを探すと、見る限り13インチ以上の大きな端末になってしまい、個人的には不便です。やっぱり11インチのiPad Pro<small>（あるいは同じくらいのサイズ・性能のAndroidタブレット）</small>で普通にLinuxを動かせれば、グルミクもその上でプレイできるし万事解決なんですけどねぇ😔。<small>（SEじゃない、フル機能の）</small>UTMが普通のiPadで使えるようになるか<small>（[参考](https://gigazine.net/news/20240716-windows-emulator-utm-se-ios/)）</small>、かつて公開されていた[Nestbox](https://zenn.dev/igrep/articles/2023-08-nestbox)のようなものをGoogleが公式に出してくれたら、少々高いタブレットでも喜んで買うんですけどね...[^db-alt]。
+
+...と思っていたら、本当にGoogleがAndroidで普通のLinuxのアプリを動かせるよう開発している、なんてニュースがあるじゃありませんか！
+
+- [Google は Android にも Linux ターミナルアプリを導入する可能性が報告 | HelenTech](https://helentech.jp/news-53871/)
+
+次に買うタブレットを悩む要因が増えましたねぇ。いつまで待とうかしら...。
+
+[^db-alt]: 更にDisplay Port Alt Modeに対応していれば、ノートPCを買う必要すらなくなるでしょう。
