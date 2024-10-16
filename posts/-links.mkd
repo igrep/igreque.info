@@ -15,8 +15,7 @@ date: January 28, 2024
 - [Zenn: igrep](https://zenn.dev/igrep)
 - [Mastodon: \@igrep\@precure.ml](https://precure.ml/@igrep)
 - [Hatena Bookmark: id:igrep](http://b.hatena.ne.jp/igrep/bookmark)
-- [YAMAMOTO Yuji: 山本悠滋にマシュマロを投げる | マシュマロ](https://marshmallow-qa.com/igrep)
-- [YAMAMOTO Yuji: 山本悠滋さんのご縁箱ページ | °˖✧ご縁箱✧˖°](https://goenbako.com/igrep)
+- [マシュマロ](https://marshmallow-qa.com/igrep)
 - [YouTubeチャンネル すがすがC言語](https://www.youtube.com/channel/UCECj2wf_fmxcyiiPn0_pnsA)
     - 現状人を集めるつもりのないチャンネルですが一応
 - [Twitter（現X）: \@igrep](https://twitter.com/igrep)
