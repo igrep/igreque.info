@@ -2,7 +2,7 @@
 title: 何かしら関係のあるリンク集 (External Links Related to Me)
 author: YAMAMOTO Yuji
 tags: SNS, Haskell, WebAssembly, Neovim, Vim
-date: January 28, 2024
+date: December 12, 2024
 ...
 ---
 
@@ -23,7 +23,7 @@ date: January 28, 2024
 
 # 経歴
 
-- 現在: [求職中](/posts/2024/04-iij-unknown.html)
+- 現在: [MagicPod](https://magicpod.com/corporate/)
 - 前職：[インターネットイニシアティブ（IIJ）](https://www.iij.ad.jp/)
     - 所属: 技術研究所 技術開発室
 - 前々職：[GMOクリックホールディングス](https://www.gmo-click.com/)
