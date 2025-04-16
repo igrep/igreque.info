@@ -1,0 +1,43 @@
+---
+title: My ChangeLog for age 36.
+author: YAMAMOTO Yuji
+date: April 16, 2025
+...
+---
+
+おかげさまで、今年も新しい年齢、36歳の山本悠滋をリリースすることができました！  
+36歳の山本悠滋は、後述する事情で中々忙しくしておりますが、社会を支えるみなさまのお陰で変わらず元気に暮らせています。
+
+# Changes Since Age 35
+
+- [33歳の誕生日](/posts/2022/01-my-changelog-33.html)に開発を始めた[custardというプログラミング言語](https://github.com/custard-lang/custard)は、元々参考にしていた[mal](https://github.com/kanaka/mal)というプロジェクトで列挙されていた機能を一通り実装し終えることが出来ました。
+    - 現在はClojure-likeなプログラミング言語としての完成度を高めるべく、パーサーを書き直しています。
+    - 37歳になるまでにもういくつかアプリケーションを作りたいです。
+    - 残念ながらJSConf JPで発表することは出来ませんでしたが、まあ今後の開発方針を考えると少しJSから離れていきそうですし、やむを得なかったですね。
+- **結婚相談所で知り合った女性と、来月から同棲することとなりました🎉**。結婚相談所のルール上決まるときは早く、ほんの5ヶ月前までは全く知らない人でしたが、今では毎週のように会っています。
+- [以前書いた](/posts/2024/06-iij-magic-pod)通り、MagicPodに入社しました。
+- Leanの勉強会は、転職後隔週火曜日に曜日を変えつつやっています。もう1年以上もやっているとは驚きです。
+- 音ゲーについて。
+    - グルミクでは段位認定の八段までのレギュレーションが緩められたこともあり、SummerからWinterまで3シーズン連続で八段をクリアできました。今季は難易度が上がったみたいで八段はちょっと厳しそうですが、なんとかクリアしたいです💪
+        - <https://rhythmisskey.games/notes/9v8p6vxy7d>
+        - <https://rhythmisskey.games/notes/9yw4vgquv4>
+        - <https://rhythmisskey.games/notes/a2jxmmox6s>
+    - 弐寺は[エントリーモデルのコントローラー](https://www.konamistyle.jp/products/detail.php?product_id=110744)を買って家でできるようにしたこともあり、レベル4の曲を**曲によっては**クリアできるようになりました。本当に一部の曲だけですが...
+        - <https://rhythmisskey.games/notes/9tbbz1sbll>
+        - <https://rhythmisskey.games/notes/a699ihb5t4>
+    - その他、最近はドラムマニアとmaimaiもしばしばやっています。やっぱ体動かす音ゲーは特に楽しいですね。ポップンもやりたいけどあまり近くになくて悲しい😢
+
+# Known Issues
+
+- 新しいお仕事や同棲に向けた引っ越し作業などで忙しく、毎日眠い😴
+    - まあ、充実してる証拠なので、体に気を遣いつつ継続していきましょう！
+
+# Migration Guide
+
+十分に互換性があるので特に必要なことはありません。引き続き投稿に「いいね」とかよいリアクションがあるとうれしいです！
+
+# Additional Notes
+
+- 例年通り、今年もプリン先輩をキャラクター大賞で応援しましょう！**是非是非一票を！**
+    - <https://ranking.sanrio.co.jp/characters/pompompurin/>
+    - そしてやっぱり、誕生日おめでとう！！！🎉
