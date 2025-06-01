@@ -126,7 +126,7 @@ data Response =
 `Dialogue`を使って書いたコードの例  
 　  
 
-<img src="/imgs/2025-06-15-fp-matsuri-dialogue.png" alt="ソースコードを画像化したもの。元のソースコードはhogeを参照" style="width: 100%; max-width: 1168px; height: auto;" />
+<img src="/imgs/2025-06-15-fp-matsuri-dialogue.png" alt="ソースコードを画像化したもの。元のソースコードは https://github.com/igrep/igreque.info/blob/master/slides/2025-06-15-fp-matsuri.md?plain=1#L133-L143 周辺を参照" style="width: 100%; max-width: 1168px; height: auto;" />
 
 <!--
 ```haskell
@@ -149,7 +149,7 @@ main ~(Success : ~((Str userInput) : ~(Success : ~(r : _)))) =
 
 😩引数でパターンマッチした種類の`Response`と、対応する`Request`の順番が一致してないとダメ！
 
-<img src="/imgs/2025-06-15-fp-matsuri-dialogue-annotated.png" alt="ソースコードを画像化してResponseとRequestの対応関係が分かるよう矢印を付けたもの。" style="width: 100%; max-width: 1168px; height: auto;" />
+<img src="/imgs/2025-06-15-fp-matsuri-dialogue-annotated.png" alt="前のソースコードを画像化してResponseとRequestの対応関係が分かるよう矢印を付けたもの。" style="width: 100%; max-width: 1168px; height: auto;" />
 
 # Haskell 1.0 - 1.2 の IO (8)
 
