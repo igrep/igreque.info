@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="159mm" height="158mm" viewBox="0 0 15900 15800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
+ <path fill="rgb(255,255,255)" stroke="none" d="M 7938,15754 L -9,15754 -9,-9 15884,-9 15884,15754 7938,15754 Z"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 7938,14313 L -9,14313 -9,304 15884,304 15884,14313 7938,14313 Z"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M -9,14462 L -9,14312"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M -9,14462 L -9,14312"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 7938,14462 L 7938,14312"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 7938,14462 L 7938,14312"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 15884,14462 L 15884,14312"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 15884,14462 L 15884,14312"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M -9,14312 L 15884,14312"/>
+ <path fill="rgb(0,69,134)" stroke="none" d="M 1977,14312 L 5951,14312 5951,11309 1977,11309 1977,14312 Z"/>
+ <path fill="rgb(0,69,134)" stroke="none" d="M 9923,14312 L 13897,14312 13897,13311 9923,13311 9923,14312 Z"/>
+ <path fill="rgb(255,66,14)" stroke="none" d="M 1977,11309 L 5951,11309 5951,9308 1977,9308 1977,11309 Z"/>
+ <path fill="rgb(255,66,14)" stroke="none" d="M 9923,13311 L 13897,13311 13897,12310 9923,12310 9923,13311 Z"/>
+ <path fill="rgb(255,211,32)" stroke="none" d="M 1977,9308 L 5951,9308 5951,7808 1977,7808 1977,9308 Z"/>
+ <path fill="rgb(255,211,32)" stroke="none" d="M 9923,12310 L 13897,12310 13897,9308 9923,9308 9923,12310 Z"/>
+ <path fill="rgb(87,157,28)" stroke="none" d="M 1977,7808 L 5951,7808 5951,5806 1977,5806 1977,7808 Z"/>
+ <path fill="rgb(87,157,28)" stroke="none" d="M 9923,9308 L 13897,9308 13897,2304 9923,2304 9923,9308 Z"/>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="3470" y="14890"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Wasm</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="11100" y="14890"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">JavaScript</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="3091" y="12944"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">ロード時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="11038" y="13945"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">ロード時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="2761" y="10248"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">ブラウザの</tspan><tspan font-family="Liberation Sans, sans-serif" fill="rgb(255,255,255)" stroke="none" style="white-space: pre">API</tspan></tspan></tspan><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="2914" y="10637"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">呼び出し時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="10708" y="12749"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">ブラウザの</tspan><tspan font-family="Liberation Sans, sans-serif" fill="rgb(255,255,255)" stroke="none" style="white-space: pre">API</tspan></tspan></tspan><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="10861" y="13138"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">呼び出し時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="2209" y="8691"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">最適化までの実行時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="10156" y="10943"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">最適化までの実行時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="2385" y="6940"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">最適化後の実行時間</tspan></tspan></tspan></text>
+ <text class="SVGTextShape"><tspan class="TextParagraph" font-family="游ゴシック, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="10332" y="5939"><tspan fill="rgb(255,255,255)" stroke="none" style="white-space: pre">最適化後の実行時間</tspan></tspan></tspan></text>
+</svg>
