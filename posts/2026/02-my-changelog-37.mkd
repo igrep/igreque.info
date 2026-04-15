@@ -1,0 +1,38 @@
+---
+title: My ChangeLog for age 37.
+author: YAMAMOTO Yuji
+date: April 16, 2026
+...
+---
+
+おかげさまで、今年も新しい年齢、37歳の山本悠滋をリリースすることができました！  
+37歳の山本悠滋は、AIを始めとする世の中の変化に当惑しながらも、みなさまのお陰で変わらず過ごせております。
+
+# Changes Since Age 36
+
+- お仕事は引き続き[MagicPod](https://magicpod.com/)で、毎日SaaSの死なる脅威に怯えながらPythonやTypeScriptを書いています。まぁ、やれることをやるしかないですね。
+- 一昨年結婚相談所で知り合った女性と同棲を始めたのち、**無事[結婚しました](/posts/2025/02-marriage)🎉**。
+- 去年、[36歳の誕生日](/posts/2025/01-my-changelog-36.html)では、長年開発している[custardというプログラミング言語](https://github.com/custard-lang/custard)について、「元々参考にしていた[mal](https://github.com/kanaka/mal)というプロジェクトで列挙されていた機能を一通り実装し終えることが出来ました」と報告しましたが、いざアプリケーション作りでマクロを使ってみると、全く期待通りに動いてないことに気付き、年明けくらいから直しているところです。AIで編集するのもあれこれチャレンジしましたが、どうも手で書いている方が楽しいらしく、最近は趣味として割り切って敢えてゆっくり進めています。
+- 音ゲーについて。
+    - グルミクの段位認定は相変わらず八段が最高ですが<small>（八段と九段の差が大きすぎるため）</small>、なんやかんやどのシーズンでも八段まではクリアしているし、レベル13+などそれ周辺の難易度では所々上達した感じがしています。それから、回復などあの手この手を使ってやっとですが、レベル15がクリアできたこともありました
+        - <https://rhythmisskey.games/notes/aknhp8zc9q>
+        - <https://rhythmisskey.games/notes/akfb5fi2me>
+        - <https://rhythmisskey.games/notes/ajiia7a6ga>
+        - <https://rhythmisskey.games/notes/ajq8peeugt>
+    - 他のゲームはさほど変わりませんが、弐寺はゲームセンターだと割と高い確率でレベル4をクリアできるようになってきた、という印象です。
+
+# Known Issues
+
+- 最近、異様に長いしゃっくりが出るようになりました😮
+
+# Migration Guide
+
+十分に互換性があるので特に必要なことはありません。引き続き投稿に「いいね」とかよいリアクションがあるとうれしいです！
+
+# Additional Notes
+
+毎年のお願いとなりますが、今年もプリン先輩をキャラクター大賞で応援しましょう！**是非是非一票を！**
+
+<https://ranking.sanrio.co.jp/characters/#profile_pompompurin>
+
+そしてもちろん、誕生日おめでとう！！！🎉
