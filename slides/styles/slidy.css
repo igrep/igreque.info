@@ -410,3 +410,7 @@ div.initial_prompt { display: none; visibility: hidden }
   font-size: 150%;
   line-height: 1.2em;
 }
+
+pre, code {
+  font-family: "Courier New", monospace, "Meiryo UI";
+}

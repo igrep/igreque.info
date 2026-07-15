@@ -123,7 +123,7 @@ result = setNAtZero(array, 9);
 ```js
 array  = [1, 2, 3];
 result = setNAtZero(array, n);
-// 👆だけじゃなく、    👆
+// 👆だけじゃなく、   👆
 //                  👆
 //                  👆にも影響を与えてる！！
 ```
