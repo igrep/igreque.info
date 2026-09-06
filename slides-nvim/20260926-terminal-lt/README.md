@@ -124,6 +124,8 @@ Claude: どれどれ...
 
 # 論より証拠！
 
+![](./terminal-registry.svg)
+
 ✍デモで使うコマンド:
 
 ```vim
