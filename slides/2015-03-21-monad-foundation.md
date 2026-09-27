@@ -21,44 +21,44 @@ date: 2015-03-21 モナド基礎勉強会
 
 - ただの型クラスだった
 - こういう定義の型クラスだった
-    ```haskell
-    class Monad m where
-      return :: a -> m a
-      (>>=) :: m a -> (a -> m b) -> m b
-    ```
+  ```haskell
+  class Monad m where
+    return :: a -> m a
+    (>>=) :: m a -> (a -> m b) -> m b
+  ```
 
 # ただの型クラスだけど違った
 
 - なんか変な使い方ができる
-    ```haskell
-    hoge uID = do
-      fname <- lookup uID firstNameDB
-      lname <- lookup uID lastNameDB
-      return $ fname ++ lname
-    ```
+  ```haskell
+  hoge uID = do
+    fname <- lookup uID firstNameDB
+    lname <- lookup uID lastNameDB
+    return $ fname ++ lname
+  ```
 - だったり、
 
 # ただの型クラスだけど違った
 
 - こんなん
-    ```haskell
-    foo = do
-      tell ["hello, "]
-      tell ["world!"]
-    ```
+  ```haskell
+  foo = do
+    tell ["hello, "]
+    tell ["world!"]
+  ```
 - だったり、
 
 # ただの型クラスだけど違った
 
 - こんなんだったり...。
-    ```haskell
-    main = do
-      putStr "こんなんだったり"
-      replicateM_ 3 $ do
-        threadDelay 1000000
-        putStr "."
-      putStrLn "。"
-    ```
+  ```haskell
+  main = do
+    putStr "こんなんだったり"
+    replicateM_ 3 $ do
+      threadDelay 1000000
+      putStr "."
+    putStrLn "。"
+  ```
 - 何がどうなってんの！？
 
 # 間でなんかしてるだけだった
@@ -115,25 +115,25 @@ lookup uID firstNameDB >>= (\fname -> ...)
 # 例のモナド則
 
 - `do`記法で
-    ```haskell
-    do
-      a <- do
-        b <- foo
-        bar b
-      baz a
-    ```
+  ```haskell
+  do
+    a <- do
+      b <- foo
+      bar b
+    baz a
+  ```
 - みたいに書いたり、
 
 # 例のモナド則
 
 - `do`記法で
-    ```haskell
+  ```haskell
+  do
+    b <- foo
     do
-      b <- foo
-      do
-        a <- bar b
-        baz a
-    ```
+      a <- bar b
+      baz a
+  ```
 - みたいに結合の仕方に気を使わなくてよくなっていること
     - （この例と前のスライドの例が必ず同じ意味になること）
 
