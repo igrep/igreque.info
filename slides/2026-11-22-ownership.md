@@ -104,7 +104,7 @@ https://mermaid.live/edit#pako:eNqVj8tqwzAQRX9FTLaOK_lR2yJk02xLN4FCo1JkaxS7sSWjy
 
 オブジェクトを**コピー**してやり取りする
 
-![](/imgs/2026-11-22-ownership/postMessage.png)
+<img src="/imgs/2026-11-22-ownership/postMessage.png" width="75%" />
 
 <!-- なぜか mermaid.live で書き出した SVG が、一部しか表示されない -->
 
@@ -249,6 +249,12 @@ onmessage = (event) => {
     - メインスレッドでは`array`の中身が空になり、 `byteLength` が `0`になる
     - Worker スレッドでは`array`の中身がそのまま使える
 
+# `postMessage` における所有権の移動（続き）
+
+イメージ:
+
+<img src="/imgs/2026-11-22-ownership/move.png" width="100%" />
+
 # どんなオブジェクトを移動させないといけないのか
 
 - 🐢コピーするには時間がかかる<small>（かかり過ぎる）</small>オブジェクト
@@ -339,7 +345,7 @@ onmessage = (event) => {
 
 図にするとこんな感じ:
 
-<iframe src="/works/sharing-simulator/embedded.html?mode=share&main=++const+array+%3D+new+ArrayBuffer%288%29%3B%0A++console.log%28array.byteLength%29%3B%0A++worker.postMessage%28array%2C+%7B+transfer%3A+%5Barray%5D+%7D%29%3B%0A++console.log%28array.byteLength%29%3B%0A&worker=let+array+%3D+null%3B%0Aonmessage+%3D+%28e%29+%3D%3E+%7B%0A++array+%3D+e.data%3B%0A++console.log%28array%29%3B%0A%7D%3B%0A" width="100%" height="420"></iframe>
+<img src="/imgs/2026-11-22-ownership/share-no-problem.png" width="75%" />
 
 # もしtra（危険なケース）
 
@@ -368,7 +374,7 @@ onmessage = (event) => {
 
 Worker スレッドが、存在しない `ArrayBuffer` への参照を持ってしまう！:
 
-<iframe src="/works/sharing-simulator/embedded.html?mode=share&main=++const+array+%3D+new+ArrayBuffer%288%29%3B%0A%0A++worker.postMessage%28array%2C+%7B+transfer%3A+%5Barray%5D+%7D%29%3B%0A++array+%3D+null%3B%0A&worker=let+array+%3D+null%3B%0Aonmessage+%3D+%28e%29+%3D%3E+%7B%0A++array+%3D+e.data%3B%0A++console.log%28array%29%3B%0A%7D%3B%0A" width="100%" height="370"></iframe>
+<img src="/imgs/2026-11-22-ownership/share-dangerous.png" width="75%" />
 
 # もしtra の何がまずい？
 
